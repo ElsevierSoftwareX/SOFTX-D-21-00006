@@ -4,7 +4,7 @@ In this package an attempt is made to create a tool to optimize these Tessellati
 
 The tool is developed at TU Bergakademie Freiberg, Germany under the supervision and guidance of Dr. Arun Prakash.
 
-## **Quick Start**
+# **Quick Start**
 
 The tool would be compiled into a package in the near future. Till then you can directly clone the git repository to your desired directory and then navigate in the terminal to the directory `ppp2019_OptimizedMicrostructureGeneration`.
 
@@ -14,7 +14,7 @@ Before starting, please ensure that you have statisfied all the [**requirements*
 
 For detailed reference usage manual please [**click here**](){Update link here}.
 
-### **Undertanding available options**
+### **Navigate to the directory and changing file permissions**
 
 First ensure that you are in the correct directory. `pwd` command can be used to find the current working directory.
 
@@ -22,11 +22,31 @@ First ensure that you are in the correct directory. `pwd` command can be used to
 $ pwd
 ...../ppp2019_optimizedmicrostructuregeneration
 ```
+Once you are in the correct directory, we need to change the permissions of the file 'execute' and this can be achieved by
+
+```bash
+$ chmod 777 execute
+```
+In order to check that proper permissions are granted, use the following:
+
+```bash
+$ ls -al
+```
+The above command lists all the files in the current directory with its repective permission details in the first column. The first column of the file 'execute' should look like `-rwxrwxrwx`. This means that all the three blocks ie; user, group and others has been granted with read, write and execute permissions for this file.
+
+In order to execute the program, you can now use:
+
+```bash
+$ ./execute input-arguments
+```
+
+
+### **Undertanding available options**
 
 It is better to have a grasp of the options available
 
 ```bash
-$ python -m src.main main --help
+$ ./execute main --help
 ```
 The following would be displayed:
 ```bash
@@ -75,7 +95,7 @@ Options:
 The microstructure with Cubic spacing in 2D without optimization can be obtained by using:
 
 ```bash
-$ python -m src.main main --s 10 10 10 --d 2 --m steel --r --st 0 1 0 --ss cubic_2d --noopti
+$ ./execute main --s 10 10 10 --d 2 --m steel --r --st 0 1 0 --ss cubic_2d --noopti
 ```
 Here `--noopti` indicates that optimization is not required. The `cubic_2d` can also be replaced with `cubic_3d`, `fcc_2d`, `fcc_3d`, `bcc_3d`, or `random_3d` along with appropriate value for `--d` option representing the dimension.
 
@@ -84,7 +104,7 @@ Here `--noopti` indicates that optimization is not required. The `cubic_2d` can 
 The microstructure with Random spacing in 3D with optimization can be obtained by using:
 
 ```bash
-$ python -m src.main main --s 10 10 3 --d 3 --m steel --r --st 0 1 0 --ss random_3d --t user_grain_size_distribution.txt --c 0 --n 10
+$ ./execute main --s 10 10 3 --d 3 --m steel --r --st 0 1 0 --ss random_3d --t user_grain_size_distribution.txt --c 0 --n 10
 ```
 Here `--n` represents the number of seeds required. The results are stored in the directory `visualization_files`.
 
@@ -93,7 +113,7 @@ Here `--n` represents the number of seeds required. The results are stored in th
 Here we would be again using the case of `cubic_2d` seed spacing.
 
 ```bash
-$ python -m src.main main --s 10 10 10 --d 2 --m steel --r --st 0 1 0 --ss cubic_2d --noopti --msh hex
+$ ./execute main --s 10 10 10 --d 2 --m steel --r --st 0 1 0 --ss cubic_2d --noopti --msh hex
 ```
 
 Here `--msh hex` represents the meshing of obtained configuration using hexahedral meshes. The `hex` keyword can also be replaced with `tet` for tetrahedral elements or `vis` to generate tetrahedral elements for the meshing of raw configuration obtained directly without preprocessing into a cuboid, just for visualization purposes.

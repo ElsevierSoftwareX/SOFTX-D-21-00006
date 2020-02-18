@@ -1,3 +1,5 @@
+<div style="text-align: justify">
+
 # **Optimized Microstructure Generator**
 
 In this package an attempt is made to create a tool to optimize these Tessellations based on user requirements. Basically user can provide the desired distribution along with the total number of seeds required, as input and the tool will optimize the tessellations generated to suite the user requirements. The final configuration obtained can then be meshed using hexahedral or tetrahedral elements.
@@ -119,3 +121,5 @@ $ ./execute main --s 10 10 10 --d 2 --m steel --r --st 0 1 0 --ss cubic_2d --noo
 Here `--msh hex` represents the meshing of obtained configuration using hexahedral meshes. The `hex` keyword can also be replaced with `tet` for tetrahedral elements or `vis` to generate tetrahedral elements for the meshing of raw configuration obtained directly without preprocessing into a cuboid, just for visualization purposes.
 
 **For more details regarding the possibilities of microstructure generation using this tool, please refer the [reference usage manual](){Update link here}.**
+
+</div>

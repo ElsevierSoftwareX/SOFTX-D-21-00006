@@ -2,6 +2,15 @@
 
 # **Optimized Microstructure Generator**
 
+|<img src="./images/tessellations.png" title="Overview of generating tessellations"> |
+| :---: |
+| **Overview of generating tessellations** |
+
+|  |
+| :---: |
+|<img src="./images/meshing.png" title="Overview of meshing process"> |
+| **Overview of meshing process** |
+
 In this package an attempt is made to create a tool to optimize these Tessellations based on user requirements. Basically user can provide the desired distribution along with the total number of seeds required, as input and the tool will optimize the tessellations generated to suite the user requirements. The final configuration obtained can then be meshed using hexahedral or tetrahedral elements.
 
 The tool is developed at TU Bergakademie Freiberg, Germany under the supervision and guidance of Dr. Arun Prakash.
@@ -14,7 +23,7 @@ Before starting, please ensure that you have statisfied all the [**requirements*
 
 ## **Basic Usage**
 
-For detailed reference usage manual please [**click here**](){Update link here}.
+For detailed reference usage manual please [**click here**](https://gitlab.com/arun.prakash.mimm/ppp2019_optimizedmicrostructuregeneration/-/wikis/home#optimized-micro-structure-generator).
 
 ### **Navigate to the directory and changing file permissions**
 

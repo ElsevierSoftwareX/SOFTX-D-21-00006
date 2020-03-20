@@ -97,7 +97,9 @@ Options:
                    (for Visualization)
   --gms FLOAT      Provide global mesh size
   --maxf INTEGER   Provide maximum number of function evaluation during
-                   optimizytion
+                   optimization
+  --rseed INTEGER  Enter the seed value for Numpy random function
+  --nbins INTEGER  Specify the number of bins
   --help           Show this message and exit.
 ```
 

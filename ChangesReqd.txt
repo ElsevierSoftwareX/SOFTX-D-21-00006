@@ -1,0 +1,35 @@
+Required changes to code:
+@auth: A. Prakash and Prince Henry Serrao
+@date: 25.05.2020
+
+* main.py
+------------------
+* line 32ff
+- change to new command options
+
+* import statements
+- why not import as --> from abc import *
+
+* Function header
+- clearly mention each variable (both input and output), and its function
+
+* Global variables --> do you really need them? Can you not avoid them?
+
+- function cost_function, line 108ff --> can this be changed to numpy arrays/vectorization?
+
+- why does the interpolation need to be done every time?
+
+line 413 --> what does the comment refer to?
+## Array of all the available texture information from the research paper
+
+line 622ff - if else block can be easily avoided
+
+TODO:
+- command line options could be better/informative
+- output formatting needs to be improved
+- profiler must only be activated in the debug mode
+- checking of libraries only to be done in the debug mode
+- Speed is currently a significant concern!
+
+
+* Unable to import functions from main.py directly from python

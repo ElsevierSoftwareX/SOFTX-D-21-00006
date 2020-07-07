@@ -1,14 +1,17 @@
 Required changes to code:
 @auth: A. Prakash and Prince Henry Serrao
 @date: 25.05.2020
+@updated on: 07.07.2020
 
 * main.py
 ------------------
 * line 32ff
-- change to new command options
+- change to new command options 
+## Updated with new command options[completed on 06/07/2020] 
 
 * import statements
-- why not import as --> from abc import *
+- why not import as --> from abc import * 
+## Updated with reason for such importing style as a comment block in main.py [completed on 07/07/2020]
 
 * Function header
 - clearly mention each variable (both input and output), and its function
@@ -16,13 +19,17 @@ Required changes to code:
 * Global variables --> do you really need them? Can you not avoid them?
 
 - function cost_function, line 108ff --> can this be changed to numpy arrays/vectorization?
+## Updated [completed on 07/07/2020]
 
 - why does the interpolation need to be done every time?
+## Interpolation is needed to ensure same size of data set for comparison.
 
 line 413 --> what does the comment refer to?
 ## Array of all the available texture information from the research paper
+## Updated. It was a redundant line and i is now removed. [completed on 06/07/2020]
 
 line 622ff - if else block can be easily avoided
+## Updated [completed on 07/07/2020]
 
 TODO:
 - command line options could be better/informative

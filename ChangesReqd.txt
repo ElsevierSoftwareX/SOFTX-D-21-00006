@@ -1,7 +1,7 @@
 Required changes to code:
 @auth: A. Prakash and Prince Henry Serrao
 @date: 25.05.2020
-@updated on: 07.07.2020
+@updated on: 09.07.2020
 
 * main.py
 ------------------
@@ -17,6 +17,7 @@ Required changes to code:
 - clearly mention each variable (both input and output), and its function
 
 * Global variables --> do you really need them? Can you not avoid them?
+## Updated using Class to avoid use of Global variables [completed on 09/07/2020]
 
 - function cost_function, line 108ff --> can this be changed to numpy arrays/vectorization?
 ## Updated [completed on 07/07/2020]

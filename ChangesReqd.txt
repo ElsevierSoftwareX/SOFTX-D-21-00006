@@ -1,7 +1,7 @@
 Required changes to code:
 @auth: A. Prakash and Prince Henry Serrao
 @date: 25.05.2020
-@updated on: 09.07.2020
+@updated on: 10.07.2020
 
 * main.py
 ------------------
@@ -35,8 +35,8 @@ line 622ff - if else block can be easily avoided
 TODO:
 - command line options could be better/informative
 - output formatting needs to be improved
-- profiler must only be activated in the debug mode
-- checking of libraries only to be done in the debug mode
+- profiler must only be activated in the debug mode			## Debug mode has been added. By default INFO log level is set. [completed on 09/07/2020]
+- checking of libraries only to be done in the debug mode	## [completed on 09/07/2020]
 - Speed is currently a significant concern!
 
 

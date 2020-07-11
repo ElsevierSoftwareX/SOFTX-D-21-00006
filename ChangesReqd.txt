@@ -1,7 +1,7 @@
 Required changes to code:
 @auth: A. Prakash and Prince Henry Serrao
 @date: 25.05.2020
-@updated on: 10.07.2020
+@updated on: 11.07.2020
 
 * main.py
 ------------------
@@ -41,3 +41,9 @@ TODO:
 
 
 * Unable to import functions from main.py directly from python
+
+## Add left and right padding with zeros during optimization. [completed on 11/07/2020]
+
+## Verified that Scipy Voronoi and Tess library creates same tessellations for same seed coordinates as input. [completed on 11/07/2020]
+
+## Using Scipy Voronoi function to create tessellations to ensure that code is modular. [completed on 11/07/2020]

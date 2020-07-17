@@ -1,7 +1,7 @@
 Required changes to code:
 @auth: A. Prakash and Prince Henry Serrao
 @date: 25.05.2020
-@updated on: 11.07.2020
+@updated on: 17.07.2020
 
 * main.py
 ------------------
@@ -41,6 +41,7 @@ TODO:
 
 
 * Unable to import functions from main.py directly from python
+## Updated. The function 'main_run' and 'test_run' can now be imported and executed in any other python script. [completed on 17/07/2020] 
 
 ## Add left and right padding with zeros during optimization. [completed on 11/07/2020]
 

@@ -43,6 +43,10 @@ TODO:
 * Unable to import functions from main.py directly from python
 ## Updated. The function 'main_run' and 'test_run' can now be imported and executed in any other python script. [completed on 17/07/2020] 
 ## Replaced relative imports with absolute imports. [completed on 18/07/2020]
+## Individual functions can now be imported in any external script or interactive python provided that
+	the interactive instance is initiated from directory outside the package directory. This is due to 
+	fact that there are absolute import statements within modules and when instance is initiated from within
+	the package directory, then python won't have information of the path above the top level script. [completed on 18/07/2020]
 
 ## Debug mode has been added. By default INFO log level is set for Logger. [completed on 09/07/2020]
 

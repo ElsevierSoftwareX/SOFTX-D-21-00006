@@ -1,7 +1,7 @@
 Required changes to code:
 @auth: A. Prakash and Prince Henry Serrao
 @date: 25.05.2020
-@updated on: 17.07.2020
+@updated on: 18.07.2020
 
 * main.py
 ------------------
@@ -35,7 +35,7 @@ line 622ff - if else block can be easily avoided
 TODO:
 - command line options could be better/informative
 - output formatting needs to be improved
-- profiler must only be activated in the debug mode			## Debug mode has been added. By default INFO log level is set. [completed on 09/07/2020]
+- profiler must only be activated in the debug mode			## Updated. Profiler is now only activated in debug mode [completed on 18/07/2020]
 - checking of libraries only to be done in the debug mode	## [completed on 09/07/2020]
 - Speed is currently a significant concern!
 
@@ -43,8 +43,12 @@ TODO:
 * Unable to import functions from main.py directly from python
 ## Updated. The function 'main_run' and 'test_run' can now be imported and executed in any other python script. [completed on 17/07/2020] 
 
+## Debug mode has been added. By default INFO log level is set for Logger. [completed on 09/07/2020]
+
 ## Add left and right padding with zeros during optimization. [completed on 11/07/2020]
 
 ## Verified that Scipy Voronoi and Tess library creates same tessellations for same seed coordinates as input. [completed on 11/07/2020]
 
 ## Using Scipy Voronoi function to create tessellations to ensure that code is modular. [completed on 11/07/2020]
+
+## check_libraries.py can now be executed independently as well. [completed on 18/07/2020]

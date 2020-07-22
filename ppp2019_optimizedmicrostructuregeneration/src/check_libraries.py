@@ -34,6 +34,21 @@ from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger 
 name_str = __name__
 
 def check_import(name, install_command):
+    """
+    Checks if a certain library is installed and installs them if it isn't
+    installed.
+
+    Parameter
+    ---------
+    name: string
+        Name of the library
+    install_command: string 
+        Command-line input required to install a library
+
+    Returns
+    -------
+    Function returns nothing.  
+    """
     try:
         __import__(name)
     except ImportError:
@@ -46,7 +61,15 @@ def check_import(name, install_command):
             exit()
 
 def check_libraries(log_level):
-    
+    """
+    Iterates through the list of all required libraries and installs them if 
+    they aren't installed.
+
+    Parameter
+    ---------
+    log_level: string
+        Logger level to be used.    
+    """
     log = set_logger(name_str, 'log_data.log', log_level)
 
     library_list = ['pip', 'numpy', 'scipy', 'matplotlib', 'numba', 'pytest', 'quaternion', 'tess', 'click', 'gmsh', 'yappi']

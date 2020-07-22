@@ -37,14 +37,43 @@ name_str = __name__
 
 def create_vtk_file_all_grains(material_name, tessellation, store_folder, face_flag, now, skewed_boundary_flag, all_vertices_list, log_level):
     """
-    Input: The function requires the material name (string), tessellations data, 
-            storage folder (string), face flag, current time and date, skewed boundary flag,
-            and list of all vertices.
-    Processing: The function creates a folder "vtk_file_all_grains" if it doesnt 
-                exist in the same directory. An VTK file consisting data related
-                to all the grains is saved in this folder.
-    Output: The functions saves VTK file consisting of all the vertices and the 
-            line connectivity data for all the vertices in the respective folder.
+    The function creates a directory "vtk_file_all_grains" if it doesnt 
+    exist in the 'visualization_files' directorywithin appropriate 
+    sub-directories. An VTK file consisting data related to all the grains is 
+    saved in this directory.
+
+    Parameters
+    ----------
+    material_name: string
+        Name of the material of which microstructure is being generated.
+    
+    tessellation: dictionary
+        Dictionary consisting of data related to tessellations generated.
+    
+    store_folder: string
+        Sub-directory name (output/output_test) in which output data would be
+        stored. 
+    
+    face_flag: boolean
+        Flag to specify if opaque surfaces are to be used instead of transparent.
+
+    now: string
+        Current time and date.
+        
+    skewed_boundary_flag: boolean
+        Flag to specify if skewed grain boundaries are required. Only functional
+        in quasi-2D case.
+        
+    all_vertices_list: list
+        List of vertices of skewed faces in appropriate sequence.
+        
+    log_level: string
+        Logger level to be used.
+
+    Output
+    ------
+    The functions saves VTK file consisting of all the vertices and the line 
+    connectivity data for all the vertices in the respective folder.
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -118,16 +147,41 @@ def create_vtk_file_all_grains(material_name, tessellation, store_folder, face_f
 
 def create_vtk_file_individual_grains(material_name, tessellation, store_folder, now, skewed_boundary_flag, all_vertices_list, log_level):
     """
-    Input: The function requires the material name (string), tessellations data, 
-            storage folder (string), face flag, current time and date, skewed 
-            boundary flag, and list of all vertices.
-    Processing: The function creates a folder "vtk_file_individual_grains" if it 
-            doesnt exist in the same directory. Individual VTK files consisting 
-            data related to respective grain is saved in this folder. By default 
-            only opaque surfaces are created for individual grains.
-    Output: The functions saves individual VTK files consisting of all the 
-            vertices and the line connectivity data for all the vertices in the 
-            respective folder.
+    The function creates a directory "vtk_file_individual_grains" if it doesnt 
+    exist in the 'visualization_files' directory within appropriate 
+    sub-directories. Individual VTK files consisting data related to respective 
+    grain is saved in this folder. By default only opaque surfaces are created 
+    for individual grains.
+
+    Parameters
+    ----------
+    material_name: string
+        Name of the material of which microstructure is being generated.
+    
+    tessellation: dictionary
+        Dictionary consisting of data related to tessellations generated.
+    
+    store_folder: string
+        Sub-directory name (output/output_test) in which output data would be
+        stored. 
+    
+    now: string
+        Current time and date.
+        
+    skewed_boundary_flag: boolean
+        Flag to specify if skewed grain boundaries are required. Only functional
+        in quasi-2D case.
+        
+    all_vertices_list: list
+        List of vertices of skewed faces in appropriate sequence.
+        
+    log_level: string
+        Logger level to be used.
+
+    Output
+    ------
+    The functions saves individual VTK files consisting of all the vertices and 
+    the line connectivity data for all the vertices in the respective folder.
     """
 
     log = set_logger(name_str, 'log_data.log', log_level)

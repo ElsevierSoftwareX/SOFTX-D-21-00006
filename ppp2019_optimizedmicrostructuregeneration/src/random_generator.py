@@ -38,11 +38,26 @@ name_str = __name__
 
 def random_generator(number_of_seeds, dimension, limits, log_level):       
     """
-    Input: The function requires  total number of seeds, the dimension of 
-            simulation box, and the lengths along x, y and z axis as input.
-    Processing: The function generates random numbers within the ranges from 0 
-            to respective length of simulation box along specific axis
-    Returns: The function returns a list containing the coordinates of each seed.
+    Generates random numbers within the ranges from 0 to respective length of 
+    simulation box along specific axis.
+
+    Parameters
+    ----------
+    number_of_seeds: integer
+        Number of seeds/grains
+
+    dimension: integer 
+        Dimension of study. (2 or 3)
+
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+    
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    The function returns a list containing the coordinates of each seed.
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)

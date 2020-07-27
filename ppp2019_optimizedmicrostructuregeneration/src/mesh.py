@@ -32,23 +32,27 @@ along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.or
 
 import gmsh
 import numpy as np
-
-from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
+import copy
 
 def mesh_hex(limit, global_mesh_size):
-    '''
-    Using gmsh-sdk module to generate hexahedral mesh for the simulation box.
+    """
+    Use gmsh-sdk module to generate hexahedral mesh for the simulation box such 
+    that it would be assigned to the respective grains in the later stages.
 
-    Input: The function requires array of limits along X, Y, Z directions and 
-            the global mesh size.
+    Parameter
+    ---------
 
-    Process: The function generates hexahedral mesh in the simulation box such 
-            that it would be assigned to the respective grains in the later 
-            stages.
+    limit: array of 3 elements
+        Size of simulation box along X, Y & Z directions.
 
-    Output: The function writes an INP file with the mesh information for 
-            further processing.
-    '''
+    global_mesh_size: float
+        Global mesh size to be used.
+
+    Output
+    ------
+    The function writes an INP file with the mesh information for further 
+    processing.
+    """
 
     ## Extracting size of simulation box
     x_limit = limit[0]
@@ -184,19 +188,24 @@ def mesh_hex(limit, global_mesh_size):
     gmsh.finalize()
 
 def mesh_tetra(limit, global_mesh_size):
-    '''
-    Using gmsh-sdk module to generate tetrahedral mesh for the simulation box.
+    """
+    Use gmsh-sdk module to generate tetrahedral mesh for the simulation box such 
+    that it would be assigned to the respective grains in the later stages.
 
-    Input: The function requires array of limits along X, Y, Z directions and 
-            the global mesh size.
+    Parameter
+    ---------
 
-    Process: The function generates tetrahedral mesh in the simulation box such 
-            that it would be assigned to the respective grains in the later 
-            stages.
+    limit: array of 3 elements
+        Size of simulation box along X, Y & Z directions.
 
-    Output: The function writes an INP file with the mesh information for 
-            further processing.
-    '''
+    global_mesh_size: float
+        Global mesh size to be used.
+
+    Output
+    ------
+    The function writes an INP file with the mesh information for further 
+    processing.
+    """
 
     ## Extracting size of simulation box
     x_limit = limit[0]
@@ -287,21 +296,30 @@ def mesh_tetra(limit, global_mesh_size):
 
     gmsh.finalize()
 
-def mesh_visualization(tessellation, global_mesh_size):
-    '''
-    Using gmsh-sdk module to generate tetrahedral mesh for the grains 
-    configuration without limiting them to the simulation box.
+def mesh_visualization(tessellation_og, global_mesh_size):
+    """
+    
+    Use gmsh-sdk module to generate tetrahedral mesh for the grains 
+    configuration without limiting them to the simulation box. The function 
+    generates tetrahedral mesh in all the grains individually and ensures that 
+    the surfaces are not repeated in order to ensure conformity between the 
+    grains.
 
-    Input: The function requires tessellations data and the global mesh size.
+    Parameter
+    ---------
 
-    Process: The function generates tetrahedral mesh in all the grains individually
-            and ensures that the surfaces are not repeated in order to ensure
-            conformity between the grains.
+    tessellation: dictionary
+        Dictionary of tessellation data.
 
-    Output: The function writes an INP file with the mesh information for 
-            configuration without limiting it to the simulation box and 
-            considering periodic boundary conditions (PBC).
-    '''
+    global_mesh_size: float
+        Global mesh size to be used.
+
+    Output
+    ------
+    The function writes an INP file with the mesh information for configuration 
+    without limiting it to the simulation box and considering periodic boundary 
+    conditions (PBC).
+    """
 
     ## Setting global mesh size to 0.5
     lcar = global_mesh_size
@@ -318,15 +336,18 @@ def mesh_visualization(tessellation, global_mesh_size):
     ## Initialize line counter
     line_counter = 0
 
+    ## Creating deepcopy of tessellations dictionary
+    tessellation = copy.deepcopy(tessellation_og)
+
     ## Initializing an array where Tag of first point for that particular cell will be stored
-    vertex_line_data = np.zeros(len(tessellation))
-    print(vertex_line_data)
+    vertex_line_data = np.zeros(tessellation['number_of_grains'])
+    #print(vertex_line_data)
     ## Iterating to add all vertices to geometry
-    for index, v in enumerate(tessellation):
+    for v in range(tessellation['number_of_grains']):
         ## Extracting the array of vertices of the particular cell
-        vertex_array = np.array(v.vertices())
+        vertex_array = np.array(tessellation['vertices_list'][v])
         ## Updating the Tag of first point of the cell which will be added
-        vertex_line_data[index] = line_counter
+        vertex_line_data[v] = line_counter
         ## Adding points to GMSH geometry and incrementing line counter
         for vertex in vertex_array:
             gmsh.model.geo.addPoint(vertex[0], vertex[1], vertex[2], lcar, line_counter)
@@ -343,10 +364,10 @@ def mesh_visualization(tessellation, global_mesh_size):
     ## that the centroidal distance for first surface could be calculated.
     ############################################################################
     centroid_all_face_data = [[0, 0, 0, 0]]
-    for index, v in enumerate(tessellation):
+    for index in range(tessellation['number_of_grains']):
         ## Extracting vertices of cell and face vertices of a cell
-        face_vertices_array = v.face_vertices()
-        vertex_array = np.array(v.vertices())
+        face_vertices_array = tessellation['face_vertices_list'][index] #v.face_vertices()
+        vertex_array = np.array(tessellation['vertices_list'][index])
 
         ## Initializing a list to store the TAG numbers of all the surfaces enclosing a volume
         plane_surface_line_counters = []

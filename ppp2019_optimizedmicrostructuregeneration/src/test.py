@@ -91,15 +91,44 @@ def log_level():
 
 def test_func(name, f, log_level):
     """
-    Input: The test function requires name of the test to be executed and the
-            face flag. Please refer documentation for details on the name of the
-            available test cases.
+    Function to iteratively execute required test case/s.
 
-    Processing: The function then gets the required data from the respective 
-                test case function such as unique seed coordinates, etc and then 
-                computes and stores generated data. The function also checks 
-                various assert statements based on the name of the test case. 
-     
+    Processing
+    ---------- 
+    The function gets the required data from the respective test case 
+    function such as unique seed coordinates, etc and then computes and stores 
+    generated data. The function also checks various assert statements based on 
+    the name of the test case. 
+
+    Parameters
+    ----------
+    
+    name: string
+        Name of the test case to be executed. Following are the available test cases:
+            1. 'all'
+            2. 'cubic_2d'
+            3. 'cubic_3d'
+            4. 'fcc_2d'
+            5. 'fcc_3d'
+            6. 'bcc_3d'
+            7. 'random_3d'
+            8. 'one_seed'
+            9. 'two_seed'
+            10. 'textural'
+
+    f: boolean
+        Flag to indicate that opaque surface is to be used instead of transparent.
+
+    log_level: string
+        Logger level to be used.
+
+    Output
+    -------
+    Function stores appropriate outputs based on individual test cases.
+
+    Returns
+    -------
+    Function returns nothing.
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)    

@@ -1100,7 +1100,7 @@ def test_run(name, face_flag, rand_seed, debug):
     ---------- \n
     
     name: string \n
-    \t Name of the test case to be executed. Following are the available test case: \n
+    \t Name of the test case to be executed. Following are the available test cases: \n
     \t\t 1. 'all' \n
     \t\t 2. 'cubic_2d' \n
     \t\t 3. 'cubic_3d' \n

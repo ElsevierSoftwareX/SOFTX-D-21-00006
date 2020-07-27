@@ -34,7 +34,25 @@ import logging
 from logging.handlers import RotatingFileHandler
 
 def set_logger(name, file_name, level_name):
+    """
+    Instantiate logger module.
 
+    Parameter
+    ---------
+    name: string
+        Name of the current module.
+
+    file_name: string
+        Filename into which log data is to be stored.
+
+    level_name: string
+        Logger level to be used.
+
+    Returns
+    -------
+    Logger object.
+
+    """
     log = logging.getLogger(name)
     
     level_value = logging.getLevelName(level_name)

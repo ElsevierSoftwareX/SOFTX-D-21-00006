@@ -65,49 +65,90 @@ from ppp2019_optimizedmicrostructuregeneration.src.mesh import mesh_visualizatio
 def execute_func(size_of_simulation_box, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, seed_array_unique, stress_direction, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level):
     """
     The execute_func is a function which computes data based on the input parameters.
-    The function then store the computed data in the form of text files and plots.
+    The function then stores the computed data in the form of text files and plots.
     The function can be used for tests as well as for the main program
 
-    Input: The function requires:
-            1. size of simulation box (array of length along X, Y, Z directions)
-            2. dimension of study (2 or 3)
-            3. limit (array of length along X, Y, Z directions)
-            4. material name (string)
-            5. orientation data (array with 4 columns and rows same as no. of grains)
-            6. required texture (array of length 3) specifying the specific 
-                texture requirement.
-            7. rand_quat_flag to indicate if random quaternions are to be assigned
-            8. seed_array_unique (array of all unique seed coordinates)
-            9. stress_direction (array of length 3) to indicate direction of loading
-            10. store_folder to indicate name of directory where files are to be stored.
-            11. face_flag to indicate if opaque or transparent surface is required.
-            12. 'now' consists of current time and date.
-            13. number_of_bins 
-            14. skewed_boundary_flag to indicate if skewed boundaries are required.
-            15. mesh_flag to indicate type of mesh elements (Hex or quat) required.
-            16. global_mesh_size.
+    Parameters
+    ----------
 
-    Returns: The function returns following:
-            1. grain size distribution
-            2. Information of number of neighbors 
-            3. Information of grain boundary area
-            4. Information of junction lengths
-            5. Information of junction angles
-            6. Information of distance between grains
-            7. Information of distance between grains as 1D array
-            8. Information of disorientation angles
-            9. Information of Schmid factors
-            10. Information of type of grain boundaries.
+    size_of_simulation_box: array of length 3
+        Size of simulation box (array of length along X, Y, Z directions)
 
-    Output: The function creates following files:
-            1. Single VTK file containing information of all grains.
-            2. Individual VTK files containing information of individual grains.
-            3. Single OBJ file containing information of all grains.
-            4. Individual OBJ files containing information of individual grains.
-            5. INP file consisting of mesh information
-            6. Text file of structural characteristics
-            7. Text file of textural characteristics
-            8. Distribution plots 
+    dimension: integer    
+        Dimension of study (2 or 3)
+
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+
+    material: string
+        Material name
+
+    orientation_data: array of shape (number of grains, 4)
+        Orientation data of each grain as rows. Orientations to be specified as
+        Quaternions with Scalar-first format.
+
+    required_texture: array of length 3
+        Specific texture to be used for all grains
+
+    rand_quat_flag: boolean
+        Flag to indicate if random quaternions are to be assigned
+
+    seed_array_unique: array of shape (number of grains, 3)
+        Unique seed coordinates
+        
+    stress_direction: array of length 3    
+        Direction of loading
+
+    store_folder: string
+        Name of directory where output files are to be stored.
+    
+    face_flag: boolean
+        Flag to indicate that opaque surface is to be used instead of transparent.
+    
+    now: string
+        Current time and date.
+    
+    number_of_bins: integer
+        Total number of bins to be used while computing distribution
+
+    skewed_boundary_flag: boolean 
+        Flag to specify if skewed grain boundaries are required. Only functional
+        in quasi-2D case.
+
+    mesh_flag: string (Hex, quat or vis)
+        String to indicate type of mesh elements required.
+        
+    global_mesh_size: float   
+        Glomal mesh size to be used
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    ------- 
+    The function returns following:
+        1. grain size distribution
+        2. Information of number of neighbors 
+        3. Information of grain boundary area
+        4. Information of junction lengths
+        5. Information of junction angles
+        6. Information of distance between grains
+        7. Information of distance between grains as 1D array
+        8. Information of disorientation angles
+        9. Information of Schmid factors
+        10. Information of type of grain boundaries.
+
+    Output
+    ------
+    The function creates following files:
+        1. Single VTK file containing information of all grains.
+        2. Individual VTK files containing information of individual grains.
+        3. Single OBJ file containing information of all grains.
+        4. Individual OBJ files containing information of individual grains.
+        5. INP file consisting of mesh information
+        6. Text file of structural characteristics
+        7. Text file of textural characteristics
+        8. Distribution plots 
     """
     log = set_logger(name_str, 'log_data.log', log_level)
     log.info('Executing common execute_func module')

@@ -37,10 +37,32 @@ name_str = __name__
 
 def create_tessellations(seed_array, limit, log_level):                            #x are seed coordinates, y are limits
     """
-    Input: The array of all the seed coordinates and the array of the limits of the simulation box.
-    Process: The function calls  the 'tess' package with the arrays of seed arrays and the limits as parameters.
-            The periodicity is set to be True.
-    Output: The function returns the cells as a list after performing the tessellations.
+    Create tessellations with Periodicity to be True by default.
+
+    Parameters
+    ----------
+    seed_array: array
+        Array of seed coordinates in 3D.
+    
+    limit: array
+        Size of simulation box along X, Y & Z direction.
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    Dictionary of tessellations data with following keys:
+        1. number_of_grains
+        2. number_of_faces_list
+        3. vertices_list
+        4. face_vertices_list
+        5. centroid_list
+        6. volume_list
+        7. normals_list
+        8. neighbors_list
+        9. face_area_list
+        10. number_of_edges_list
     """
     log = set_logger(__name__, 'log_data.log', log_level)
     log.debug('Tessellations are to be created with limits as ' + str(limit) + ' and seed array as:\n' + str(seed_array))

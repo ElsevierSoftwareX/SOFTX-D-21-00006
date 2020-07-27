@@ -92,17 +92,58 @@ name_str = __name__
 
 def cost_function_general(combined_user_data, combined_predicted_data, start_row_combined_data, data_dictionary, args):
     """
-    Input:  1. Array of user data related to all characteristics.
-            2. Array of predicted data related to all characteristics in the 
-                sequence same as that of user data.
-            3. Array indicating the start row index number for each 
-                characteristic
+    Calculating cost value using Sum of Squared Error (SSE) between the 
+    predicted data and the user data.
 
-    Process: The function calculates the error between the predicted data and 
-            the user data. Scaled Mean Squared Error (MSE) is used for this 
-            purpose.
+    Parameters
+    ----------
+    combined_user_data: array
+        Distribution of user defined data for all characteristics.
 
-    Returns: The function returns the cumulative error ie; scalar MSE value. 
+    combined_predicted_data: array
+        Distribution of predicted data for all characteristics.
+
+    start_row_combined_data: list
+        List comprising of row indexes of user and predicted data associated 
+        with each characteristic to be optimized.
+
+    data_dictionary: dictionary
+        Dictionary consisting of complete data pertaining to characteristic to 
+        be optimized. Keys used in the dictionary are integers used for 
+        identifying appropriate characteristics as below:
+        '0': Grain sizes
+        '1': Number of neighbors
+        '2': Grain boundary areas
+        '3': Junction lengths
+        '4': Junction angles in degrees
+        '5a': Distance between grains as 1D array
+        '5b': Distance between grains as matrix array
+        '6': Disorientation angles
+        '7': Type of grain boundaries
+        '8': Schmid factors
+
+    args: list
+        Common arguments consisting of following:
+            1. parameter_list
+            2. dimension
+            3. user_data
+            4. start_row_of_parameter
+            5. limit
+            6. number_of_bins
+            7. fig_animate
+            8. ax_animate
+            9. cost_function_names
+            10. func_name_key
+            11. required_texture
+            12. rand_quat_flag
+            13. stress_direction
+            14. orientation_data
+            15. skewed_boundary_flag
+            16. tessellation (DICTIONARY OF ALL TESSELLATION DATA)
+
+    Returns
+    -------
+    Scalar SSE cost value.
     """
     
     ## Extracting USER and PREDICTED Y data as 1D array
@@ -122,7 +163,9 @@ def cost_function_general(combined_user_data, combined_predicted_data, start_row
     return value
 
 class optimize_class():
-
+    """
+    Using classes so that use of Global variables can be avoided
+    """
     def __init__(self, log_level):
         self.initial_distribution = None
         self.final_user_distribution_data = None
@@ -136,11 +179,21 @@ class optimize_class():
 
     def cost_function(self, seed_p, args):                                            # *args is a tuple containing parameter, dimension, user_required_distribution, limit
         """
-        The function represents the cost function for the optimization process.
+        The function represents the objective function for the optimization 
+        process. The function interpolates data for the provided user data and 
+        the predicted data such that there are equal number of entries in both
+        user and predicted data array. This helps in comparison of both data.
+        The function then calls the cost function containing the evaluation 
+        steps to determine MSE. The function then updates a set of common 
+        variables and updates the live plot.
 
-        Input: The function requires 1D array of seed coordinates for evaluating
-                the cost function and a list of other arguments. The list of 
-                arguments consist of:
+        Parameters
+        ----------
+        seed_p: 1D array
+            Predicted seeds coordinates in 3D
+
+        args: list
+            Common arguments consisting of following:
                 1. parameter_list
                 2. dimension
                 3. user_data
@@ -157,14 +210,9 @@ class optimize_class():
                 14. orientation_data
                 15. skewed_boundary_flag
 
-        Process: The function interpolates data for the provided user data and the
-                predicted data such that there are equal number of entries in both
-                user and predicted data array. This helps in comparison of both data.
-                The function then calls the cost function containing the evaluation 
-                steps to determine MSE. The function then updates a set of global 
-                variables and updates the live plot.
-
-        Returns: The function returns the cost function value.
+        Returns 
+        -------
+        The function returns scalar cost function value.
         """
 
         log = set_logger(name_str, 'log_data.log', self.log_level)
@@ -197,7 +245,6 @@ class optimize_class():
         ## Adjusting seed array based on dimension
         if dimension == 2:
             seed_array[:, 2] = limit[2]
-
 
         ## Creating tessellations
         ## Using try and return to skip the iteration if any error occurs during 
@@ -306,36 +353,6 @@ class optimize_class():
             user_y_data_interpolated = np.interp(range_of_x, user_x_data, user_y_data, left=0, right=0)
             predicted_y_data_interpolated = np.interp(range_of_x, predicted_x_data, predicted_y_data, left=0, right=0)
 
-            
-            # ## finding index in range_of_x from where values greater than min_user_x exists
-            # index_min_user_x = [np.where(range_of_x[:] >= min_user_x)]
-            
-            # ## finding index in range_of_x from where values greater than min_predicted_x exists
-            # index_min_predicted_x = [np.where(range_of_x[:] >= min_predicted_x)]
-            
-            # ## finding index in range_of_x from where values smaller than max_user_x exists
-            # index_max_user_x = [np.where(range_of_x[:] <= max_user_x)]
-            
-            # ## finding index in range_of_x from where values smaller than max_predicted_x exists
-            # index_max_predicted_x = [np.where(range_of_x[:] <= max_predicted_x)]
-            
-            # ## Interpolating user and predicted data based on Existing values for values of Y axis along equally spaced X axis range
-            # user_y_data_interpolated = np.interp(range_of_x[index_min_user_x[0][0][0] : index_max_user_x[0][0][-1] + 1], user_x_data, user_y_data)
-            # predicted_y_data_interpolated = np.interp(range_of_x[index_min_predicted_x[0][0][0] : index_max_predicted_x[0][0][-1] + 1], predicted_x_data, predicted_y_data)
-
-            # ## Appending with zeros where values do not exist for equally spaced X axis range
-            # if index_min_user_x[0][0][0] != 0:
-            #     user_y_data_interpolated = np.array(([0] * (index_min_user_x[0][0][0])) + list(user_y_data_interpolated))
-
-            # if index_min_predicted_x[0][0][0] != 0:
-            #     predicted_y_data_interpolated = np.array(([0] * (index_min_predicted_x[0][0][0])) + list(predicted_y_data_interpolated))
-
-            # if index_max_user_x[0][0][-1] != (len(range_of_x)-1):
-            #     user_y_data_interpolated = np.array(list(user_y_data_interpolated) + ([0] * ((len(range_of_x)) - (index_max_user_x[0][0][-1] + 1))))
-
-            # if index_max_predicted_x[0][0][-1] != (len(range_of_x)-1):
-            #     predicted_y_data_interpolated = np.array(list(predicted_y_data_interpolated) + ([0] * ((len(range_of_x)) - (index_max_predicted_x[0][0][-1] + 1))))
-            
             ## Checking if size of User and predicted data is the same
             assert len(user_y_data_interpolated) == no_evaluation_points
             assert len(predicted_y_data_interpolated) == no_evaluation_points
@@ -384,9 +401,25 @@ class optimize_class():
 
         return cost_function_value
 
-def constraints_func(seed_array_unique, dimension, limit, log_level):
-    #bounds = bounds_func(seed_array_unique, limit)
-    
+def constraints_func(dimension, limit, log_level):
+    """
+    Define a list of constraints for each element of the prediction array.
+
+    Parameter
+    ---------
+    dimension: integer
+        Dimension of study. (2 or 3)
+
+    limit: array
+        Size of simulation box along X, Y & Z direction.
+
+    log_level: string
+        Logger level to be used
+
+    Returns
+    -------
+    List of all constraints.
+    """
     log = set_logger(name_str, 'log_data.log', log_level)
     constraints = []
     '''
@@ -413,7 +446,7 @@ def constraints_func(seed_array_unique, dimension, limit, log_level):
         When the dimension is 2, it is required that the coordinate along Z axis of 
         the seeds remain the same. Since COBYLA only supports inequality constraints,
         we have modified to inequality constraint as
-        0 <= (difference dimension along Z and the seed coordinate along Z) <= 0 and 
+        0 <= (difference of limit along Z and the seed coordinate along Z) <= 0 and 
         this is possible only when difference is zero.
         '''
     elif dimension == 2:
@@ -443,6 +476,7 @@ def constraints_func(seed_array_unique, dimension, limit, log_level):
 ## This function is just to guide the execution of required function based on input argument
 @click.group()
 def guide():
+    
     log = set_logger(name_str, 'log_data.log', 'INFO')
     log.info('\n\n\n\n\n')
     log.info("Welcome to Optimized Microstructure Generator !!")
@@ -475,10 +509,201 @@ def guide():
 @click.option('-nb', '--number_bins', help='Specify the number of bins', show_default=True, default=10, type=int)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
 def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, debug):
+    """
+    Function to parse command line inputs of Click.
+
+    Parameter \n
+    --------- \n
+    size: list of 3 elements \n
+    \t Size of simulation box along X, Y & Z direction \n \n
+
+    dimension: integer \n
+    \t Dimension of study. (2 or 3)\n \n
+
+    number_seed: integer \n
+    \t Number of seeds/grains.\n \n
+
+    target: string \n
+    \t Target distribution filename.\n \n
+
+    characteristic: list \n
+    \t Single or multiple characteristics to be optimized. Characteristics are
+    \t identified based on integers as follows: \n
+    \t\t 0: Grain sizes \n
+    \t\t 1: Number of neighbors \n
+    \t\t 2: Grain boundary areas \n
+    \t\t 3: Junction lengths \n
+    \t\t 4: Junction angles in degrees \n
+    \t\t 5: Distance between grains \n
+    \t\t 6: Disorientation angles \n
+    \t\t 7: Type of grain boundaries \n
+    \t\t 8: Schmid factors \n
+    
+    material: string \n
+    \t Name of the material of which microstructure is being generated. \n
+
+    stress_direction: list of 3 elements \n
+    \t Direction of loading \n
+
+    sharp_orientation: list of 3 elements \n
+    \t Specific texture to be used for all grains \n
+    
+    no_optimization: boolean \n
+    \t Flag to indicate that optimization is NOT required. \n
+    
+    face_flag: boolean \n
+    \t Flag to indicate that opaque surface is to be used instead of transparent. \n
+    
+    seed_spacing: string \n
+    \t Type of seed spacing to be used from the following:\n
+    \t\t 1. cubic_2d \n
+    \t\t 2. cubic_3d \n
+    \t\t 3. fcc_2d \n
+    \t\t 4. fcc_3d \n
+    \t\t 5. bcc_3d \n
+    \t\t 6. random_3d \n
+    
+    spacing_length: float \n
+    \t Spacing between seeds along X, Y & Z in 3D case and along X & Y  \n
+    \t directions in Quasi-2D case. Also the spacing_length must be a perfect \n
+    \t divisor of size of simulation box along all three directions.\n
+    
+    optimization_method: string \n
+    \t Optimization algorithm to be used. (COBYLA, SLSQP, POWELL)
+    
+    skew_boundary: boolean \n
+    \t Flag to indicate that skewed grain boundaries are required. Applicable
+    \t only in Quasi-2D case. \n
+    
+    user_cost_func: string \n
+    \t Filename of user defined cost function. \n
+    
+    mesh: string \n
+    \t Specify the type of elements to be used from the following: \n
+    \t\t 1. 'HEX' for hexahedral elements \n
+    \t\t 2. 'TET' for tetrahedral elements \n
+    \t\t 3. 'VIS' for visualization using tetrahedral elements for grains not  \n
+    \t\t\t confined to simulation box.
+    
+    mesh_size: float \n
+    \t Global mesh size to be used for meshing.\n
+
+    max_func_evaluations: integer \n
+    \t Maximum number of objective function evaluations during optimization.\n
+    
+    rand_seed: integer \n
+    \t Seed to be used for Numpy random so that same output/results can be repeated. \n
+    
+    number_bins: integer \n
+    \t Total number of bins to be used while computing distribution. \n
+    
+    debug: boolean \n
+    \t Flag to indicate if DEBUG mode is to be activated. \n
+
+    Returns \n
+    ------- \n
+    Function returns nothing. 
+    """
+
     ## This is done so that the function 'main_run()' can be imported in some another python script
     main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, debug)
 
 def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, debug):
+    """
+    Function to execute main tasks.
+
+    Parameter \n
+    --------- \n
+    size: list of 3 elements \n
+    \t Size of simulation box along X, Y & Z direction \n \n
+
+    dimension: integer \n
+    \t Dimension of study. (2 or 3)\n \n
+
+    number_seed: integer \n
+    \t Number of seeds/grains.\n \n
+
+    target: string \n
+    \t Target distribution filename.\n \n
+
+    characteristic: list \n
+    \t Single or multiple characteristics to be optimized. Characteristics are
+    \t identified based on integers as follows: \n
+    \t\t 0: Grain sizes \n
+    \t\t 1: Number of neighbors \n
+    \t\t 2: Grain boundary areas \n
+    \t\t 3: Junction lengths \n
+    \t\t 4: Junction angles in degrees \n
+    \t\t 5: Distance between grains \n
+    \t\t 6: Disorientation angles \n
+    \t\t 7: Type of grain boundaries \n
+    \t\t 8: Schmid factors \n
+    
+    material: string \n
+    \t Name of the material of which microstructure is being generated. \n
+
+    stress_direction: list of 3 elements \n
+    \t Direction of loading \n
+
+    sharp_orientation: list of 3 elements \n
+    \t Specific texture to be used for all grains \n
+    
+    no_optimization: boolean \n
+    \t Flag to indicate that optimization is NOT required. \n
+    
+    face_flag: boolean \n
+    \t Flag to indicate that opaque surface is to be used instead of transparent. \n
+    
+    seed_spacing: string \n
+    \t Type of seed spacing to be used from the following:\n
+    \t\t 1. cubic_2d \n
+    \t\t 2. cubic_3d \n
+    \t\t 3. fcc_2d \n
+    \t\t 4. fcc_3d \n
+    \t\t 5. bcc_3d \n
+    \t\t 6. random_3d \n
+    
+    spacing_length: float \n
+    \t Spacing between seeds along X, Y & Z in 3D case and along X & Y  \n
+    \t directions in Quasi-2D case. Also the spacing_length must be a perfect \n
+    \t divisor of size of simulation box along all three directions.\n
+    
+    optimization_method: string \n
+    \t Optimization algorithm to be used. (COBYLA, SLSQP, POWELL)
+    
+    skew_boundary: boolean \n
+    \t Flag to indicate that skewed grain boundaries are required. Applicable
+    \t only in Quasi-2D case. \n
+    
+    user_cost_func: string \n
+    \t Filename of user defined cost function. \n
+    
+    mesh: string \n
+    \t Specify the type of elements to be used from the following: \n
+    \t\t 1. 'HEX' for hexahedral elements \n
+    \t\t 2. 'TET' for tetrahedral elements \n
+    \t\t 3. 'VIS' for visualization using tetrahedral elements for grains not  \n
+    \t\t\t confined to simulation box.
+    
+    mesh_size: float \n
+    \t Global mesh size to be used for meshing.\n
+
+    max_func_evaluations: integer \n
+    \t Maximum number of objective function evaluations during optimization.\n
+    
+    rand_seed: integer \n
+    \t Seed to be used for Numpy random so that same output/results can be repeated. \n
+    
+    number_bins: integer \n
+    \t Total number of bins to be used while computing distribution. \n
+    
+    debug: boolean \n
+    \t Flag to indicate if DEBUG mode is to be activated. \n
+
+    Returns \n
+    ------- \n
+    Function returns nothing. 
+    """
 
     ## Current time and date
     now = datetime.now()
@@ -686,7 +911,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         
         log.debug('Defining constraints')    
         ## Defining constraints for the seeds coordinates for optimizer        
-        constraints_list = constraints_func(seed_array_unique, dimension, limit, log_level)
+        constraints_list = constraints_func(dimension, limit, log_level)
 
         seed_array_unique_flatten = seed_array_unique.flatten()
         
@@ -831,10 +1056,76 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 @click.option('-rs', '--rand_seed', help='Enter the seed value for Numpy random function', type=int, nargs=1, show_default=True, default=None)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
 def test(name, face_flag, rand_seed, debug):
+    """
+    Function to parse comman-line input arguments of Click.
+
+    Parameters \n
+    ---------- \n
+    
+    name: string \n
+    \t Name of the test case to be executed. Following are the available test case: \n
+    \t\t 1. 'all' \n
+    \t\t 2. 'cubic_2d' \n
+    \t\t 3. 'cubic_3d' \n
+    \t\t 4. 'fcc_2d' \n
+    \t\t 5. 'fcc_3d' \n
+    \t\t 6. 'bcc_3d' \n
+    \t\t 7. 'random_3d' \n
+    \t\t 8. 'one_seed' \n
+    \t\t 9. 'two_seed' \n
+    \t\t 10. 'textural' \n
+
+    face_flag: boolean \n
+    \t Flag to indicate that opaque surface is to be used instead of transparent. \n
+
+    rand_seed: integer \n
+    \t Seed to be used for Numpy random so that same output/results can be repeated. \n
+
+    debug: boolean \n
+    \t Flag to indicate if DEBUG mode is to be activated. \n
+
+    Returns \n
+    ------- \n
+    Function returns nothing.
+    """
+    
     ## This is done so that the function 'test_run()' can be imported in some another python script
     test_run(name, face_flag, rand_seed, debug)
 
 def test_run(name, face_flag, rand_seed, debug):
+    """
+    Function to execute test cases.
+
+    Parameters \n
+    ---------- \n
+    
+    name: string \n
+    \t Name of the test case to be executed. Following are the available test case: \n
+    \t\t 1. 'all' \n
+    \t\t 2. 'cubic_2d' \n
+    \t\t 3. 'cubic_3d' \n
+    \t\t 4. 'fcc_2d' \n
+    \t\t 5. 'fcc_3d' \n
+    \t\t 6. 'bcc_3d' \n
+    \t\t 7. 'random_3d' \n
+    \t\t 8. 'one_seed' \n
+    \t\t 9. 'two_seed' \n
+    \t\t 10. 'textural' \n
+
+    face_flag: boolean \n
+    \t Flag to indicate that opaque surface is to be used instead of transparent. \n
+
+    rand_seed: integer \n
+    \t Seed to be used for Numpy random so that same output/results can be repeated. \n
+
+    debug: boolean \n
+    \t Flag to indicate if DEBUG mode is to be activated. \n
+
+    Returns \n
+    ------- \n
+    Function returns nothing.
+    """
+ 
     log_level = 'INFO'
     if debug:
         log_level = 'DEBUG'

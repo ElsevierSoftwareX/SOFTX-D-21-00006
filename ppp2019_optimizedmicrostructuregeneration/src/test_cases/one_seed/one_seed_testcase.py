@@ -36,6 +36,40 @@ from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger 
 name_str = __name__
 
 def one_seed_testcase(tessellation, cell_number, size_of_simulation_box, length_z, log_level):
+    """
+    Execute all assert statements related to one_seed_testcase.
+
+    Parameters
+    ----------
+    tessellation: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    cell_number: integer
+        Grain number.(Since only 1 grain, it must be always 0)
+
+    size_of_simulation_box: array of length 3
+        Size of simulation box (array of length along X, Y, Z directions)
+
+    length_z: float
+        Size of simulation box along Z axis.
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    Function returns nothing.
+    """
 
     log = set_logger(name_str, 'log_data.log', log_level)
     total_volume = 0                                                        # initializing the variable

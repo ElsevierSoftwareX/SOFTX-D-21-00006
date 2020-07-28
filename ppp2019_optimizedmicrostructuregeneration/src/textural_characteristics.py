@@ -374,16 +374,29 @@ https://stackoverflow.com/questions/33658620/generating-two-orthogonal-vectors-t
 """
 def sharp_texture_quaternions(number_of_grains, required_texture, log_level):
     """
-    Input: The function requires the number of grains and the axis along which 
-            the texture is to be generated.
+    Compute sharp textured quaternions in Scalar-first format.
 
-    Processing: The function generates 2 orthogonal vectors based on the 
-                required texture at random and then generates a rotation matrix 
-                by the combination of these vectors. These rotation matrices are
-                then transformed to unit quaternions.
+    Processing
+    ----------
+    The function generates 2 orthogonal vectors based on the required texture 
+    at random and then generates a rotation matrix by the combination of these 
+    vectors. These rotation matrices are then transformed to unit quaternions.
 
-    Returns: The function returns an array of the quaternions for the required 
-            number of grains.
+    Parameters
+    ----------
+    number_of_grains: integer
+        Number of grains.
+
+    required_texture: 1D array of length 3
+        Direction axis along which texture is to be generated.
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    The function returns an array of sharp textured quaternions in scalar first
+    format for the required number of grains.
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -442,14 +455,28 @@ def sharp_texture_quaternions(number_of_grains, required_texture, log_level):
 
 def random_quaternions_generator(number_of_grains, log_level):
     """
-    Input: The function requires number of grains as input.
+    Generate random Quaternions in Scalar-first format.
 
-    Processing: The function generates random quaternions using Scipy library. 
-                Scipy uses scalar last format, hence it is necessary to convert 
-                to scalar first format. 
+    Processing
+    ----------
+    The function generates random quaternions using Scipy library. Scipy uses 
+    scalar last format, hence it is necessary to convert to scalar first format.
+    
+    Parameters
+    ----------
+    number_of_grains: integer
+        Number of grains.
 
-    Returns: Array consisting of random quaternions for each grain in the scalar 
-            first format.  
+    required_texture: 1D array of length 3
+        Direction axis along which texture is to be generated.
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    The function returns an array of random quaternions in scalar first
+    format for the required number of grains.
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -468,17 +495,52 @@ def random_quaternions_generator(number_of_grains, log_level):
 
 def disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level):
     """
-    Input: The function requires the axis along which the texture is to be 
-            generated, random quaternion flag, orientatation data if available, 
-            tessellation data.
+    Compute disorientation angles between grains.
 
-    Processing: The misorientation angle are computed between two grains along with
-                its symmetric orientations. The minimum misorientation angle is 
-                considered to be the disorientation angle and its corresponding axis
-                as its disorientation axis.
+    Processing
+    ----------
+    The misorientation angle are computed between two grains along with its 
+    symmetric orientations. The minimum misorientation angle is considered to 
+    be the disorientation angle and its corresponding axis as its 
+    disorientation axis.
 
-    Returns: The function returns an array consisting of columns grain 1, 
-            grain 2, disorientation angle, disorientation axis
+    Parameters
+    ----------
+    required_texture: 1D array of length 3
+        Direction axis along which texture is to be generated.
+
+    rand_quat_flag: boolean
+        Flag to indicate that random orientations are to be assigned to all 
+        grains.
+
+    orientation_data: array of shape (number of grains, 4)
+        Orientation data of each grain as rows. Orientations to be specified as
+        Quaternions with Scalar-first format.
+
+    tessellation: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+        1. An array consisting of columns grain 1, grain 2, disorientation 
+            angle, disorientation axis.
+        2. An array of generated or inherited orientations data. This is returned to
+            ensure that when random or sharp texture orientations are generated, they 
+            are generated only once and same are used in other functions such as 
+            disorientation_angles, type_of_grain_boundary, etc.  
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -571,19 +633,52 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
 
 def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, log_level):
     """
-    Input: The function requires the required texture, random quaternion flag, 
-            orientation data if available and tessellations data as input.
+    Compute type of grain boundaries between each pair of grains.
 
-    Processing: The function finds the norm of the required texture and 
-                identifies the disorientation angle of the types of CSL specific 
-                to that texture. The function then calculates the disorientation 
-                angle and axis and based on the Brandons Criterion decides if 
-                the Grain boundary is a specific Special Grain boundary or not 
-                and then stores it into the main list.
+    Processing
+    ----------
+    The function computes misorientations between grains and its symmetries. The 
+    function then comparess the misorientation angle and axis and based on the 
+    Brandons Criterion decides if the Grain boundary is a specific Special Grain
+    boundary or not and then stores it into the main list.
 
-    Returns: The function returns an array with the column names as grain 1, 
-            grain 2, rotation angle, rotation axis, type of csl (0 indicates 
-            normal grain boundary)
+    Parameters
+    ----------
+    required_texture: 1D array of length 3
+        Direction axis along which texture is to be generated.
+
+    rand_quat_flag: boolean
+        Flag to indicate that random orientations are to be assigned to all 
+        grains.
+
+    orientation_data: array of shape (number of grains, 4)
+        Orientation data of each grain as rows. Orientations to be specified as
+        Quaternions with Scalar-first format.
+
+    tessellation: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+        1. An array with the column names as grain 1, grain 2, rotation angle, 
+            rotation axis, type of csl (0 indicates normal grain boundary).
+        2. An array of generated or inherited orientations data. This is returned to
+            ensure that when random or sharp texture orientations are generated, they 
+            are generated only once and same are used in other functions such as 
+            disorientation_angles, type_of_grain_boundary, etc. 
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -648,7 +743,7 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
             ## Converting the quaternion to an array
             product_operator_misorientation_array = quaternion.as_float_array(product_operator_misorientation)
             
-            ## While converting fromquat to array it was a 3d array, hence converting to 2d array
+            ## While converting from quat to array it was a 3d array, hence converting to 2d array
             product_operator_misorientation_array = np.array([x[0] for x in product_operator_misorientation_array])
             
             ## Finding trace of the quaternion using formula 4*q_0**2 - 1
@@ -742,19 +837,57 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
 
 def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation, log_level):
     """
-    Input: The function requires the axis along which the texture is to be 
-            generated, random quaternion flag, dimension of study, array of 
-            applied uniaxial stress direction, orientation data, tessellations 
-            data as input.
+    Compute Schmid factors.
 
-    Processing: The function computes Schmid factor for each grain for each slip 
-                system and then stores the maximum of schmid factor for each grain 
-                as the slip system having maximum schmid factor starts to deform 
-                first.
-                
-    Returns: The function returns an array consisting of Schmid Factor related 
-            data with column names as Grain, Schmid factor, Slip plane and 
-            direction (Slip System)
+    Processing
+    ----------
+    The function computes Schmid factor for each grain for each slip system and 
+    then stores the maximum of schmid factor for each grain as the slip system 
+    having maximum schmid factor starts to deform first.
+    
+    Parameters
+    ----------
+    required_texture: 1D array of length 3
+        Direction axis along which texture is to be generated.
+
+    rand_quat_flag: boolean
+        Flag to indicate that random orientations are to be assigned to all 
+        grains.
+
+    dimension: integer    
+        Dimension of study (2 or 3)
+
+    stress_direction: array of length 3    
+        Direction of loading
+
+    orientation_data: array of shape (number of grains, 4)
+        Orientation data of each grain as rows. Orientations to be specified as
+        Quaternions with Scalar-first format.
+
+    tessellation: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+        1. An array consisting of Schmid Factor related data with column names as 
+            Grain no., Schmid factor, Slip plane and direction (Slip System).
+        2. An array of generated or inherited orientations data. This is returned to
+            ensure that when random or sharp texture orientations are generated, they 
+            are generated only once and same are used in other functions such as 
+            disorientation_angles, type_of_grain_boundary, etc.
     """
 
     log = set_logger(name_str, 'log_data.log', log_level)

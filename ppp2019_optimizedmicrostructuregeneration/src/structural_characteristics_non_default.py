@@ -81,16 +81,42 @@ def poly_area(poly):
 
 def grain_size_distribution(dimension, tessellation_og, limit, log_level):
     """
-    Input: The dimension of simulation, tessellation data and array of limits.
+    Compute grain sizes.
 
-    Processing: In case of 2D, the volume is the area of the cell as the length 
-                along z axis is 1. Assuming the grains to be a circle in 2D and 
-                sphere in 3D, the radius of the grain is determined using the 
-                area and volume formula respectively.
+    Processing
+    ----------
+    In case of 2D, the volume is the area of the cell as the length along z axis
+    is 1. Assuming the grains to be a circle in 2D and sphere in 3D, the radius 
+    of the grain is determined using the area and volume formula respectively.
 
-    Returns: The function returns an array of all the grain sizes in terms of 
-            radius. The first column is the grain number and second column 
-            consists of grain sizes.
+    Parameter
+    ---------
+    dimension: integer    
+        Dimension of study (2 or 3).
+
+    tessellation_og: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    The function returns an array of all the grain sizes in terms of radius. The
+    first column is the grain number and second column consists of grain sizes.
     """
 
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -116,14 +142,38 @@ def grain_size_distribution(dimension, tessellation_og, limit, log_level):
 
 def number_of_neighbors(dimension, tessellation_og, log_level):
     """
-    Input: The dimension of simulation, tessellation data.
+    Compute number of neighbors for all grains.
 
-    Processing: In case of 2D, the number of neighbors along z axis are ignored. 
-                The neighbors information is extracted from the cells data.
+    Processing
+    ----------
+    In case of 2D, the number of neighbors along z axis are ignored.
 
-    Returns: The function returns an array of the number of neighbors of each 
-            grains. First column is the grain number and second column 
-            corresponds to number of neighbors.
+    Parameter
+    ---------
+    dimension: integer    
+        Dimension of study (2 or 3).
+
+    tessellation_og: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    The function returns an array comprising of data related to the number of 
+    neighbors of each grains. Column names are: Grain number, number of 
+    neighbors, grain indexes of neighbors.
     """
     log = set_logger(name_str, 'log_data.log', log_level)
     log.debug('Started computing number of neighbors')
@@ -152,19 +202,53 @@ def number_of_neighbors(dimension, tessellation_og, log_level):
 
 def grain_boundary_areas(dimension, limit, tessellation_og, parent_function_name, skewed_boundary_flag, log_level):
     """
-    input: The dimension of simulation, array of limits of simulation box,
-            tessellations data, name of function calling this function, skewed
-            grain boundary flag.
+    Compute grain boundary areas.
 
-    Processing: In case of 2D, it is required to ignore the faces perpendicular 
-                to the z axis. In order to achieve this the absolute value along 
-                the z axis of the normal of the face is checked. If the normal 
-                has unit value along z axis then that face is ignored. Also we 
-                consider the 2D case to be a quasi 2D and displace the vertices 
-                on the negative z plane by a small shift based on randoms.
+    Processing
+    ----------
+    In case of 2D, it is required to ignore the faces perpendicular to the 
+    z axis. In order to achieve this the absolute value along the z axis of the 
+    normal of the face is checked. If the normal has unit value along z axis 
+    then that face is ignored. Also we consider the 2D case to be a quasi 2D 
+    and displace the vertices on the negative z plane by a small shift based on 
+    randoms. It is important to note that even in case of Quasi-2D grain 
+    boundary has an area. 
 
-    Returns: The function returns an array of consisting of columns Sr. No., 
-            Grain 1, Grain 2 and grain boundary area.
+    Parameters
+    ----------
+    dimension: integer    
+        Dimension of study (2 or 3)
+
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+
+    tessellation_og: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    parent_function_name: string
+        Name of the function that is calling this function.
+        
+    skewed_boundary_flag: boolean 
+        Flag to specify if skewed grain boundaries are required. Only functional
+        in quasi-2D case.
+        
+    log_level: string
+        Logger level to be used.
+    
+    Returns
+    -------
+    The function returns an array of consisting of columns Sr. No., Grain 1, 
+    Grain 2 and grain boundary area.
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -314,7 +398,34 @@ def grain_boundary_areas(dimension, limit, tessellation_og, parent_function_name
     return grain_boundary_area, all_vertices_list
 
 def junction_length(tessellation_og, log_level):
-    
+    """
+    Compute junction lengths
+
+    *** specifically for 2D case. Just an example to show modularity of code ***
+
+    Parameters
+    ----------
+
+    tessellation_og: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    An array of junction lengths.
+    """
     # Creating deep copy of original tessellation dictionary
     tessellation = copy.deepcopy(tessellation_og)
 
@@ -331,15 +442,38 @@ def junction_length(tessellation_og, log_level):
 
 def for_angle_junction_length(tessellation_og, log_level):
     """
-    Input: The function tessellations data as input.
+    Compute junction lengths.
 
-    Processing: The function stores the junctions lengths as an array for the 3D 
-                case. In case of 2D, the lengths are equal to 1 which can be 
-                identified as the number of junction points.
+    Processing
+    ----------
+    The lengths of edges of grains are considered as junction lengths. It is 
+    important to note that in case of Quasi-2D, junction lengths along Z axis 
+    are also considered. Junction lengths are stored as list of lists as the
+    lists are of irregular sizes.
 
-    Returns: An array of junction lengths or junction points consisting of 
-            Column names: Sr. no., Junction type, Junction lengths, grains with 
-            this junction.
+    Parameters
+    ----------
+
+    tessellation_og: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    List of lists consisting of column names: Sr. no., Junction type, Junction 
+    lengths, grains with this junction.
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -448,15 +582,34 @@ def for_angle_junction_length(tessellation_og, log_level):
 
 def junction_angle(tessellation_og, log_level):
     """
-    Input: The function requires tessellations data as input.
+    Compute junction angles
 
-    Processing: The function stores the junctions angles as an array. The 
-                function initially calls the function 'junction_length' and 
-                processes the data received from that function.
+    Parameters
+    ----------
+        Parameters
+    ----------
 
-    Returns: An array of junction angles with Column names: Sr. No., Junction 
-            Type, 1st Junction angle, Grain containing the 1st junction angle, 
-            2nd Junction angle, so on....
+    tessellation_og: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    -------
+    List of lists consisting of column names: Sr. No., Junction Type, 
+    1st Junction angle, Grain containing the 1st junction angle, 
+    2nd Junction angle, so on...
     """
 
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -526,7 +679,49 @@ def junction_angle(tessellation_og, log_level):
     return junction_angles
 
 def distance_btw_grains(dimension, limit, tessellation_og, log_level):
+    """    
+    Compute distance of each grain from all grains.
+
+    *** specifically for 2D case. Just an example to show modularity of code ***
+
+    Processing
+    ----------
+    Centroid of all grains are replicated along all directions based on 
+    dimension of study. The shortest distance between certain pair of grains out
+    of all the symmetric combinations is considered as the final distance for 
+    that pair of grains.
     
+    Parameters
+    ----------
+    dimension: integer    
+        Dimension of study (2 or 3)
+
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+
+    tessellation_og: dictionary
+        Dictionary of tessellations data with following keys:
+            1. number_of_grains
+            2. number_of_faces_list
+            3. vertices_list
+            4. face_vertices_list
+            5. centroid_list
+            6. volume_list
+            7. normals_list
+            8. neighbors_list
+            9. face_area_list
+            10. number_of_edges_list
+        
+    log_level: string
+        Logger level to be used.
+    
+    Returns
+    -------
+    1. Symmetric array with rows and columns represented by grain numbers in 
+    ascending order and each element of the array representing distance between 
+    respective grain numbers.
+    2. 1D array of distances between grains
+    """
     ## Creating deepcopy of original tessellations
     tessellation = copy.deepcopy(tessellation_og)
 

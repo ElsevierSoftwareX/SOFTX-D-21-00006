@@ -36,16 +36,31 @@ from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger 
 name_str = __name__
 
 def fcc_lattice_3D(limit, a, log_level):
-    """
-    Input: The function requires an array specifying the limits along X, Y, Z 
-            directions respectively and the seed spacing length (lattice constant).
-    
-    Process: The function generates seeds in FCC lattice spacing in 3D and 
-            ensures that there is no overlapping of seeds at the extreme ends of 
-            simulation box.
+            """
+    Generate seeds with FCC lattice type spacing in 3D.
 
-    Returns: The function returns an array of regularly spaced seeds and also 
-            ensures that the seeds are unique.
+    Processing
+    ----------
+    The function generates seeds in FCC lattice spacing in 3D and ensures 
+    that there is no overlapping of seeds at the extreme ends of simulation box.
+
+    Parameters
+    ----------
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+
+    a: float
+        Spacing between seeds along X, Y & Z in 3D case and along X & Y
+        directions in Quasi-2D case. Also the spacing_length must be a perfect
+        divisor of size of simulation box along all three directions.
+
+    log_level: string
+        Logger level to be used.
+
+    Returns
+    ------- 
+    The function returns an array of regularly spaced seeds and also ensures 
+    that the seeds are unique.
     """
 
     log = set_logger(name_str, 'log_data.log', log_level)

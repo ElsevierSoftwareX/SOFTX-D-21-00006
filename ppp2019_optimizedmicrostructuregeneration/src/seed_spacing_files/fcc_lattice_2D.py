@@ -36,7 +36,7 @@ from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger 
 name_str = __name__
 
 def fcc_lattice_2D(limit, a, log_level):
-        """
+    """
     Generate seeds with FCC lattice type spacing in 2D.
 
     Processing

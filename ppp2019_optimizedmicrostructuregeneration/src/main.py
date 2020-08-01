@@ -487,13 +487,13 @@ def guide():
 ## The main program which would optimise the random seed coordinates based on user requirements
 @guide.command()
 @click.option('-s', '--size', required=True, help='Size of simulation box along X, Y & Z direction in the format n n n', type= float, nargs= 3)
-@click.option('-d', '--dimension', help='Dimension of study ie; 2D or 3D in the format n where n is an integer', type= int, nargs= 1)
+@click.option('-dim', '--dimension', help='Dimension of study ie; 2D or 3D in the format n where n is an integer', type= int, nargs= 1)
 @click.option('-n', '--number_seed', help='Number of seeds/grains in the format n', type= int, nargs= 1)
 @click.option('-t', '--target', help='Target distribution file name as a string stored in the same directory where the package is executed from', type= str, nargs= 1)
 @click.option('-c', '--characteristic', help='The characteristic that has to be optimized in the format n where n corresponds to the integer number corresponding to the characteristic', type= int, multiple = True)#nargs= 1)
 @click.option('-m', '--material', help='The name of the material as a string', type=str, nargs=1)
-@click.option('-st', '--stress_direction', help='The direction of stress for computing the Schmid Factors', type=int, nargs=3)
-@click.option('-o', '--sharp_orientation', help='Required texture common to each grain in the format n n n as provided in the documentation', type=float, nargs=3)
+@click.option('-sdir', '--stress_direction', help='The direction of stress for computing the Schmid Factors', type=int, nargs=3)
+@click.option('-so', '--sharp_orientation', help='Required texture common to each grain in the format n n n as provided in the documentation', type=float, nargs=3)
 # @click.option('-r', help='Flag to indicate if Random orientations is to be generated', is_flag=True)
 @click.option('-noopti', '--no_optimization', help='Flag to indicate if optimization is not to be performed', is_flag=True)
 @click.option('-f', '--face_flag', is_flag=True, help= 'This flag is to be used to indicate if a closed surface is to be used for visualization files for all grain in one file')
@@ -510,7 +510,7 @@ def guide():
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
 def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, debug):
     """
-    Function to parse command line inputs of Click.
+    Function to parse command-line inputs of Click.
 
     Parameter \n
     --------- \n
@@ -801,31 +801,31 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     ##Generating seeds
     if str(seed_spacing_type).lower() == 'cubic_2D'.lower():
         seed_array = np.zeros([(int(limit[0])) * (int(limit[1])), 3])
-        seed_array_unique = cubic_lattice_2D(limit, spacing_length)
+        seed_array_unique = cubic_lattice_2D(limit, spacing_length, log_level)
         orientation_data = None
         assert dimension == 2, 'Please enter dimension as 2 (--d 2 in command line input)'
         
     elif str(seed_spacing_type).lower() == 'cubic_3D'.lower():
         seed_array = np.zeros([(int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1), 3])
-        seed_array_unique = cubic_lattice_3D(limit, spacing_length)
+        seed_array_unique = cubic_lattice_3D(limit, spacing_length, log_level)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
 
     elif str(seed_spacing_type).lower() == 'bcc_3D'.lower():
         seed_array = np.zeros([((int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1)) + (int(limit[0]) * int(limit[1]) * int(limit[2])), 3])
-        seed_array_unique = bcc_lattice_3D(limit, spacing_length)
+        seed_array_unique = bcc_lattice_3D(limit, spacing_length, log_level)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
 
     elif str(seed_spacing_type).lower() == 'fcc_2D'.lower():
         seed_array = np.zeros([((int(limit[0])) * (int(limit[1]))) + (int(limit[0]) * int(limit[1])), 3])
-        seed_array_unique = fcc_lattice_2D(limit, spacing_length)
+        seed_array_unique = fcc_lattice_2D(limit, spacing_length, log_level)
         orientation_data = None
         assert dimension == 2, 'Please enter dimension as 2 (--d 2 in command line input)'
     
     elif str(seed_spacing_type).lower() == 'fcc_3D'.lower():
         seed_array = np.zeros([2*((int(limit[0])) * (int(limit[1])) + (int(limit[1]) * int(limit[2])) + (int(limit[0]) * int(limit[2])) + (int(limit[0])*int(limit[1])*int(limit[2])*3)), 3])
-        seed_array_unique = fcc_lattice_3D(limit, spacing_length)
+        seed_array_unique = fcc_lattice_3D(limit, spacing_length, log_level)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
     
@@ -1057,7 +1057,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
 def test(name, face_flag, rand_seed, debug):
     """
-    Function to parse comman-line input arguments of Click.
+    Function to parse command-line input arguments of Click.
 
     Parameters \n
     ---------- \n

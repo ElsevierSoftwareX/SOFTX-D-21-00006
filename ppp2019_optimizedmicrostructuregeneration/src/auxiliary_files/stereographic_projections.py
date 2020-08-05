@@ -45,7 +45,7 @@ import quaternion
 
 ## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS: $ python stereographic_projections.py --p 1 1 1  --n 50
 
-def euler (thet_1_deg, phhi_deg, thet_2_deg):
+def euler(thet_1_deg, phhi_deg, thet_2_deg):
     """
     Input Parameters: All 3 Bunge angles in degrees in the order of rotation about z axis, Rotated x axis and rotated z axis respectively.
     Processing: The matrices of rotation of respective axis are multiplied together in the order of z , x, z. 
@@ -71,7 +71,7 @@ def euler (thet_1_deg, phhi_deg, thet_2_deg):
     rotation_matrix = z_2.dot(x_2).dot(z_1)
     return rotation_matrix
 
-def bunge_angles (transformation_matrix):
+def bunge_angles(transformation_matrix):
     """
     Input parameters: Transformation Matrix
     Processing: Required elements are extracted from the transformation matrix and the corresponding bunge angles are calculated.
@@ -270,11 +270,12 @@ def parameters(p, n):
     
     ## Calculate symmetric pole array
     sym_normalized_poles = symmetric_poles(symmetry_operator, normalized_pole)
+    #sym_normalized_poles = normalized_pole
     
     ## Rotating all symmetric Poles
     rotated_sym_poles = []
-    #quaternions_array = random_quaternions_generator(n)
-    quaternions_array = sharp_texture_quaternions(n, np.array([1, 1, 1]))
+    #quaternions_array = random_quaternions_generator(n, 'INFO')
+    quaternions_array = sharp_texture_quaternions(n, np.array([1, 1, 1]), 'INFO')
     for i in range(number_of_orientations):
         quaternion_grain = quaternion.from_float_array(quaternions_array[i, :])
         transformation_matrix  = quaternion.as_rotation_matrix(quaternion_grain)

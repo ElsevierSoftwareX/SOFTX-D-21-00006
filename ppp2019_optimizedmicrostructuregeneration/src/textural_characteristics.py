@@ -553,7 +553,7 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
         if rand_quat_flag:
             quaternions_of_grains[:, 1:5] = random_quaternions_generator(number_of_grains, log_level)
         else:
-            quaternions_of_grains[:, 1:5] = sharp_texture_quaternions(number_of_grains, required_texture)    # Assigning random quaternions to each grain
+            quaternions_of_grains[:, 1:5] = sharp_texture_quaternions(number_of_grains, required_texture, log_level)    # Assigning random quaternions to each grain
     else: 
         quaternions_of_grains[:, 1:5] = orientation_data
 
@@ -691,9 +691,9 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
     if orientation_data is None:
         ## Checking if random orientations are required or sharp texture is required
         if rand_quat_flag:
-            quaternions_of_grains[:, 1:5] = random_quaternions_generator(number_of_grains)
+            quaternions_of_grains[:, 1:5] = random_quaternions_generator(number_of_grains, log_level)
         else:
-            quaternions_of_grains[:, 1:5] = sharp_texture_quaternions(number_of_grains, required_texture)    # Assigning random quaternions to each grain
+            quaternions_of_grains[:, 1:5] = sharp_texture_quaternions(number_of_grains, required_texture, log_level)    # Assigning random quaternions to each grain
     else: 
         quaternions_of_grains[:, 1:5] = orientation_data
     

@@ -1051,7 +1051,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     os.system('mv log_data.lo* ' + str(output_file_path) + '/')
 
 @guide.command()
-@click.option('-n', '--name', help = 'Enter the test case name that you want to execute. For eg; Cubic_2d, Cubic_3d, fcc_2d, fcc_3d, bcc_3d, random_3d, textural or ALL', prompt='Enter test case name')
+@click.option('-nt', '--name', help = 'Enter the test case name that you want to execute. For eg; Cubic_2d, Cubic_3d, fcc_2d, fcc_3d, bcc_3d, random_3d, textural or ALL', prompt='Enter test case name')
 @click.option('-f', '--face_flag', is_flag=True, help= 'This flag is to be used to indicate if a closed surface is to be used for visualization files for all grain in one file')
 @click.option('-rs', '--rand_seed', help='Enter the seed value for Numpy random function', type=int, nargs=1, show_default=True, default=None)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)

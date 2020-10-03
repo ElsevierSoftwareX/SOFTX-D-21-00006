@@ -562,6 +562,7 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     \t\t 4. fcc_3d \n
     \t\t 5. bcc_3d \n
     \t\t 6. random_3d \n
+    \t\t 7. Any filename without extension to specify file containing user defined seeds \n
     
     spacing_length: float \n
     \t Spacing between seeds along X, Y & Z in 3D case and along X & Y  \n
@@ -662,6 +663,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     \t\t 4. fcc_3d \n
     \t\t 5. bcc_3d \n
     \t\t 6. random_3d \n
+    \t\t 7. Any filename without extension to specify file containing user defined seeds \n
     
     spacing_length: float \n
     \t Spacing between seeds along X, Y & Z in 3D case and along X & Y  \n

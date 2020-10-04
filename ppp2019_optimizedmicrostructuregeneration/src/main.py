@@ -769,7 +769,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     else:
         rand_quat_flag = None
 
-    optimization_flag = no_optimization
+    no_optimization_flag = no_optimization
     face_flag = face_flag
     seed_spacing_type = seed_spacing
     spacing_length = spacing_length
@@ -849,9 +849,19 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             if data.shape[1] == 7:
                 orientation_data = data[:, 3:7]
             else: orientation_data = None
-       
+
+    ## Generating/assigning orientations for grains
+    if orientation_data is None:
+        ## Checking if random orientations are required or sharp texture is required
+        if rand_quat_flag:
+            orientation_data = random_quaternions_generator(number_of_seeds, log_level)
+        else:
+            orientation_data = sharp_texture_quaternions(number_of_seeds, required_texture, log_level)    # Assigning random quaternions to each grain
+    else: 
+        quaternions_of_grains[:, 1:5] = orientation_data
+
     ############ Optimization Flag ###############
-    if optimization_flag:
+    if no_optimization_flag:
         log.info('Continuing without performing optimization')
         execute_func(limit, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, seed_array_unique, stress_direction, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level)
     else:

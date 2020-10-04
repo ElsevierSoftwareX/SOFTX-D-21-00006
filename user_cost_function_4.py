@@ -29,4 +29,4 @@ def function_formula(combined_user_data, combined_predicted_data, start_row_comb
     ## Computing cost function based on exponential function
     if volume_fraction > threshold:
         return C*np.exp(M*(100.0 - volume_fraction))
-    return 10*C*(np.exp(M * threshold) + np.exp(M*volume_fraction))
+    return 10*C*(np.exp(M * threshold) + np.exp(M*(100-volume_fraction)))

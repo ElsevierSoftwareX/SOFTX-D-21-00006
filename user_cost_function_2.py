@@ -1,6 +1,9 @@
 import numpy as np
 import copy
 
+## User-defined cost function designed to be used for default modules ##
+## Designed only for 2D ##
+
 def mathematical_function(C, M, distArr, CritDist):
     """
     Input: Constants C & M, Array of lengths or distances, Critical length or 

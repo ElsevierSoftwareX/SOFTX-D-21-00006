@@ -562,7 +562,7 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     \t\t 4. fcc_3d \n
     \t\t 5. bcc_3d \n
     \t\t 6. random_3d \n
-    \t\t 7. Any filename without extension to specify file containing user defined seeds \n
+    \t\t 7. Any filename to specify file containing user defined seeds \n
     
     spacing_length: float \n
     \t Spacing between seeds along X, Y & Z in 3D case and along X & Y  \n
@@ -663,7 +663,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     \t\t 4. fcc_3d \n
     \t\t 5. bcc_3d \n
     \t\t 6. random_3d \n
-    \t\t 7. Any filename without extension to specify file containing user defined seeds \n
+    \t\t 7. Any filename to specify file containing user defined seeds \n
     
     spacing_length: float \n
     \t Spacing between seeds along X, Y & Z in 3D case and along X & Y  \n
@@ -841,7 +841,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         assert seed_array_unique.shape[0] == number_of_seeds
 
     else:
-        with open(seed_spacing_type + '.txt', 'r') as f:
+        with open(seed_spacing_type, 'r') as f:
             data = np.loadtxt(f, delimiter=',', comments='#')
             seed_array_unique = data[:, :3]
             

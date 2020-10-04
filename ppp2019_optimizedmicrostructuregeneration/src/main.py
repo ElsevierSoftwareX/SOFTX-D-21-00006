@@ -857,8 +857,6 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             orientation_data = random_quaternions_generator(number_of_seeds, log_level)
         else:
             orientation_data = sharp_texture_quaternions(number_of_seeds, required_texture, log_level)    # Assigning random quaternions to each grain
-    else: 
-        quaternions_of_grains[:, 1:5] = orientation_data
 
     ############ Optimization Flag ###############
     if no_optimization_flag:

@@ -246,6 +246,10 @@ class optimize_class():
         if dimension == 2:
             seed_array[:, 2] = limit[2]
 
+        ## Setting log_level to critical while evaluating charateristic functions
+        original_log_level = copy.deepcopy(self.log_level)
+        self.log_level = 'CRITICAL'
+
         ## Creating tessellations
         ## Using try and return to skip the iteration if any error occurs during 
         ## tessellations.
@@ -366,6 +370,8 @@ class optimize_class():
             combined_predicted_data = np.concatenate((combined_predicted_data, combined_predicted_local_array))
             start_row_combined_data.append(start_row_combined_data[-1] + no_evaluation_points)
         
+        ## Re-setting log_level to original 
+        self.log_level = original_log_level
         
         ## Finding the cost function value using the function
         ## Function name is identified based on the key of the dictionary 'cost_function_names'
@@ -380,17 +386,18 @@ class optimize_class():
         
         if len(self.iteration_number) == 1:
             self.initial_distribution = combined_predicted_data
+            print("Iteration number, Cost function value: \n")
 
         ## Assigning values for Dynamic Plot
         self.iteration_number.append(self.iteration_number[-1] + 1)
         self.current_cost_function_value.append(cost_function_value)
         
-        print('Current iteration: ', self.iteration_number[-1], ' and Cost function value: ', cost_function_value)
+        print(self.iteration_number[-1], cost_function_value)
 
         ## Adding current iteration seeds array to a list of seeds array of all iteration
         self.seeds_array_all_iterations.append(seed_array)
 
-        log.info('Iteration: ' +str(self.iteration_number[-1]) + ', Cost function value: ' +str(self.current_cost_function_value[-1]))
+        log.debug('Iteration: ' +str(self.iteration_number[-1]) + ', Cost function value: ' +str(self.current_cost_function_value[-1]))
 
         ## Updating plot
         ax_animate.plot(self.iteration_number[1:], self.current_cost_function_value, c='C2')

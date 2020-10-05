@@ -131,7 +131,7 @@ def cost_function_general(combined_user_data, combined_predicted_data, start_row
             5. limit
             6. number_of_bins
             7. fig_animate
-            8. ax_animate
+            8. line, ax_animate
             9. cost_function_names
             10. func_name_key
             11. required_texture
@@ -201,7 +201,7 @@ class optimize_class():
                 5. limit
                 6. number_of_bins
                 7. fig_animate
-                8. ax_animate
+                8. line, ax_animate
                 9. cost_function_names
                 10. func_name_key
                 11. required_texture
@@ -231,7 +231,7 @@ class optimize_class():
         limit = args[4]
         number_of_bins = args[5]
         fig_animate = args[6]
-        ax_animate = args[7]
+        line, ax_animate = args[7]
         cost_function_names = args[8]
         func_name_key = args[9]
         required_texture = args[10]
@@ -400,9 +400,18 @@ class optimize_class():
         log.debug('Iteration: ' +str(self.iteration_number[-1]) + ', Cost function value: ' +str(self.current_cost_function_value[-1]))
 
         ## Updating plot
-        ax_animate.plot(self.iteration_number[1:], self.current_cost_function_value, c='C2')
+        if (self.iteration_number[-1]-1)%50 == 0:                               # 50 denotes the interval in which axes is updated
+            ax_animate.set_xlim(0, self.iteration_number[-1]+50)                # X axis is extended with more 50 units
+            ax_animate.set_ylim(0, np.max(self.current_cost_function_value) + 10)# Y axis is updated with max value of cost value achieved
+            fig_animate.canvas.draw()
+            fig_animate.canvas.flush_events()
+
+        line.set_ydata(self.current_cost_function_value)                        # Updating Y data
+        line.set_xdata(self.iteration_number[1:])                               # Updating X data
+        ax_animate.draw_artist(ax_animate.patch)                                # Restoring plot region
+        ax_animate.draw_artist(line)                                            # Plotting line
+        fig_animate.canvas.blit()                                               # Updates only the line instead of entire plot comprising of title, axes, etc.
         fig_animate.canvas.flush_events()
-        sleep(1e-8)
 
         log.debug('Cost function was successfully evaluated at iteration no. ' + str(self.iteration_number[-1]))
 
@@ -935,18 +944,20 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         ## For Dynamic Plot of evolution of cost function
         font_size_value = 40
         label_size = 25
-        plt.ion()                                                               # turn interactive mode on                               
+        #plt.ion()                                                               # turn interactive mode on                               
         fig_animate, ax_animate = plt.subplots(figsize=(10,10))
+        line, = ax_animate.plot([], c='C2', lw=2)
         ax_animate.set_xlabel('Number of Iterations', fontsize=0.5*font_size_value)
         ax_animate.set_ylabel('Cost Function Value', fontsize=0.5*font_size_value)
         ax_animate.title.set_text('Evolution of Cost Function Value [' + optimization_method + ' Algorithm]')
         ax_animate.tick_params(labelsize=0.5*label_size)
-        fig_animate.canvas.draw()    
+        fig_animate.canvas.draw()
+        plt.show(block=False)   
         
         log.info('Initialized dynamic plot successfully')
 
         ## Defining args for cost function
-        args_list = [parameter_list, dimension, user_data, start_row_of_parameter, limit, number_of_bins, fig_animate, ax_animate, cost_function_names, func_name_key, required_texture, rand_quat_flag, stress_direction, orientation_data, skewed_boundary_flag]
+        args_list = [parameter_list, dimension, user_data, start_row_of_parameter, limit, number_of_bins, fig_animate, [line, ax_animate], cost_function_names, func_name_key, required_texture, rand_quat_flag, stress_direction, orientation_data, skewed_boundary_flag]
 
         log.info('Calling optimizer')
 
@@ -956,7 +967,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         
         log.info('Finished with optimization')
 
-        plt.ioff()
+        plt.close(fig_animate)                                                  # Animation plot is closed
         
         initial_distribution = optimize_class_instance.initial_distribution
         final_user_distribution_data = optimize_class_instance.final_user_distribution_data
@@ -967,7 +978,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         current_cost_function_value = optimize_class_instance.current_cost_function_value
         seeds_array_all_iterations = optimize_class_instance.seeds_array_all_iterations                                                             # turn interactive mode off
         
-        ##Saving Plot
+        ##Saving Cost function evolution Plot
         output_file_path = Path("visualization_files", store_folder, now, material, "Plots", "evolution_of_cost_function.png")
         output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
@@ -975,6 +986,13 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         output_file_path.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.mkdir(exist_ok=True)                                # checks if folder exists, if not then creates one
 
+        ## Plotting the graph of evolution of cost function again to save the plot
+        fig_animate, ax_animate = plt.subplots(figsize=(10,10))
+        line, = ax_animate.plot(iteration_number[1:], current_cost_function_value, c='C2', lw=2)
+        ax_animate.set_xlabel('Number of Iterations', fontsize=0.5*font_size_value)
+        ax_animate.set_ylabel('Cost Function Value', fontsize=0.5*font_size_value)
+        ax_animate.title.set_text('Evolution of Cost Function Value [' + optimization_method + ' Algorithm]')
+        ax_animate.tick_params(labelsize=0.5*label_size)
         fig_animate.savefig(str(output_file_path))
 
         print(optimization_result.message)

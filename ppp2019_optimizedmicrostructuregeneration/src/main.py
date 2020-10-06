@@ -166,7 +166,7 @@ class optimize_class():
     """
     Using classes so that use of Global variables can be avoided
     """
-    def __init__(self, log_level):
+    def __init__(self, store_folder, now, material, save_interval, log_level):
         self.initial_distribution = None
         self.final_user_distribution_data = None
         self.final_predicted_data = None
@@ -176,6 +176,10 @@ class optimize_class():
         self.current_cost_function_value = []
         self.seeds_array_all_iterations = []
         self.log_level = log_level
+        self.store_folder = store_folder
+        self.now = now
+        self.material = material
+        self.save_interval = save_interval
 
     def cost_function(self, seed_p, args):                                            # *args is a tuple containing parameter, dimension, user_required_distribution, limit
         """
@@ -399,12 +403,37 @@ class optimize_class():
 
         log.debug('Iteration: ' +str(self.iteration_number[-1]) + ', Cost function value: ' +str(self.current_cost_function_value[-1]))
 
-        ## Updating plot
-        if (self.iteration_number[-1]-1)%50 == 0:                               # 50 denotes the interval in which axes is updated
-            ax_animate.set_xlim(0, self.iteration_number[-1]+50)                # X axis is extended with more 50 units
-            ax_animate.set_ylim(0, np.max(self.current_cost_function_value) + 10)# Y axis is updated with max value of cost value achieved
+        ## Updating plot and saving seeds data
+        previous_iter = self.iteration_number[-1]-1
+        if previous_iter % self.save_interval == 0:                               # self.save_interval denotes the interval in which axes is updated
+            ax_animate.set_xlim(0, self.iteration_number[-1] + self.save_interval)                # X axis is extended with more self.save_interval units
+            ax_animate.set_ylim(0, np.max(self.current_cost_function_value) + 10)                 # Y axis is updated with max value of cost value achieved where 10 is used randomly so that the upper portion of plot is not congested
             fig_animate.canvas.draw()
             fig_animate.canvas.flush_events()
+
+            ## saving all iterations seed data current interval
+            output_file_path = Path("visualization_files", self.store_folder, self.now, self.material, "Text_output", "seed_data_all_iterations.txt")
+            
+            if (previous_iter) == 0:
+                output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
+                output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
+                output_file_path.parent.parent.parent.mkdir(exist_ok=True)
+                output_file_path.parent.parent.mkdir(exist_ok=True)
+                output_file_path.parent.mkdir(exist_ok=True)                                # checks if folder exists, if not then creates one
+
+                with open(str(output_file_path), 'a+') as f:
+                    f.truncate(0)
+                    f.write("# " + self.now + " \n")
+                    f.write("# Seeds data (Seed coordinates + Orientation as Quaternions)\n")
+                    f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
+            else:
+                with open(str(output_file_path), 'a+') as f:
+                    for i in range(previous_iter - self.save_interval, previous_iter):
+                        f.write("\n# Iteration No.: " +str(i+1) + ", Cost Function value: " + str(self.current_cost_function_value[i]) + "\n")
+                        f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
+                        seed_data = np.array(self.seeds_array_all_iterations[i])
+                        temp_write_data = np.concatenate((seed_data, orientation_data), axis=1)
+                        np.savetxt(f, temp_write_data, delimiter=',', comments='#')
 
         line.set_ydata(self.current_cost_function_value)                        # Updating Y data
         line.set_xdata(self.iteration_number[1:])                               # Updating X data
@@ -523,8 +552,9 @@ def guide():
 @click.option('-mf', '--max_func_evaluations', help='Provide maximum number of function evaluation during optimizytion', show_default=True, default=200, type=int, nargs=1)
 @click.option('-rs', '--rand_seed', help='Enter the seed value for Numpy random function', show_default=True, default=None, type=int)
 @click.option('-nb', '--number_bins', help='Specify the number of bins', show_default=True, default=10, type=int)
+@click.option('-si', '--save_interval', help='Intervals of iterations in which the seeds data is to be saved and live plot is to be extended', show_default=True, default=100, type=int)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
-def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, debug):
+def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, save_interval, debug):
     """
     Function to parse command-line inputs of Click.
 
@@ -614,6 +644,10 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     number_bins: integer \n
     \t Total number of bins to be used while computing distribution. \n
     
+    save_interval: integer \n
+    \t The intervals in iteration at which the seeds data is to be stored and \n
+    \t the live plot axes is to extended. \n
+
     debug: boolean \n
     \t Flag to indicate if DEBUG mode is to be activated. \n
 
@@ -623,9 +657,9 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     """
 
     ## This is done so that the function 'main_run()' can be imported in some another python script
-    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, debug)
+    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, save_interval, debug)
 
-def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, debug):
+def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, save_interval, debug):
     """
     Function to execute main tasks.
 
@@ -715,6 +749,10 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     number_bins: integer \n
     \t Total number of bins to be used while computing distribution. \n
     
+    save_interval: integer \n
+    \t The intervals in iteration at which the seeds data is to be stored and \n
+    \t the live plot axes is to extended. \n
+
     debug: boolean \n
     \t Flag to indicate if DEBUG mode is to be activated. \n
 
@@ -759,7 +797,9 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             + 'Global mesh size: ' +str(mesh_size) + '\n' \
             + 'Maximum number of function evaluations: ' +str(max_func_evaluations) + '\n' \
             + 'Seed of random generator: ' +str(rand_seed) + '\n' \
-            + 'Number of bins for histogram: ' +str(number_bins) + '\n')
+            + 'Number of bins for histogram: ' +str(number_bins) + '\n' \
+            + 'Save interval: ' + str(save_interval) + '\n' \
+            + 'Debug mode activated: ' + str(debug) + '\n')
 
     np.random.seed(rand_seed)                                                                    # Initializing seed to None
     log.debug("Rand seed set to " + str(rand_seed))
@@ -962,21 +1002,21 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         log.info('Calling optimizer')
 
         ## Calling Optimizer
-        optimize_class_instance = optimize_class(log_level)
+        optimize_class_instance = optimize_class(store_folder, now, material, save_interval, log_level)
         optimization_result = minimize(optimize_class_instance.cost_function, seed_array_unique_flatten, args=(args_list), method=optimization_method, constraints=constraints_list, options={'rhobeg': 5.0, 'maxiter': max_func_eval, 'maxfev': max_func_eval, 'ftol':1e-6, 'disp': True, 'eps': 5.0})
         
         log.info('Finished with optimization')
 
         plt.close(fig_animate)                                                  # Animation plot is closed
         
-        initial_distribution = optimize_class_instance.initial_distribution
-        final_user_distribution_data = optimize_class_instance.final_user_distribution_data
-        final_predicted_data = optimize_class_instance.final_predicted_data
-        final_start_row_combined_data = optimize_class_instance.final_start_row_combined_data
-        smallest_cost_function_value = optimize_class_instance.smallest_cost_function_value
-        iteration_number = optimize_class_instance.iteration_number
-        current_cost_function_value = optimize_class_instance.current_cost_function_value
-        seeds_array_all_iterations = optimize_class_instance.seeds_array_all_iterations                                                             # turn interactive mode off
+        initial_distribution            = optimize_class_instance.initial_distribution
+        final_user_distribution_data    = optimize_class_instance.final_user_distribution_data
+        final_predicted_data            = optimize_class_instance.final_predicted_data
+        final_start_row_combined_data   = optimize_class_instance.final_start_row_combined_data
+        smallest_cost_function_value    = optimize_class_instance.smallest_cost_function_value
+        iteration_number                = optimize_class_instance.iteration_number
+        current_cost_function_value     = optimize_class_instance.current_cost_function_value
+        seeds_array_all_iterations      = optimize_class_instance.seeds_array_all_iterations                                                             # turn interactive mode off
         
         ##Saving Cost function evolution Plot
         output_file_path = Path("visualization_files", store_folder, now, material, "Plots", "evolution_of_cost_function.png")
@@ -1044,14 +1084,27 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         output_file_path.parent.mkdir(exist_ok=True)                                # checks if folder exists, if not then creates one
 
         with open(str(output_file_path), 'a+') as f:
-            f.truncate(0)
-            f.write("# " + now + " \n")
-            f.write("# Seeds data (Seed coordinates)\n")
-            for i in range(len(seeds_array_all_iterations)):
-                f.write("\n# Iteration No.: " +str(i+1) + "\n")
-                f.write("# X coordinate, Y coordinate, Z coordinate \n")
-                seed_data = seeds_array_all_iterations[i]
-                np.savetxt(f, seed_data, delimiter=',', comments='#')
+            ## Writing seed data for iterations that were pending during optimization
+            if iteration_number[-1] % save_interval != 0:
+                for i in range(iteration_number[-1] - (iteration_number[-1] % save_interval), iteration_number[-1]):
+                    f.write("\n# Iteration No.: " +str(i+1) + ", Cost Function value: " + str(current_cost_function_value[i]) + "\n")
+                    f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
+                    seed_data = np.array(seeds_array_all_iterations[i])
+                    temp_write_data = np.concatenate((seed_data, orientation_data), axis=1)
+                    np.savetxt(f, temp_write_data, delimiter=',', comments='#')
+            
+            ## Writing optimization data
+            f.write("\n\n\n## Optimization Information \n")
+            f.write("Optimized cost function value = " + str(optimization_result.fun) + "\n")
+            f.write("message = " + str(optimization_result.message) + "\n")
+            #f.write("nit = " + str(optimization_result.nit) + "\n")
+            f.write("nfev = " + str(optimization_result.nfev)+ "\n")
+            f.write("# Optimized Seeds data (Seed coordinates + Orientation as Quaternions)\n")
+            f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
+            temp_write_data = np.concatenate((optimized_seed_array, orientation_data), axis=1)
+            np.savetxt(f, temp_write_data, delimiter=',', comments='#')
+
+
 
         log.info('Successfully saved seeds data at all iterations into a text file')
 

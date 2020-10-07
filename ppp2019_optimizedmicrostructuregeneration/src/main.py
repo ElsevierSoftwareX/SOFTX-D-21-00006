@@ -434,6 +434,7 @@ class optimize_class():
                         seed_data = np.array(self.seeds_array_all_iterations[i])
                         temp_write_data = np.concatenate((seed_data, orientation_data), axis=1)
                         np.savetxt(f, temp_write_data, delimiter=',', comments='#')
+                        #self.seeds_array_all_iterations[i] = []
 
         line.set_ydata(self.current_cost_function_value)                        # Updating Y data
         line.set_xdata(self.iteration_number[1:])                               # Updating X data
@@ -1001,9 +1002,20 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
         log.info('Calling optimizer')
 
+        ## Optimization Algorithms options dictionary
+        algo_options_dict = {'COBYLA': {'rhobeg': 5.0, 'maxiter': max_func_eval, 'disp': True},
+                            'SLSQP': {'maxiter': max_func_eval, 'ftol': 1e-6, 'disp': True, 'eps': 1.0},  ##### eps of 1e-2
+                            'POWELL':{'maxiter': max_func_eval},
+                            'NELDER-MEAD': {'maxiter': max_func_eval},
+                            'BFGS': {'maxiter': max_func_eval},
+                            'L-BFGS-B': {'maxiter': max_func_eval},
+                            'trust-constr': {'maxiter': max_func_eval},
+                            'CG': {'maxiter': max_func_eval},
+                            'TNC': {'maxiter': max_func_eval}}
+
         ## Calling Optimizer
         optimize_class_instance = optimize_class(store_folder, now, material, save_interval, log_level)
-        optimization_result = minimize(optimize_class_instance.cost_function, seed_array_unique_flatten, args=(args_list), method=optimization_method, constraints=constraints_list, options={'rhobeg': 5.0, 'maxiter': max_func_eval, 'maxfev': max_func_eval, 'ftol':1e-6, 'disp': True, 'eps': 5.0})
+        optimization_result = minimize(optimize_class_instance.cost_function, seed_array_unique_flatten, args=(args_list), method=optimization_method, constraints=constraints_list, options=algo_options_dict[optimization_method])
         
         log.info('Finished with optimization')
 

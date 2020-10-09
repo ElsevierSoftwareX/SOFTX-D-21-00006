@@ -259,7 +259,7 @@ class optimize_class():
         ## tessellations.
         try:
             tessellation = create_tessellations(seed_array, limit, self.log_level)
-            args.append(tessellation)
+            args[15] = tessellation                                             ## Dummy variable is replaced with actual tessellation data
         except ValueError:
             log.exception('tessellation creation failed in cost function and infinity would be returned as cost function value')
             return np.inf
@@ -998,7 +998,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         log.info('Initialized dynamic plot successfully')
 
         ## Defining args for cost function
-        args_list = [parameter_list, dimension, user_data, start_row_of_parameter, limit, number_of_bins, fig_animate, [line, ax_animate], cost_function_names, func_name_key, required_texture, rand_quat_flag, stress_direction, orientation_data, skewed_boundary_flag]
+        tessellation_dummy_variable = []                                        ## dummy variable that will be replaced in args with tessellations data during optimization
+        args_list = [parameter_list, dimension, user_data, start_row_of_parameter, limit, number_of_bins, fig_animate, [line, ax_animate], cost_function_names, func_name_key, required_texture, rand_quat_flag, stress_direction, orientation_data, skewed_boundary_flag, tessellation_dummy_variable]
 
         log.info('Calling optimizer')
 

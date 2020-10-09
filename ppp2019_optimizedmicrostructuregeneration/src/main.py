@@ -1008,11 +1008,11 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
                             'SLSQP': {'maxiter': max_func_eval, 'ftol': 1e-6, 'disp': True, 'eps': 1.0},  ##### eps of 1e-2
                             'POWELL':{'maxiter': max_func_eval},
                             'NELDER-MEAD': {'maxiter': max_func_eval},
-                            'BFGS': {'maxiter': max_func_eval},
-                            'L-BFGS-B': {'maxiter': max_func_eval},
-                            'trust-constr': {'maxiter': max_func_eval},
-                            'CG': {'maxiter': max_func_eval},
-                            'TNC': {'maxiter': max_func_eval}}
+                            'BFGS': {'maxiter': max_func_eval, 'eps': 1.0},
+                            'L-BFGS-B': {'maxiter': max_func_eval, 'eps': 1.0},
+                            'TRUST-CONSTR': {'maxiter': max_func_eval},
+                            'CG': {'maxiter': max_func_eval, 'eps': 1.0},
+                            'TNC': {'maxiter': max_func_eval, 'eps': 1.0}}
 
         ## Calling Optimizer
         optimize_class_instance = optimize_class(store_folder, now, material, save_interval, log_level)

@@ -550,12 +550,12 @@ def guide():
 @click.option('-ucf', '--user_cost_func', help='Specify the user defined cost function file name. Refer documentation for file specifications', type=str, nargs=1)
 @click.option('-msh', '--mesh', help='Flag to indicate type of meshing required of the simulation box. Eg. hex (for Hexahedral), tet (for Tetrahedral), vis (for Visualization)', type=str, nargs=1)
 @click.option('-gms', '--mesh_size', help='Provide global mesh size', type=float, nargs=1, show_default=True, default= 0.5)
-@click.option('-mf', '--max_func_evaluations', help='Provide maximum number of function evaluation during optimizytion', show_default=True, default=200, type=int, nargs=1)
+@click.option('-mi', '--max_iter', help='Provide maximum number of iterations during optimizytion. The objective function might be evaluated multiple times during each iteration.', show_default=True, default=200, type=int, nargs=1)
 @click.option('-rs', '--rand_seed', help='Enter the seed value for Numpy random function', show_default=True, default=None, type=int)
 @click.option('-nb', '--number_bins', help='Specify the number of bins', show_default=True, default=10, type=int)
 @click.option('-si', '--save_interval', help='Intervals of iterations in which the seeds data is to be saved and live plot is to be extended', show_default=True, default=100, type=int)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
-def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, save_interval, debug):
+def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, debug):
     """
     Function to parse command-line inputs of Click.
 
@@ -636,8 +636,9 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     mesh_size: float \n
     \t Global mesh size to be used for meshing.\n
 
-    max_func_evaluations: integer \n
-    \t Maximum number of objective function evaluations during optimization.\n
+    max_iter: integer \n
+    \t Maximum number of iterations during optimization. The objective \n
+    \t function might be evaluated multiple times during each iteration \n
     
     rand_seed: integer \n
     \t Seed to be used for Numpy random so that same output/results can be repeated. \n
@@ -658,9 +659,9 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     """
 
     ## This is done so that the function 'main_run()' can be imported in some another python script
-    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, save_interval, debug)
+    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, debug)
 
-def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_func_evaluations, rand_seed, number_bins, save_interval, debug):
+def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, debug):
     """
     Function to execute main tasks.
 
@@ -741,8 +742,9 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     mesh_size: float \n
     \t Global mesh size to be used for meshing.\n
 
-    max_func_evaluations: integer \n
-    \t Maximum number of objective function evaluations during optimization.\n
+    max_iter: integer \n
+    \t Maximum number of iterations during optimization. The objective \n
+    \t function might be evaluated multiple times during each iteration \n
     
     rand_seed: integer \n
     \t Seed to be used for Numpy random so that same output/results can be repeated. \n
@@ -796,7 +798,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             + 'Name of user defined cost function file: ' +str(user_cost_func) + '\n' \
             + 'Required meshing type: ' +str(mesh) + '\n' \
             + 'Global mesh size: ' +str(mesh_size) + '\n' \
-            + 'Maximum number of function evaluations: ' +str(max_func_evaluations) + '\n' \
+            + 'Maximum number of function evaluations: ' +str(max_iter) + '\n' \
             + 'Seed of random generator: ' +str(rand_seed) + '\n' \
             + 'Number of bins for histogram: ' +str(number_bins) + '\n' \
             + 'Save interval: ' + str(save_interval) + '\n' \
@@ -844,7 +846,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         raise ValueError('You have entered dimension = 3 with skew grain boundary flag. Please check your inputs and try again. Exiting now...')
 		
     global_mesh_size = mesh_size
-    max_func_eval = max_func_evaluations
+    max_iterations = max_iter
 
     number_of_bins = number_bins
 
@@ -1004,15 +1006,15 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         log.info('Calling optimizer')
 
         ## Optimization Algorithms options dictionary
-        algo_options_dict = {'COBYLA': {'rhobeg': 5.0, 'maxiter': max_func_eval, 'disp': True},
-                            'SLSQP': {'maxiter': max_func_eval, 'ftol': 1e-6, 'disp': True, 'eps': 1.0},  ##### eps of 1e-2
-                            'POWELL':{'maxiter': max_func_eval},
-                            'NELDER-MEAD': {'maxiter': max_func_eval},
-                            'BFGS': {'maxiter': max_func_eval, 'eps': 1.0},
-                            'L-BFGS-B': {'maxiter': max_func_eval, 'eps': 1.0},
-                            'TRUST-CONSTR': {'maxiter': max_func_eval},
-                            'CG': {'maxiter': max_func_eval, 'eps': 1.0},
-                            'TNC': {'maxiter': max_func_eval, 'eps': 1.0}}
+        algo_options_dict = {'COBYLA': {'rhobeg': 5.0, 'maxiter': max_iterations, 'disp': True},
+                            'SLSQP': {'maxiter': max_iterations, 'ftol': 1e-6, 'disp': True, 'eps': 1.0},  ##### eps of 1e-2
+                            'POWELL':{'maxiter': max_iterations},
+                            'NELDER-MEAD': {'maxiter': max_iterations},
+                            'BFGS': {'maxiter': max_iterations, 'eps': 1.0},
+                            'L-BFGS-B': {'maxiter': max_iterations, 'eps': 1.0},
+                            'TRUST-CONSTR': {'maxiter': max_iterations},
+                            'CG': {'maxiter': max_iterations, 'eps': 1.0},
+                            'TNC': {'maxiter': max_iterations, 'eps': 1.0}}
 
         ## Calling Optimizer
         optimize_class_instance = optimize_class(store_folder, now, material, save_interval, log_level)

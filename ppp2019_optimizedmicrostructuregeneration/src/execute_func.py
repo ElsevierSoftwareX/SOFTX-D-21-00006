@@ -511,8 +511,8 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write("# " + now + " \n")
         f.write("# Seeds data (Seed coordinates + Orientation as Quaternions)\n")
         f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
-        seed_data = np.concatenate((seed_array_unique, orientation_data), axis=1)
-        np.savetxt(f, seed_data, delimiter=',', comments='#')
+        seed_data = np.around(np.concatenate((seed_array_unique, orientation_data), axis=1), decimals=4)
+        np.savetxt(f, seed_data, delimiter=',', comments='#', fmt='%.4f')
 
     log.info('Successfully saved seeds data into a text file')
 

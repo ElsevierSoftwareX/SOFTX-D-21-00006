@@ -223,7 +223,7 @@ class optimize_class():
         ## Extracting the data from input arguments
         ## Unique seed coordinates are not isolated as this would lead to inappropriate
         ## results as the number of seeds would be less compared to requirement.
-        seed_array = np.reshape(seed_p, (-1, 3))
+        seed_array = np.around(np.reshape(seed_p, (-1, 3)), decimals=4)
         # new_array = [tuple(row) for row in seed_array]
         # seed_array_unique = np.unique(new_array, axis = 0)
 
@@ -432,8 +432,8 @@ class optimize_class():
                         f.write("\n# Iteration No.: " +str(i+1) + ", Cost Function value: " + str(self.current_cost_function_value[i]) + "\n")
                         f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
                         seed_data = np.array(self.seeds_array_all_iterations[i])
-                        temp_write_data = np.concatenate((seed_data, orientation_data), axis=1)
-                        np.savetxt(f, temp_write_data, delimiter=',', comments='#')
+                        temp_write_data = np.around(np.concatenate((seed_data, orientation_data), axis=1), decimals=4)
+                        np.savetxt(f, temp_write_data, delimiter=',', comments='#', fmt='%.4f')
                         #self.seeds_array_all_iterations[i] = []
 
         line.set_ydata(self.current_cost_function_value)                        # Updating Y data
@@ -862,31 +862,31 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     ##Generating seeds
     if str(seed_spacing_type).lower() == 'cubic_2D'.lower():
         seed_array = np.zeros([(int(limit[0])) * (int(limit[1])), 3])
-        seed_array_unique = cubic_lattice_2D(limit, spacing_length, log_level)
+        seed_array_unique = np.around(cubic_lattice_2D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 2, 'Please enter dimension as 2 (--d 2 in command line input)'
         
     elif str(seed_spacing_type).lower() == 'cubic_3D'.lower():
         seed_array = np.zeros([(int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1), 3])
-        seed_array_unique = cubic_lattice_3D(limit, spacing_length, log_level)
+        seed_array_unique = np.around(cubic_lattice_3D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
 
     elif str(seed_spacing_type).lower() == 'bcc_3D'.lower():
         seed_array = np.zeros([((int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1)) + (int(limit[0]) * int(limit[1]) * int(limit[2])), 3])
-        seed_array_unique = bcc_lattice_3D(limit, spacing_length, log_level)
+        seed_array_unique = np.around(bcc_lattice_3D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
 
     elif str(seed_spacing_type).lower() == 'fcc_2D'.lower():
         seed_array = np.zeros([((int(limit[0])) * (int(limit[1]))) + (int(limit[0]) * int(limit[1])), 3])
-        seed_array_unique = fcc_lattice_2D(limit, spacing_length, log_level)
+        seed_array_unique = np.around(fcc_lattice_2D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 2, 'Please enter dimension as 2 (--d 2 in command line input)'
     
     elif str(seed_spacing_type).lower() == 'fcc_3D'.lower():
         seed_array = np.zeros([2*((int(limit[0])) * (int(limit[1])) + (int(limit[1]) * int(limit[2])) + (int(limit[0]) * int(limit[2])) + (int(limit[0])*int(limit[1])*int(limit[2])*3)), 3])
-        seed_array_unique = fcc_lattice_3D(limit, spacing_length, log_level)
+        seed_array_unique = np.around(fcc_lattice_3D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
     
@@ -894,7 +894,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         seed_coordinates_list = random_generator(number_of_seeds, dimension, limit, log_level)
         seed_array = np.array(seed_coordinates_list)
         new_array = [tuple(row) for row in seed_array]
-        seed_array_unique = np.unique(new_array, axis = 0)
+        seed_array_unique = np.around(np.unique(new_array, axis = 0), decimals=4)
         orientation_data = None
         ## Checking if the number of random unique seeds are same as required
         assert seed_array_unique.shape[0] == number_of_seeds
@@ -902,20 +902,20 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     else:
         with open(seed_spacing_type, 'r') as f:
             data = np.loadtxt(f, delimiter=',', comments='#')
-            seed_array_unique = data[:, :3]
+            seed_array_unique = np.around(data[:, :3], decimals=4)
             
             ## Extracting orientations data if available
             if data.shape[1] == 7:
-                orientation_data = data[:, 3:7]
+                orientation_data = np.around(data[:, 3:7], decimals=4)
             else: orientation_data = None
 
     ## Generating/assigning orientations for grains
     if orientation_data is None:
         ## Checking if random orientations are required or sharp texture is required
         if rand_quat_flag:
-            orientation_data = random_quaternions_generator(number_of_seeds, log_level)
+            orientation_data = np.around(random_quaternions_generator(number_of_seeds, log_level), decimals=4)
         else:
-            orientation_data = sharp_texture_quaternions(number_of_seeds, required_texture, log_level)    # Assigning random quaternions to each grain
+            orientation_data = np.around(sharp_texture_quaternions(number_of_seeds, required_texture, log_level), decimals=4)    # Assigning random quaternions to each grain
 
     ############ Optimization Flag ###############
     if no_optimization_flag:
@@ -1018,6 +1018,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
         ## Calling Optimizer
         optimize_class_instance = optimize_class(store_folder, now, material, save_interval, log_level)
+        # print(optimize_class_instance.cost_function(seed_array_unique_flatten, args_list)); exit()                    # command: time ./execute main -s 10. 10. 10. -sl 1 -dim 3 -n 100 -t user_grain_size_distribution.txt -c 0 -m steel -sdir 0 1 0 -ss seed_data.txt -rs 1 -om cobyla -mi 10 -nb 10
         optimization_result = minimize(optimize_class_instance.cost_function, seed_array_unique_flatten, args=(args_list), method=optimization_method, constraints=constraints_list, options=algo_options_dict[optimization_method])
         
         log.info('Finished with optimization')
@@ -1105,8 +1106,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
                     f.write("\n# Iteration No.: " +str(i+1) + ", Cost Function value: " + str(current_cost_function_value[i]) + "\n")
                     f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
                     seed_data = np.array(seeds_array_all_iterations[i])
-                    temp_write_data = np.concatenate((seed_data, orientation_data), axis=1)
-                    np.savetxt(f, temp_write_data, delimiter=',', comments='#')
+                    temp_write_data = np.around(np.concatenate((seed_data, orientation_data), axis=1), decimals=4)
+                    np.savetxt(f, temp_write_data, delimiter=',', comments='#', fmt='%.4f')
             
             ## Writing optimization data
             f.write("\n\n\n## Optimization Information \n")
@@ -1116,8 +1117,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             f.write("nfev = " + str(optimization_result.nfev)+ "\n")
             f.write("# Optimized Seeds data (Seed coordinates + Orientation as Quaternions)\n")
             f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
-            temp_write_data = np.concatenate((optimized_seed_array, orientation_data), axis=1)
-            np.savetxt(f, temp_write_data, delimiter=',', comments='#')
+            temp_write_data = np.around(np.concatenate((optimized_seed_array, orientation_data), axis=1), decimals=4)
+            np.savetxt(f, temp_write_data, delimiter=',', comments='#', fmt='%.4f')
 
 
 

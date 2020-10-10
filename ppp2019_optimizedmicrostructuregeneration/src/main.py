@@ -928,6 +928,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         row_counter = 0        #  Using row_counter since enumerate will take into account the comments and the 'end' line as well
         user_data = []
         
+        ## Extracting target distribution
         log.debug('Reading target distribution')
         with open(target_distribution_file_name, 'r') as f:
             target_data = f.readlines()
@@ -942,6 +943,19 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         
         ## Converting to array
         user_data = np.array(user_data) 
+
+        ## Normalizing target distribution
+        for index, parameter in enumerate(parameter_list):
+            ## Extracting User Distribution data
+            user_x_data = user_data[start_row_of_parameter[index]:start_row_of_parameter[index + 1], 0]                 # extracting x data for a particular characteristic feature
+            user_y_data = user_data[start_row_of_parameter[index]:start_row_of_parameter[index + 1], 1]                 # extracting y data for a particular characteristic feature
+
+            area_under_curve = np.sum((user_x_data[1:]-user_x_data[:-1])*user_y_data[:-1])                              # calculating area under curve
+            normalized_y_data = user_y_data/area_under_curve                                                            # normalizing Y data
+
+            user_data[start_row_of_parameter[index]:start_row_of_parameter[index + 1], 1] = normalized_y_data           # replacing og data with normalized data
+
+            assert np.isclose(np.sum((user_x_data[1:]-user_x_data[:-1])*normalized_y_data[:-1]), 1.0)                   # Ensuring area under curve is 1.0
 
         log.info('Target distribution read successfully')
 

@@ -80,6 +80,8 @@ from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.cubic_latt
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.cubic_lattice_3D import cubic_lattice_3D as cubic_lattice_3D
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.fcc_lattice_2D import fcc_lattice_2D as fcc_lattice_2D
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.fcc_lattice_3D import fcc_lattice_3D as fcc_lattice_3D
+from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.hcp_lattice_2D import hcp_lattice_2D as hcp_lattice_2D
+#from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D as hcp_lattice_3D
 
 from ppp2019_optimizedmicrostructuregeneration.src.test import test_func as test_func
 from ppp2019_optimizedmicrostructuregeneration.src.execute_func import execute_func as execute_func
@@ -861,32 +863,66 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
     ##Generating seeds
     if str(seed_spacing_type).lower() == 'cubic_2D'.lower():
-        seed_array = np.zeros([(int(limit[0])) * (int(limit[1])), 3])
+        #seed_array = np.zeros([(int(limit[0])) * (int(limit[1])), 3])
         seed_array_unique = np.around(cubic_lattice_2D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 2, 'Please enter dimension as 2 (--d 2 in command line input)'
         
     elif str(seed_spacing_type).lower() == 'cubic_3D'.lower():
-        seed_array = np.zeros([(int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1), 3])
+        #seed_array = np.zeros([(int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1), 3])
         seed_array_unique = np.around(cubic_lattice_3D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
 
     elif str(seed_spacing_type).lower() == 'bcc_3D'.lower():
-        seed_array = np.zeros([((int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1)) + (int(limit[0]) * int(limit[1]) * int(limit[2])), 3])
+        #seed_array = np.zeros([((int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1)) + (int(limit[0]) * int(limit[1]) * int(limit[2])), 3])
         seed_array_unique = np.around(bcc_lattice_3D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
 
     elif str(seed_spacing_type).lower() == 'fcc_2D'.lower():
-        seed_array = np.zeros([((int(limit[0])) * (int(limit[1]))) + (int(limit[0]) * int(limit[1])), 3])
+        #seed_array = np.zeros([((int(limit[0])) * (int(limit[1]))) + (int(limit[0]) * int(limit[1])), 3])
         seed_array_unique = np.around(fcc_lattice_2D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 2, 'Please enter dimension as 2 (--d 2 in command line input)'
     
     elif str(seed_spacing_type).lower() == 'fcc_3D'.lower():
-        seed_array = np.zeros([2*((int(limit[0])) * (int(limit[1])) + (int(limit[1]) * int(limit[2])) + (int(limit[0]) * int(limit[2])) + (int(limit[0])*int(limit[1])*int(limit[2])*3)), 3])
+        #seed_array = np.zeros([2*((int(limit[0])) * (int(limit[1])) + (int(limit[1]) * int(limit[2])) + (int(limit[0]) * int(limit[2])) + (int(limit[0])*int(limit[1])*int(limit[2])*3)), 3])
         seed_array_unique = np.around(fcc_lattice_3D(limit, spacing_length, log_level), decimals=4)
+        orientation_data = None
+        assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
+
+    elif str(seed_spacing_type).lower() == 'hcp_2D'.lower():
+        ## Checking if limits match our requirements
+        if not np.isclose((limit[0] % spacing_length), 0):
+            limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
+            assert np.isclose(limit[0]%spacing_length, 0)
+        if not np.isclose(limit[1] % (np.sqrt(3)*spacing_length), 0):
+            hcp_y_spacing = np.sqrt(3)*spacing_length
+            limit[1] = limit[1] + (hcp_y_spacing - (limit[1] % hcp_y_spacing))
+            assert np.isclose(limit[1]%hcp_y_spacing, 0)
+        
+        log.warning("Size of simulation box is set to " + str(limit))
+        seed_array_unique = np.around(hcp_lattice_2D(limit, spacing_length, log_level), decimals=4)
+        orientation_data = None
+        assert dimension == 2, 'Please enter dimension as 2 (--d 2 in command line input)'
+
+    elif str(seed_spacing_type).lower() == 'hcp_3D'.lower():
+        ## Checking if limits match our requirements
+        if not np.isclose((limit[0] % spacing_length), 0):
+            limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
+            assert np.isclose(limit[0]%spacing_length, 0)
+        if not np.isclose(limit[1] % (np.sqrt(3)*spacing_length), 0):
+            hcp_y_spacing = np.sqrt(3)*spacing_length
+            limit[1] = limit[1] + (hcp_y_spacing - (limit[1] % hcp_y_spacing))
+            assert np.isclose(limit[1]%hcp_y_spacing, 0)
+        if not np.isclose(limit[2] % (np.sqrt(3)*spacing_length), 0):
+            hcp_z_spacing = np.sqrt(3)*spacing_length
+            limit[2] = limit[2] + (hcp_z_spacing - (limit[2] % hcp_z_spacing))
+            assert np.isclose(limit[2]%hcp_z_spacing, 0)
+        
+        log.warning("Size of simulation box is set to " + str(limit))
+        seed_array_unique = np.around(hcp_lattice_3D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
     
@@ -913,9 +949,9 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     if orientation_data is None:
         ## Checking if random orientations are required or sharp texture is required
         if rand_quat_flag:
-            orientation_data = np.around(random_quaternions_generator(number_of_seeds, log_level), decimals=4)
+            orientation_data = np.around(random_quaternions_generator(len(seed_array_unique), log_level), decimals=4)
         else:
-            orientation_data = np.around(sharp_texture_quaternions(number_of_seeds, required_texture, log_level), decimals=4)    # Assigning random quaternions to each grain
+            orientation_data = np.around(sharp_texture_quaternions(len(seed_array_unique), required_texture, log_level), decimals=4)    # Assigning random quaternions to each grain
 
     ############ Optimization Flag ###############
     if no_optimization_flag:

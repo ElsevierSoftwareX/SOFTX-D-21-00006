@@ -81,7 +81,7 @@ from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.cubic_latt
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.fcc_lattice_2D import fcc_lattice_2D as fcc_lattice_2D
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.fcc_lattice_3D import fcc_lattice_3D as fcc_lattice_3D
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.hcp_lattice_2D import hcp_lattice_2D as hcp_lattice_2D
-#from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D as hcp_lattice_3D
+from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D as hcp_lattice_3D
 
 from ppp2019_optimizedmicrostructuregeneration.src.test import test_func as test_func
 from ppp2019_optimizedmicrostructuregeneration.src.execute_func import execute_func as execute_func
@@ -852,10 +852,54 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
     number_of_bins = number_bins
 
-    ## Checking if the spacing length is a multiple of limits
-    if str(seed_spacing_type).lower() in ['cubic_2d', 'cubic_3d', 'bcc_3d', 'fcc_2d', 'fcc_3d']:
+    ## Adjusting size of simulation box as per the requirement
+    if str(seed_spacing_type).lower() in ['cubic_3d', 'bcc_3d', 'fcc_3d']:
         assert np.all([(limit % spacing_length) == 0]), 'The spacing length must be a multiple of size of simulation box along all directions'
-    
+        
+        if not np.isclose((limit[0] % spacing_length), 0):
+            limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
+            assert np.isclose(limit[0]%spacing_length, 0)
+        if not np.isclose(limit[1] % spacing_length, 0):
+            limit[1] = limit[1] + (spacing_length - (limit[1]%spacing_length))
+            assert np.isclose(limit[1]%spacing_length, 0)
+        if not np.isclose((limit[2] % spacing_length), 0):
+            limit[2] = limit[2] + (spacing_length - (limit[2]%spacing_length))
+            assert np.isclose(limit[2]%spacing_length, 0)
+
+    elif str(seed_spacing_type).lower() in ['cubic_2d', 'fcc_2d']:
+        assert np.all([(limit % spacing_length) == 0]), 'The spacing length must be a multiple of size of simulation box along all directions'
+        if not np.isclose((limit[0] % spacing_length), 0):
+            limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
+            assert np.isclose(limit[0]%spacing_length, 0)
+        if not np.isclose(limit[1] % spacing_length, 0):
+            limit[1] = limit[1] + (spacing_length - (limit[1]%spacing_length))
+            assert np.isclose(limit[1]%spacing_length, 0)
+
+    elif str(seed_spacing_type).lower() in ['hcp_2d']:
+        
+        if not np.isclose((limit[0] % spacing_length), 0):
+            limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
+            assert np.isclose(limit[0]%spacing_length, 0)
+        if not np.isclose(limit[1] % (np.sqrt(3)*spacing_length), 0):
+            hcp_y_spacing = np.sqrt(3)*spacing_length
+            limit[1] = limit[1] + (hcp_y_spacing - (limit[1] % hcp_y_spacing))
+            assert np.isclose(limit[1]%hcp_y_spacing, 0)
+
+    elif str(seed_spacing_type).lower() in ['hcp_3d']:
+        
+        if not np.isclose((limit[0] % spacing_length), 0):
+            limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
+            assert np.isclose(limit[0]%spacing_length, 0)
+        if not np.isclose(limit[1] % (np.sqrt(3)*spacing_length), 0):
+            hcp_y_spacing = np.sqrt(3)*spacing_length
+            limit[1] = limit[1] + (hcp_y_spacing - (limit[1] % hcp_y_spacing))
+            assert np.isclose(limit[1]%hcp_y_spacing, 0)
+        if not np.isclose((limit[2] % spacing_length), 0):
+            limit[2] = limit[2] + (spacing_length - (limit[2]%spacing_length))
+            assert np.isclose(limit[2]%spacing_length, 0)
+
+    log.warning("Size of simulation box is set to " + str(limit))
+
     ## Creating list of all characteristics to be oprimized
     parameter_dict = {'0': 'grain_size_distribution', '1': 'number_of_neighbors', '2': 'grain_boundary_areas', '3': 'junction_length', '4': 'junction_angle', '5': 'distance_btw_grains', '6': 'disorientation_angles', '7': 'type_of_grain_boundary', '8': 'schmid_factor'}
     parameter_list = [parameter_dict[str(i)] for i in characteristic_to_be_optimized]
@@ -894,38 +938,14 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
 
     elif str(seed_spacing_type).lower() == 'hcp_2D'.lower():
-        ## Checking if limits match our requirements
-        if not np.isclose((limit[0] % spacing_length), 0):
-            limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
-            assert np.isclose(limit[0]%spacing_length, 0)
-        if not np.isclose(limit[1] % (np.sqrt(3)*spacing_length), 0):
-            hcp_y_spacing = np.sqrt(3)*spacing_length
-            limit[1] = limit[1] + (hcp_y_spacing - (limit[1] % hcp_y_spacing))
-            assert np.isclose(limit[1]%hcp_y_spacing, 0)
-        
-        log.warning("Size of simulation box is set to " + str(limit))
         seed_array_unique = np.around(hcp_lattice_2D(limit, spacing_length, log_level), decimals=4)
         orientation_data = None
         assert dimension == 2, 'Please enter dimension as 2 (--d 2 in command line input)'
 
-    # elif str(seed_spacing_type).lower() == 'hcp_3D'.lower():
-    #     ## Checking if limits match our requirements
-    #     if not np.isclose((limit[0] % spacing_length), 0):
-    #         limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
-    #         assert np.isclose(limit[0]%spacing_length, 0)
-    #     if not np.isclose(limit[1] % (np.sqrt(3)*spacing_length), 0):
-    #         hcp_y_spacing = np.sqrt(3)*spacing_length
-    #         limit[1] = limit[1] + (hcp_y_spacing - (limit[1] % hcp_y_spacing))
-    #         assert np.isclose(limit[1]%hcp_y_spacing, 0)
-    #     if not np.isclose(limit[2] % (np.sqrt(3)*spacing_length), 0):
-    #         hcp_z_spacing = np.sqrt(3)*spacing_length
-    #         limit[2] = limit[2] + (hcp_z_spacing - (limit[2] % hcp_z_spacing))
-    #         assert np.isclose(limit[2]%hcp_z_spacing, 0)
-        
-    #     log.warning("Size of simulation box is set to " + str(limit))
-    #     seed_array_unique = np.around(hcp_lattice_3D(limit, spacing_length, log_level), decimals=4)
-    #     orientation_data = None
-    #     assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
+    elif str(seed_spacing_type).lower() == 'hcp_3D'.lower():
+        seed_array_unique = np.around(hcp_lattice_3D(limit, spacing_length, log_level), decimals=4)
+        orientation_data = None
+        assert dimension == 3, 'Please enter dimension as 3 (--d 3 in command line input)'
     
     elif str(seed_spacing_type).lower() == 'random_3d'.lower():
         seed_coordinates_list = random_generator(number_of_seeds, dimension, limit, log_level)

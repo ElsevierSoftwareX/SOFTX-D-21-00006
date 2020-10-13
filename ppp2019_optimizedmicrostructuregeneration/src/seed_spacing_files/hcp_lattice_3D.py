@@ -72,7 +72,7 @@ def hcp_lattice_3D(limit, spacing_length, log_level):
     counter = 0
     for x in np.arange(0, x_limit, spacing_length):
         for y in np.arange(0, y_limit, np.sqrt(3)*spacing_length):
-            for z in np.arange(0, z_limit, np.sqrt(3)*spacing_length):
+            for z in np.arange(0, z_limit, spacing_length):
                 if (x >= x_limit) or (y >= y_limit) or (y >= z_limit):
                     continue
                 seed_array[counter, :] = x, y, z
@@ -80,7 +80,7 @@ def hcp_lattice_3D(limit, spacing_length, log_level):
 
                 seed_array[counter, 0] = x + (spacing_length/2)
                 seed_array[counter, 1] = y + (np.sqrt(3)*spacing_length/2)
-                seed_array[counter, 2] = z + (np.sqrt(3)*spacing_length/2)
+                seed_array[counter, 2] = z + (spacing_length/2)
                 counter += 1
 
     new_array = [tuple(row) for row in seed_array]                          # generating tuple of each row of the seeds array

@@ -64,6 +64,7 @@ from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.cubic_latt
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.fcc_lattice_2D import fcc_lattice_2D as fcc_lattice_2D
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.fcc_lattice_3D import fcc_lattice_3D as fcc_lattice_3D
 from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.hcp_lattice_2D import hcp_lattice_2D as hcp_lattice_2D
+from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D as hcp_lattice_3D
 
 from ppp2019_optimizedmicrostructuregeneration.src.test_cases.cubic_2d.cubic_2d_testcase import cubic_2d_testcase as cubic_2d_testcase
 from ppp2019_optimizedmicrostructuregeneration.src.test_cases.cubic_3d.cubic_3d_testcase import cubic_3d_testcase as cubic_3d_testcase
@@ -71,6 +72,7 @@ from ppp2019_optimizedmicrostructuregeneration.src.test_cases.bcc_3d.bcc_3d_test
 from ppp2019_optimizedmicrostructuregeneration.src.test_cases.fcc_2d.fcc_2d_testcase import fcc_2d_testcase as fcc_2d_testcase
 from ppp2019_optimizedmicrostructuregeneration.src.test_cases.fcc_3d.fcc_3d_testcase import fcc_3d_testcase as fcc_3d_testcase
 from ppp2019_optimizedmicrostructuregeneration.src.test_cases.hcp_2d.hcp_2d_testcase import hcp_2d_testcase as hcp_2d_testcase
+from ppp2019_optimizedmicrostructuregeneration.src.test_cases.hcp_3d.hcp_3d_testcase import hcp_3d_testcase as hcp_3d_testcase
 from ppp2019_optimizedmicrostructuregeneration.src.test_cases.random_3d.random_3d_testcase import random_3d_testcase as random_3d_testcase
 from ppp2019_optimizedmicrostructuregeneration.src.test_cases.one_seed.one_seed_testcase import one_seed_testcase as one_seed_testcase
 from ppp2019_optimizedmicrostructuregeneration.src.test_cases.two_seed.two_seed_testcase import two_seed_testcase as two_seed_testcase
@@ -114,10 +116,11 @@ def test_func(name, f, log_level):
             5. 'fcc_3d'
             6. 'bcc_3d'
             7. 'hcp_2d'
-            8. 'random_3d'
-            9. 'one_seed'
-            10. 'two_seed'
-            11. 'textural'
+            8. 'hcp_3d'
+            9. 'random_3d'
+            10. 'one_seed'
+            11. 'two_seed'
+            12. 'textural'
 
     f: boolean
         Flag to indicate that opaque surface is to be used instead of transparent.
@@ -157,11 +160,12 @@ def test_func(name, f, log_level):
                     'fcc_2d': ['fcc_2d'],
                     'fcc_3d': ['fcc_3d'],
                     'hcp_2d': ['hcp_2d'],
+                    'hcp_3d': ['hcp_3d'],
                     'random_3d': ['random_3D'],
                     'one_seed': ['one_seed'],
                     'two_seed': ['two_seed'],
                     'textural': ['textural'],
-                    'all': ['textural', 'cubic_2d', 'cubic_3d', 'bcc_3d', 'fcc_2d', 'fcc_3d', 'hcp_2d', 'random_3D', 'one_seed', 'two_seed']
+                    'all': ['textural', 'cubic_2d', 'cubic_3d', 'bcc_3d', 'fcc_2d', 'fcc_3d', 'hcp_2d', 'hcp_3d', 'random_3D', 'one_seed', 'two_seed']
                     }
     
     ## Identifies the tests to be executed based on input from user
@@ -173,7 +177,7 @@ def test_func(name, f, log_level):
         
         ## Common Parameters
                 
-        if case_name in ('cubic_2d', 'cubic_3d', 'bcc_3d', 'fcc_2d', 'fcc_3d', 'hcp_2d'):
+        if case_name in ('cubic_2d', 'cubic_3d', 'bcc_3d', 'fcc_2d', 'fcc_3d', 'hcp_2d', 'hcp_3d'):
             size_of_simulation_box = 10.0
             spacing_lengths = [1, 2, 2.5, 5]
         else:
@@ -240,13 +244,30 @@ def test_func(name, f, log_level):
                 if not np.isclose(limit[1] % (np.sqrt(3)*spacing_length), 0):
                     hcp_y_spacing = np.sqrt(3)*spacing_length
                     limit[1] = limit[1] + (hcp_y_spacing - (limit[1] % hcp_y_spacing))
-                    #print(limit[1]); exit()
-                    print(limit[1]%hcp_y_spacing)
                     assert np.isclose(limit[1]%hcp_y_spacing, 0)
                 dimension = 2
                 material = "HCP_2D_spacing_len_" + str(spacing_length)
                 seed_array_unique = hcp_lattice_2D(limit, spacing_length, log_level)
                 orientation_data = None            
+
+            elif str(case_name).lower() == 'hcp_3D'.lower():
+                log.info("Current spacing length = " + str(spacing_length))
+                limit = np.array([size_of_simulation_box, size_of_simulation_box, size_of_simulation_box])
+                ## modifying limits
+                if not np.isclose((limit[0] % spacing_length), 0):
+                    limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
+                    assert np.isclose(limit[0]%spacing_length, 0)
+                if not np.isclose(limit[1] % (np.sqrt(3)*spacing_length), 0):
+                    hcp_y_spacing = np.sqrt(3)*spacing_length
+                    limit[1] = limit[1] + (hcp_y_spacing - (limit[1] % hcp_y_spacing))
+                    assert np.isclose(limit[1]%hcp_y_spacing, 0)
+                if not np.isclose((limit[2] % spacing_length), 0):
+                    limit[2] = limit[2] + (spacing_length - (limit[2]%spacing_length))
+                    assert np.isclose(limit[2]%spacing_length, 0)
+                dimension = 3
+                material = "HCP_3D_spacing_len_" + str(spacing_length)
+                seed_array_unique = hcp_lattice_3D(limit, spacing_length, log_level)
+                orientation_data = None 
 
             elif str(case_name).lower() == 'random_3D'.lower():
                 number_of_seeds = 100

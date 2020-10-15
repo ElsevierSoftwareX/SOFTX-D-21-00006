@@ -414,7 +414,7 @@ class optimize_class():
             fig_animate.canvas.flush_events()
 
             ## saving all iterations seed data current interval
-            output_file_path = Path("visualization_files", self.store_folder, self.now, self.material, "Text_output", "seed_data_all_iterations.txt")
+            output_file_path = Path(self.store_folder, self.now, self.material, "Text_output", "seed_data_all_iterations.txt")
             
             if (previous_iter) == 0:
                 output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
@@ -768,7 +768,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
     ## Current time and date
     now = datetime.now()
-    now = now.strftime("%d_%m_%Y_%H_%M")
+    now = now.strftime("%Y%m%d_%H%M%S")
 
     log_level = 'INFO'
     if debug:
@@ -810,7 +810,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     log.debug("Rand seed set to " + str(rand_seed))
     
     ## The name of the folder where the output files would be stored
-    store_folder = "output"
+    store_folder = "visualization_output"
        
     ## Defining the input parameters obtained from bash command line
     limit = np.array(size)
@@ -1106,7 +1106,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         seeds_array_all_iterations      = optimize_class_instance.seeds_array_all_iterations                                                             # turn interactive mode off
         
         ##Saving Cost function evolution Plot
-        output_file_path = Path("visualization_files", store_folder, now, material, "Plots", "evolution_of_cost_function.png")
+        output_file_path = Path(store_folder, material, now, "Plots", "evolution_of_cost_function.png")
         output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -1145,7 +1145,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             ax[0, plot_number].tick_params(labelsize=label_size)
 
         ##Saving Plot
-        output_file_path = Path("visualization_files", store_folder, now, material, "Plots", "optimization_result.png")
+        output_file_path = Path(store_folder, material, now, "Plots", "optimization_result.png")
         output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -1163,7 +1163,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         log.debug('Saving seeds data at all iterations into a text file')
 
         ## Saving seeds data
-        output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "seed_data_all_iterations.txt")
+        output_file_path = Path(store_folder, material, now, "Text_output", "seed_data_all_iterations.txt")
         output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -1201,7 +1201,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         ## Saving profiler output
         stats = yappi.get_func_stats()
 
-        output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "callgrind.yappi_profiler_output.prof")
+        output_file_path = Path(store_folder, material, now, "Text_output", "callgrind.yappi_profiler_output.prof")
         output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -1216,7 +1216,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
 
     ## Moving log file to appropriate directory in visualization_files
-    output_file_path = Path("visualization_files", store_folder, now, material, "Text_output")
+    output_file_path = Path(store_folder, material, now, "Text_output")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)

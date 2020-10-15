@@ -337,7 +337,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
                 grain_number_of_each_element[element_number] = grain_centroids[np.argmin(distance_between_centroids), 0]    ## updating the grain number with the shortest distance
                 
             ## Writing to new INP file
-            output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "mesh_" + mesh_flag + ".inp")
+            output_file_path = Path(store_folder, material, now, "Text_output", "mesh_" + mesh_flag + ".inp")
             output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
             output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
             output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -399,7 +399,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
 
             ## Saving Mesh file as 'MSH' and 'INP'
             for extension in ['inp', 'msh']:
-                output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "mesh_" + mesh_flag + "." + extension)
+                output_file_path = Path(store_folder, material, now, "Text_output", "mesh_" + mesh_flag + "." + extension)
                 output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
                 output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
                 output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -424,7 +424,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     log.debug('Saving structural characteristics into a text file')
 
     ## Saving Structural CHaracteristics
-    output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "structural_characteristics.txt")
+    output_file_path = Path(store_folder, material, now, "Text_output", "structural_characteristics.txt")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -469,7 +469,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     log.debug('Saving textural characteristics into a text file')
 
     ## Saving Textural CHaracteristics
-    output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "textural_characteristics.txt")
+    output_file_path = Path(store_folder, material, now, "Text_output", "textural_characteristics.txt")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -499,7 +499,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     log.debug('Saving seeds data into a text file')
 
     ## Saving seeds data
-    output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "seed_data.txt")
+    output_file_path = Path(store_folder, material, now, "Text_output", "seed_data.txt")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -585,7 +585,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     plt.suptitle("Structural Characteristics", fontsize=60)
     
     ##Saving Plot
-    output_file_path = Path("visualization_files", store_folder, now, material, "Plots", "structural_characteristics.png")
+    output_file_path = Path(store_folder, material, now, "Plots", "structural_characteristics.png")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -633,7 +633,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     plt.suptitle("Textural Characteristics", fontsize=60)
     
     ##Saving Plot
-    output_file_path = Path("visualization_files", store_folder, now, material, "Plots", "textural_characteristics.png")
+    output_file_path = Path(store_folder, material, now, "Plots", "textural_characteristics.png")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)

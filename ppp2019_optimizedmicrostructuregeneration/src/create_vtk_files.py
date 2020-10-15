@@ -86,7 +86,7 @@ def create_vtk_file_all_grains(material_name, tessellation, store_folder, face_f
         type_of_surface = 4                             # 4 indicates connection of all the vertices by polyline
 
     ## Creating Folder and assigning the output file path
-    output_file_path = Path("visualization_files", store_folder, now, material_name, "vtk_file_all_grains", "{:s}.vtk".format(material_name + "_morphology"))
+    output_file_path = Path(store_folder, material_name, now, "vtk_file_all_grains", "{:s}.vtk".format(material_name + "_morphology"))
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -198,7 +198,7 @@ def create_vtk_file_individual_grains(material_name, tessellation, store_folder,
         log.debug('Creating VTK file of grain no. ' + str(i))
         
         ## Creating Folder and assigning the output file path
-        output_file_path = Path("visualization_files", store_folder, now, material_name, "vtk_file_individual_grains", "{:s}.vtk".format("grain_" + str(i+1)))
+        output_file_path = Path(store_folder, material_name, now, "vtk_file_individual_grains", "{:s}.vtk".format("grain_" + str(i+1)))
         output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.mkdir(exist_ok=True)

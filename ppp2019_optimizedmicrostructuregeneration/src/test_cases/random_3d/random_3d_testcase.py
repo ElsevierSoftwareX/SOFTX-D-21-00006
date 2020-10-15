@@ -206,7 +206,7 @@ def random_3d_testcase(store_folder, version, now, material, tessellation, \
         log.exception('random_3d_testcase failed !!')
 
     ## Saving to array_verification_file.txt 
-    output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "array_verification_file.txt")
+    output_file_path = Path(store_folder, material, now, "Text_output", "array_verification_file.txt")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)

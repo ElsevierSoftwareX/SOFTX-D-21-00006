@@ -66,29 +66,22 @@ def bcc_lattice_3D(limit, a, log_level):
     log = set_logger(name_str, 'log_data.log', log_level)
     log.info('Starting to generate BCC type seed spacing')
     
-    ## Generating an array to store seed coordinates
-    seed_array = np.zeros([((int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1)) + (int(limit[0]) * int(limit[1]) * int(limit[2])), 3])
-    
-    ## Generating regular grid seeds array 
-    counter = 0
+    ## Generating an empty list to store seed coordinates
+    seed_array = []
 
+    ## Generating regular grid seeds array
     ## Iterating in all directions
-    for x in np.linspace(0, limit[0], limit[0]/a +1):
-        for y in np.linspace(0, limit[1], limit[1]/a +1):
-            for z in np.linspace(0, limit[2], limit[2]/a +1):
+    for x in np.arange(0, limit[0], a):
+        for y in np.arange(0, limit[1], a):
+            for z in np.arange(0, limit[2], a):
                 if x >= limit[0] or y >= limit[1] or z >= limit[2]:       # Checking if the current position is outside limits
                     continue
-                seed_array[counter, 0] = x
-                seed_array[counter, 1] = y
-                seed_array[counter, 2] = z
-                counter += 1
+                seed_array.append([x, y, z])
 
                 if x < limit[0] and y < limit[1] and z < limit[2]:        # Placing the body centered seed
-                    seed_array[counter, 0] = x + a/2
-                    seed_array[counter, 1] = y + a/2
-                    seed_array[counter, 2] = z + a/2
-                    counter += 1
-    
+                    seed_array.append([x + a/2, y + a/2, z + a/2])
+
+    seed_array = np.array(seed_array)
     ## Checking for uniqueness of all seeds
     new_array = [tuple(row) for row in seed_array]
     seed_array_unique = np.unique(new_array, axis = 0)

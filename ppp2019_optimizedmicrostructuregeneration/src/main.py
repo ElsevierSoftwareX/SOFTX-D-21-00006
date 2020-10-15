@@ -853,9 +853,9 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     number_of_bins = number_bins
 
     ## Adjusting size of simulation box as per the requirement
+    assert (np.array(limit) > 0.0).all(), 'Size of simulation box cannot be negative or zero.'
     if str(seed_spacing_type).lower() in ['cubic_3d', 'bcc_3d', 'fcc_3d']:
-        assert np.all([(limit % spacing_length) == 0]), 'The spacing length must be a multiple of size of simulation box along all directions'
-        
+  
         if not np.isclose((limit[0] % spacing_length), 0):
             limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
             assert np.isclose(limit[0]%spacing_length, 0)
@@ -867,7 +867,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             assert np.isclose(limit[2]%spacing_length, 0)
 
     elif str(seed_spacing_type).lower() in ['cubic_2d', 'fcc_2d']:
-        assert np.all([(limit % spacing_length) == 0]), 'The spacing length must be a multiple of size of simulation box along all directions'
+
         if not np.isclose((limit[0] % spacing_length), 0):
             limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
             assert np.isclose(limit[0]%spacing_length, 0)

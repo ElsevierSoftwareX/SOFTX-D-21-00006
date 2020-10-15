@@ -66,28 +66,21 @@ def fcc_lattice_2D(limit, a, log_level):
     log = set_logger(name_str, 'log_data.log', log_level)
     log.info('Starting to generate FCC 2D type seed spacing')
 
-    ## Generating an array to store seed coordinates
-    seed_array = np.zeros([((int(limit[0])) * (int(limit[1]))) + (int(limit[0]) * int(limit[1])), 3])
-    seed_array[:, 2] = limit[2]                                                 # to initiate first seed with same Z coordinate
+    ## Generating an empty list to store seed coordinates
+    seed_array = []    
     
     ## Generating regular grid seeds array 
-    counter = 0
-
     ## Iterating in all directions
-    for x in np.linspace(0, limit[0], limit[0]/a +1):
-        for y in np.linspace(0, limit[1], limit[1]/a +1):
+    for x in np.arange(0, limit[0], a):
+        for y in np.arange(0, limit[1], a):
                 if x >= limit[0] or y >= limit[0]:
                     continue
-                seed_array[counter, 0] = x
-                seed_array[counter, 1] = y
-                seed_array[counter, 2] = limit[2]
-                counter += 1
+                seed_array.append([x, y, limit[2]])
+
                 if x < limit[0] and y < limit[1]:
-                    seed_array[counter, 0] = x + a/2
-                    seed_array[counter, 1] = y + a/2
-                    seed_array[counter, 2] = limit[2]
-                    counter += 1
-    
+                    seed_array.append([x + a/2, y + a/2, limit[2]])
+
+    seed_array = np.array(seed_array)
     ## Checking for uniqueness of all seeds
     new_array = [tuple(row) for row in seed_array]
     seed_array_unique = np.unique(new_array, axis = 0)

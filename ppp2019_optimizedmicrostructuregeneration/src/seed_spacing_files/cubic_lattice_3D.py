@@ -67,13 +67,13 @@ def cubic_lattice_3D(limit, a, log_level):
     log.info('Starting to generate Cubic 3D type seed spacing')
 
     ## Generating an array to store seed coordinates
-    seed_array = np.zeros([(int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1), 3])
+    seed_array = np.zeros([(int(np.ceil(limit[0]/a)) + 1) * (int(np.ceil(limit[1]/a)) + 1) * (int(np.ceil(limit[2]/a)) + 1), 3])
     counter = 0
     
     ## Iterating in all directions
-    for x in np.linspace(0, limit[0], limit[0]/a +1):
-        for y in np.linspace(0, limit[1], limit[1]/a +1):
-            for z in np.linspace(0, limit[2], limit[2]/a +1):
+    for x in np.arange(0, limit[0], a):
+        for y in np.arange(0, limit[1], a):
+            for z in np.arange(0, limit[2], a):
                 
                 if x >= limit[0] or y >= limit[1] or z >= limit[2]:
                     continue

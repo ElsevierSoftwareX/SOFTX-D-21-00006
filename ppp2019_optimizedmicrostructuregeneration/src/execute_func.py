@@ -162,7 +162,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     log.info('Starting to compute structural characteristics')
 
     ## Structural Characteristics
-    grain_size_distributions = np.around(grain_size_distribution(dimension, tessellation, limit, log_level), decimals=4)
+    grain_size_distributions = np.around(grain_size_distribution(dimension, tessellation, limit, log_level), decimals=10)
     number_of_neighbor = number_of_neighbors(dimension, tessellation, log_level)
     grain_boundary_area_distribution, all_vertices_list = grain_boundary_areas(dimension, limit, tessellation, parent_function_name, skewed_boundary_flag, log_level)
     junction_lengths = junction_length(tessellation, log_level)
@@ -511,8 +511,8 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write("# " + now + " \n")
         f.write("# Seeds data (Seed coordinates + Orientation as Quaternions)\n")
         f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
-        seed_data = np.around(np.concatenate((seed_array_unique, orientation_data), axis=1), decimals=4)
-        np.savetxt(f, seed_data, delimiter=',', comments='#', fmt='%.4f')
+        seed_data = np.around(np.concatenate((seed_array_unique, orientation_data), axis=1), decimals=14)
+        np.savetxt(f, seed_data, delimiter=',', comments='#', fmt='%.14f')
 
     log.info('Successfully saved seeds data into a text file')
 

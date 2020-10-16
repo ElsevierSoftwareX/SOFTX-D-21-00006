@@ -148,7 +148,7 @@ def hcp_2d_testcase(tessellation, dimension, size_of_simulation_box, \
         
         ## Junction angles
         all_junction_angles = (np.concatenate(np.array([angles[2::2] for angles in junction_angles_degrees]))).flatten()
-        assert np.all([np.logical_or((np.isclose(angle, 120.0)), (np.isclose(angle, 90.0))) for angle in np.around(all_junction_angles, decimals=3)])
+        assert np.all([np.isclose(angle, 120.0) for angle in np.around(all_junction_angles, decimals=3)])
     except AssertionError:
         log.exception('hcp_2d_testcase failed !!')
 

@@ -136,7 +136,7 @@ def fcc_2d_testcase(tessellation, dimension, size_of_simulation_box, \
         assert np.all([np.isclose(num[1], 4) for num in number_of_neighbor])
         assert np.all([np.isclose(area[3], grain_boundary_area_distribution[0][3]) for area in grain_boundary_area_distribution])
         assert np.all([np.isclose(area[3], 0.7071*spacing_length*length_z, atol=1e-2) for area in grain_boundary_area_distribution])
-        assert np.all([((np.around(length[2], decimals=2) == np.around(0.7071 * spacing_length, decimals=2)) or (length[2] == length_z)) for length in junction_lengths])
+        assert np.all([(length[2] == length_z) for length in junction_lengths])
         assert np.all(np.concatenate(np.array([np.equal(angles[2::2], 90.0) for angles in junction_angles_degrees])).flatten())           # All angles should be the same
     except AssertionError:
         log.exception('fcc_2d_testcase failed !!')

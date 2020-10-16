@@ -299,13 +299,13 @@ class optimize_class():
                 data_dictionary['2'] = grain_boundary_area_distribution                     # Key as integer refers to the integer representing the characteristic feature
 
             elif parameter is 'junction_length':
-                junction_lengths = junction_length(tessellation, self.log_level)
+                junction_lengths = junction_length(dimension, tessellation, self.log_level)
                 all_lengths = [v[2] for v in junction_lengths]
                 hist, bins = np.histogram(all_lengths, bins= number_of_bins, density= True)
                 data_dictionary['3'] = junction_lengths                     # Key as integer refers to the integer representing the characteristic feature
 
             elif parameter is 'junction_angle':
-                junction_angles_degrees = junction_angle(tessellation, self.log_level)
+                junction_angles_degrees = junction_angle(dimension, tessellation, self.log_level)
                 all_angles = [v[2::2] for v in junction_angles_degrees]
                 all_angles_flatten = [w for v in all_angles for w in v]
                 hist, bins = np.histogram(all_angles_flatten, bins= number_of_bins, density= True)

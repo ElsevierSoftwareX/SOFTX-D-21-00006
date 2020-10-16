@@ -397,7 +397,7 @@ def grain_boundary_areas(dimension, limit, tessellation_og, parent_function_name
     log.info('Completed computing grain boundary areas')
     return grain_boundary_area, all_vertices_list
 
-def junction_length(tessellation_og, log_level):
+def junction_length(dimension, tessellation_og, log_level):
     """
     Compute junction lengths.
 
@@ -410,6 +410,8 @@ def junction_length(tessellation_og, log_level):
 
     Parameters
     ----------
+    dimension: integer    
+        Dimension of study (2 or 3)
 
     tessellation_og: dictionary
         Dictionary of tessellations data with following keys:
@@ -457,6 +459,11 @@ def junction_length(tessellation_og, log_level):
     grains_with_junction = []
     edges_of_junction = []
 
+    two_D_flag = False
+    if dimension == 2:
+        two_D_flag = True
+        z_plane_normal = np.array([0, 0, 1])
+
     ## Adding Unique vertices of each edge
     """
     Each row of the 2D array consists of 3 columns of coordinates of first vertex 
@@ -474,6 +481,13 @@ def junction_length(tessellation_og, log_level):
                 
                 ## Checking if the row of edge data exists in the array by swapping the vertices of edge
                 no_of_edges_for_current_grain = int(grain_row_counter + number_of_edges[grain_index])                     # Checking is done only within the edges of particular grain 
+
+                if two_D_flag:
+                    check_row = np.array(row)
+                    edge_vector = np.abs(check_row[:3] - check_row[3:6])
+                    if np.isclose(np.dot(edge_vector, z_plane_normal), 0):
+                        continue
+
                 if any((np.equal(row, edge_vertices_array[grain_row_counter:no_of_edges_for_current_grain, :6])).all(1)):
                     continue
 
@@ -483,7 +497,7 @@ def junction_length(tessellation_og, log_level):
                 edge_vertices_array[row_counter, 6] = grain_index
                 row_counter += 1
 
-    edge_vertices_array = np.around(edge_vertices_array[~(edge_vertices_array==0).all(1)], decimals=4)
+    edge_vertices_array = np.around(edge_vertices_array[~(edge_vertices_array==0).all(1)], decimals=14)
 
     ## Counting the number of repetitions of particular edge
     """
@@ -537,7 +551,7 @@ def junction_length(tessellation_og, log_level):
     log.info('Completed computing junction lengths')
     return junction_lengths
 
-def junction_angle(tessellation_og, log_level):
+def junction_angle(dimension, tessellation_og, log_level):
     """
     Compute junction angles
 
@@ -545,6 +559,8 @@ def junction_angle(tessellation_og, log_level):
     ----------
         Parameters
     ----------
+    dimension: integer    
+        Dimension of study (2 or 3)
 
     tessellation_og: dictionary
         Dictionary of tessellations data with following keys:
@@ -574,7 +590,7 @@ def junction_angle(tessellation_og, log_level):
 
     tessellation = copy.deepcopy(tessellation_og)
     ## Calling 'junction_length' function for identifying the required edges with the grains having these edges
-    grains_with_junction, edges_of_junction = junction_length(tessellation, log_level)
+    grains_with_junction, edges_of_junction = junction_length(dimension, tessellation, log_level)
     
     ## Creating again a copy in order to avoid error due to call by reference
     tessellation = copy.deepcopy(tessellation_og)
@@ -596,7 +612,7 @@ def junction_angle(tessellation_og, log_level):
         for grain_index, grain in enumerate(np.array(grains_with_junction[row_index])):
             
             ## Extracting data regarding specific grains
-            vertices_individual_grain = np.around(np.array(tessellation['vertices_list'][int(grain)]), decimals=4) #tessellation[int(grain)].vertices()), decimals=4)
+            vertices_individual_grain = np.around(np.array(tessellation['vertices_list'][int(grain)]), decimals=14) #tessellation[int(grain)].vertices()), decimals=4)
             faces_individual_grain = tessellation['face_vertices_list'][int(grain)] #tessellation[int(grain)].face_vertices()
             
             ## Initializing an empty list where the normals of faces forming the required junction edges will be stored
@@ -619,7 +635,7 @@ def junction_angle(tessellation_og, log_level):
                         normals_of_junction_faces.append(normal_of_face)
             
             ## Rounding off the normal vectors to 4 decimals
-            normals_of_junction_faces = np.around(np.array(normals_of_junction_faces), decimals=4)
+            normals_of_junction_faces = np.around(np.array(normals_of_junction_faces), decimals=14)
             if len(normals_of_junction_faces) == 0: 
                 continue
             

@@ -162,11 +162,11 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     log.info('Starting to compute structural characteristics')
 
     ## Structural Characteristics
-    grain_size_distributions = np.around(grain_size_distribution(dimension, tessellation, limit, log_level), decimals=10)
+    grain_size_distributions = np.around(grain_size_distribution(dimension, tessellation, limit, log_level), decimals=14)
     number_of_neighbor = number_of_neighbors(dimension, tessellation, log_level)
     grain_boundary_area_distribution, all_vertices_list = grain_boundary_areas(dimension, limit, tessellation, parent_function_name, skewed_boundary_flag, log_level)
-    junction_lengths = junction_length(tessellation, log_level)
-    junction_angles_degrees = junction_angle(tessellation, log_level)
+    junction_lengths = junction_length(dimension, tessellation, log_level)
+    junction_angles_degrees = junction_angle(dimension, tessellation, log_level)
     distance_btw_grain_array, distance_btw_grain_1d = distance_btw_grains(dimension, limit, tessellation, log_level)
     
     log.info('Successfully computed all structural characteristics')
@@ -441,28 +441,28 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write("\nMaterial Name: " + material)
         f.write("\n \n# Grain sizes \n")
         f.write('# Grain Number, Grain Size \n')
-        np.savetxt(f, grain_size_distributions, delimiter=',', fmt="%.4f")
+        np.savetxt(f, grain_size_distributions, delimiter=',', fmt="%.14f")
         f.write("\n# Number of Neighbors \n")
         f.write("# Grain Number, Number of neighbors, List of indices of all neighboring grains \n")
         for line in number_of_neighbor:
-            np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.4f")
+            np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.14f")
             f.write("\n")
         f.write("\n# Grain Boundary Areas \n")
         f.write("# Sr. No., Grain Number 1, Grain Number 2, Area \n")
-        np.savetxt(f, grain_boundary_area_distribution, delimiter=',', fmt="%.4f")
+        np.savetxt(f, grain_boundary_area_distribution, delimiter=',', fmt="%.14f")
         f.write("\n# Junction Lengths \n")
         f.write("# Sr. no., Junction type, Junction lengths, Grains with this junction \n")
         for line in junction_lengths:
-            np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.4f")
+            np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.14f")
             f.write("\n")
         f.write("\n# Junction angles degrees \n")
         f.write('# Sr. No., Junction Type, 1st Junction angle, Grain containing the 1st junction angle, 2nd Junction angle, so on... \n')
         for line in junction_angles_degrees:
-            np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.4f")
+            np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.14f")
             f.write("\n")
         f.write('\n# Distance between grains \n')
         f.write('# Sr. No., Distance between grains in ascending orders \n')
-        np.savetxt(f, distance_btw_grain_array, delimiter=',', fmt="%.4f")
+        np.savetxt(f, distance_btw_grain_array, delimiter=',', fmt="%.14f")
 
     log.info('Successfully saved all structural characteristics into a text file')
 
@@ -486,13 +486,13 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write("\nMaterial Name: " + material)
         f.write("\n \n# Disorientation Angles \n")
         f.write("\n# Grain 1, Grain 2, Disorientation angle, Disorientation axis \n")
-        np.savetxt(f, disorientation_angle, delimiter=',', fmt="%.4f")
+        np.savetxt(f, disorientation_angle, delimiter=',', fmt="%.14f")
         f.write("\n \n# Type of Grain Boundaries \n")
         f.write("\n# Grain 1, Grain 2, Misorientation angle, Misorientation axis, Type of Grain Boundary \n")
-        np.savetxt(f, type_of_grain_boundaries, delimiter=',', fmt='%.4f %.4f %.4f %.4f %.4f %.4f %s')
+        np.savetxt(f, type_of_grain_boundaries, delimiter=',', fmt='%.14f %.14f %.14f %.14f %.14f %.14f %s')
         f.write("\n# Schmid Factors")
         f.write("\n# Grain number, Maximum schmid factor, Respective slip plane and slip direction (Slip System) \n")
-        np.savetxt(f, schmid_factors, delimiter=',', fmt="%.4f")
+        np.savetxt(f, schmid_factors, delimiter=',', fmt="%.14f")
 
     log.info('Successfully saved all textural characteristics into a text file')
 

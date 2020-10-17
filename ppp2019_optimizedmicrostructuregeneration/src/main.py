@@ -420,7 +420,7 @@ class optimize_class():
             fig_animate.canvas.flush_events()
 
             ## saving all iterations seed data current interval
-            output_file_path = Path(self.store_folder, self.material, self.now, "Text_output", "seed_data_all_iterations.txt")
+            output_file_path = Path(self.store_folder, self.material, self.now, "Text_output", "seed_data_all_func_eval.txt")
             
             if (previous_iter) == 0:
                 output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
@@ -437,7 +437,7 @@ class optimize_class():
             else:
                 with open(str(output_file_path), 'a+') as f:
                     for i in range(previous_iter - self.save_interval, previous_iter):
-                        f.write("\n# Iteration No.: " +str(i+1) + ", Cost Function value: " + str(self.current_cost_function_value[i]) + "\n")
+                        f.write("\n# Objective function Evaluation count No.: " +str(i+1) + ", Cost Function value: " + str(self.current_cost_function_value[i]) + "\n")
                         f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
                         seed_data = np.array(self.seeds_array_all_iterations[i])
                         temp_write_data = np.around(np.concatenate((seed_data, orientation_data), axis=1), decimals=14)
@@ -561,8 +561,9 @@ def guide():
 @click.option('-rs', '--rand_seed', help='Enter the seed value for Numpy random function', show_default=True, default=None, type=int)
 @click.option('-nb', '--number_bins', help='Specify the number of bins', show_default=True, default=10, type=int)
 @click.option('-si', '--save_interval', help='Intervals of iterations in which the seeds data is to be saved and live plot is to be extended', show_default=True, default=100, type=int)
+@click.option('-rest', '--restart', help='Restart optimization using seed positions of specified function evaluation count number. Specify -1 to use optimized seed positions.', show_default=True, default=0, type=int)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
-def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, debug):
+def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
     """
     Function to parse command-line inputs of Click.
 
@@ -657,6 +658,10 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     \t The intervals in iteration at which the seeds data is to be stored and \n
     \t the live plot axes is to extended. \n
 
+    restart: integer \n
+    \t Restart optimization using the seed positions of the specified function \n
+    \t evaluation count number. Specify -1 to use optimized seed positions. \n
+
     debug: boolean \n
     \t Flag to indicate if DEBUG mode is to be activated. \n
 
@@ -666,9 +671,9 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     """
 
     ## This is done so that the function 'main_run()' can be imported in some another python script
-    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, debug)
+    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug)
 
-def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, debug):
+def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
     """
     Function to execute main tasks.
 
@@ -763,6 +768,10 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     \t The intervals in iteration at which the seeds data is to be stored and \n
     \t the live plot axes is to extended. \n
 
+    restart: integer \n
+    \t Restart optimization using the seed positions of the specified function \n
+    \t evaluation count number. Specify -1 to use optimized seed positions. \n
+
     debug: boolean \n
     \t Flag to indicate if DEBUG mode is to be activated. \n
 
@@ -809,6 +818,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             + 'Seed of random generator: ' +str(rand_seed) + '\n' \
             + 'Number of bins for histogram: ' +str(number_bins) + '\n' \
             + 'Save interval: ' + str(save_interval) + '\n' \
+            + 'Restart position: ' + str(restart) + '\n' \
             + 'Debug mode activated: ' + str(debug) + '\n')
 
     np.random.seed(rand_seed)                                                                    # Initializing seed to None
@@ -860,7 +870,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     ## Adjusting size of simulation box as per the requirement
     assert (np.array(limit) > 0.0).all(), 'Size of simulation box cannot be negative or zero.'
     if str(seed_spacing_type).lower() in ['cubic_3d', 'bcc_3d', 'fcc_3d']:
-  
+        
+        assert (restart == 0), 'Restart option can only be used with user specified seed positions'
         if not np.isclose((limit[0] % spacing_length), 0):
             limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
             assert np.isclose(limit[0]%spacing_length, 0)
@@ -872,7 +883,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             assert np.isclose(limit[2]%spacing_length, 0)
 
     elif str(seed_spacing_type).lower() in ['cubic_2d', 'fcc_2d']:
-
+        
+        assert (restart == 0), 'Restart option can only be used with user specified seed positions'
         if not np.isclose((limit[0] % spacing_length), 0):
             limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
             assert np.isclose(limit[0]%spacing_length, 0)
@@ -882,6 +894,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
     elif str(seed_spacing_type).lower() in ['hcp_2d']:
         
+        assert (restart == 0), 'Restart option can only be used with user specified seed positions'
         if not np.isclose((limit[0] % spacing_length), 0):
             limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
             assert np.isclose(limit[0]%spacing_length, 0)
@@ -891,7 +904,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             assert np.isclose(limit[1]%hcp_y_spacing, 0)
 
     elif str(seed_spacing_type).lower() in ['hcp_3d']:
-        
+
+        assert (restart == 0), 'Restart option can only be used with user specified seed positions'
         if not np.isclose((limit[0] % spacing_length), 0):
             limit[0] = limit[0] + (spacing_length - (limit[0]%spacing_length))
             assert np.isclose(limit[0]%spacing_length, 0)
@@ -960,10 +974,17 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         orientation_data = None
         ## Checking if the number of random unique seeds are same as required
         assert seed_array_unique.shape[0] == number_of_seeds
+        assert (restart == 0), 'Restart option can only be used with user specified seed positions'
+
 
     else:
         with open(seed_spacing_type, 'r') as f:
-            data = np.loadtxt(f, delimiter=',', comments='#')
+            all_data = np.loadtxt(f, delimiter=',', comments='#')
+            assert ((len(all_data)%number_of_seeds) == 0), 'There is mis-match in the number of seed positions provided. Probably total required seeds number is changed.'
+            reshape_data = np.reshape(all_data, (-1, number_of_seeds, all_data.shape[1]))
+            
+            data = reshape_data[restart]
+            
             seed_array_unique = np.around(data[:, :3], decimals=14)
             
             ## Extracting orientations data if available
@@ -1168,7 +1189,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         log.debug('Saving seeds data at all iterations into a text file')
 
         ## Saving seeds data
-        output_file_path = Path(store_folder, material, now, "Text_output", "seed_data_all_iterations.txt")
+        output_file_path = Path(store_folder, material, now, "Text_output", "seed_data_all_func_eval.txt")
         output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -1179,7 +1200,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             ## Writing seed data for iterations that were pending during optimization
             if func_eval_count[-1] % save_interval != 0:
                 for i in range(func_eval_count[-1] - (func_eval_count[-1] % save_interval), func_eval_count[-1]):
-                    f.write("\n# Iteration No.: " +str(i+1) + ", Cost Function value: " + str(current_cost_function_value[i]) + "\n")
+                    f.write("\n# Objective function Evaluation count No.: " +str(i+1) + ", Cost Function value: " + str(current_cost_function_value[i]) + "\n")
                     f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
                     seed_data = np.array(seeds_array_all_iterations[i])
                     temp_write_data = np.around(np.concatenate((seed_data, orientation_data), axis=1), decimals=14)
@@ -1187,10 +1208,10 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             
             ## Writing optimization data
             f.write("\n\n\n## Optimization Information \n")
-            f.write("Optimized cost function value = " + str(optimization_result.fun) + "\n")
-            f.write("message = " + str(optimization_result.message) + "\n")
-            #f.write("nit = " + str(optimization_result.nit) + "\n")
-            f.write("nfev = " + str(optimization_result.nfev)+ "\n")
+            f.write("# Optimized cost function value = " + str(optimization_result.fun) + "\n")
+            f.write("# message = " + str(optimization_result.message) + "\n")
+            #f.write("# nit = " + str(optimization_result.nit) + "\n")
+            f.write("# nfev = " + str(optimization_result.nfev)+ "\n")
             f.write("# Optimized Seeds data (Seed coordinates + Orientation as Quaternions)\n")
             f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
             temp_write_data = np.around(np.concatenate((optimized_seed_array, orientation_data), axis=1), decimals=14)

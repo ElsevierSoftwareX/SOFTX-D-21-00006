@@ -174,7 +174,8 @@ class optimize_class():
         self.final_predicted_data = None
         self.final_start_row_combined_data = None
         self.smallest_cost_function_value = np.inf 
-        self.iteration_number = [0]
+        self.iteration_count = [0]
+        self.func_eval_count = [0]
         self.current_cost_function_value = []
         self.seeds_array_all_iterations = []
         self.log_level = log_level
@@ -182,6 +183,10 @@ class optimize_class():
         self.now = now
         self.material = material
         self.save_interval = save_interval
+
+    def callback_f(self, x):
+        self.iteration_count.append(self.iteration_count[-1] + 1)
+        print("Finished with iteration: " + str(self.iteration_count[-1]))
 
     def cost_function(self, seed_p, args):                                            # *args is a tuple containing parameter, dimension, user_required_distribution, limit
         """
@@ -391,25 +396,25 @@ class optimize_class():
             self.final_start_row_combined_data = start_row_combined_data
             self.smallest_cost_function_value = cost_function_value
         
-        if len(self.iteration_number) == 1:
+        if len(self.func_eval_count) == 1:
             self.initial_distribution = combined_predicted_data
             print("Iteration number, Cost function value: \n")
 
         ## Assigning values for Dynamic Plot
-        self.iteration_number.append(self.iteration_number[-1] + 1)
+        self.func_eval_count.append(self.func_eval_count[-1] + 1)
         self.current_cost_function_value.append(cost_function_value)
         
-        print(self.iteration_number[-1], cost_function_value)
+        print(self.func_eval_count[-1], cost_function_value)
 
         ## Adding current iteration seeds array to a list of seeds array of all iteration
         self.seeds_array_all_iterations.append(seed_array)
 
-        log.debug('Iteration: ' +str(self.iteration_number[-1]) + ', Cost function value: ' +str(self.current_cost_function_value[-1]))
+        log.debug('Iteration: ' +str(self.func_eval_count[-1]) + ', Cost function value: ' +str(self.current_cost_function_value[-1]))
 
         ## Updating plot and saving seeds data
-        previous_iter = self.iteration_number[-1]-1
+        previous_iter = self.func_eval_count[-1]-1
         if previous_iter % self.save_interval == 0:                               # self.save_interval denotes the interval in which axes is updated
-            ax_animate.set_xlim(0, self.iteration_number[-1] + self.save_interval)                # X axis is extended with more self.save_interval units
+            ax_animate.set_xlim(0, self.func_eval_count[-1] + self.save_interval)                # X axis is extended with more self.save_interval units
             ax_animate.set_ylim(0, np.max(self.current_cost_function_value) + 10)                 # Y axis is updated with max value of cost value achieved where 10 is used randomly so that the upper portion of plot is not congested
             fig_animate.canvas.draw()
             fig_animate.canvas.flush_events()
@@ -440,13 +445,13 @@ class optimize_class():
                         #self.seeds_array_all_iterations[i] = []
 
         line.set_ydata(self.current_cost_function_value)                        # Updating Y data
-        line.set_xdata(self.iteration_number[1:])                               # Updating X data
+        line.set_xdata(self.func_eval_count[1:])                               # Updating X data
         ax_animate.draw_artist(ax_animate.patch)                                # Restoring plot region
         ax_animate.draw_artist(line)                                            # Plotting line
         fig_animate.canvas.blit()                                               # Updates only the line instead of entire plot comprising of title, axes, etc.
         fig_animate.canvas.flush_events()
 
-        log.debug('Cost function was successfully evaluated at iteration no. ' + str(self.iteration_number[-1]))
+        log.debug('Cost function was successfully evaluated at iteration no. ' + str(self.func_eval_count[-1]))
         return cost_function_value
 
 def constraints_func(dimension, limit, log_level):
@@ -1090,7 +1095,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         ## Calling Optimizer
         optimize_class_instance = optimize_class(store_folder, now, material, save_interval, log_level)
         #print(optimize_class_instance.cost_function(seed_array_unique_flatten, args_list)); exit()                    # command: time ./execute main -s 10. 10. 10. -sl 1 -dim 3 -n 100 -t user_grain_size_distribution.txt -c 0 -m steel -sdir 0 1 0 -ss seed_data.txt -rs 1 -om cobyla -mi 10 -nb 10
-        optimization_result = minimize(optimize_class_instance.cost_function, seed_array_unique_flatten, args=(args_list), method=optimization_method, constraints=constraints_list, options=algo_options_dict[optimization_method])
+        optimization_result = minimize(optimize_class_instance.cost_function, seed_array_unique_flatten, args=(args_list), callback=optimize_class_instance.callback_f, method=optimization_method, constraints=constraints_list, options=algo_options_dict[optimization_method])
         
         log.info('Finished with optimization')
 
@@ -1101,7 +1106,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         final_predicted_data            = optimize_class_instance.final_predicted_data
         final_start_row_combined_data   = optimize_class_instance.final_start_row_combined_data
         smallest_cost_function_value    = optimize_class_instance.smallest_cost_function_value
-        iteration_number                = optimize_class_instance.iteration_number
+        func_eval_count                = optimize_class_instance.func_eval_count
         current_cost_function_value     = optimize_class_instance.current_cost_function_value
         seeds_array_all_iterations      = optimize_class_instance.seeds_array_all_iterations                                                             # turn interactive mode off
         
@@ -1115,7 +1120,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
         ## Plotting the graph of evolution of cost function again to save the plot
         fig_animate, ax_animate = plt.subplots(figsize=(10,10))
-        line, = ax_animate.plot(iteration_number[1:], current_cost_function_value, c='C2', lw=2)
+        line, = ax_animate.plot(func_eval_count[1:], current_cost_function_value, c='C2', lw=2)
         ax_animate.set_xlabel('Number of Iterations', fontsize=0.5*font_size_value)
         ax_animate.set_ylabel('Cost Function Value', fontsize=0.5*font_size_value)
         ax_animate.title.set_text('Evolution of Cost Function Value [' + optimization_method + ' Algorithm]')
@@ -1172,8 +1177,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
         with open(str(output_file_path), 'a+') as f:
             ## Writing seed data for iterations that were pending during optimization
-            if iteration_number[-1] % save_interval != 0:
-                for i in range(iteration_number[-1] - (iteration_number[-1] % save_interval), iteration_number[-1]):
+            if func_eval_count[-1] % save_interval != 0:
+                for i in range(func_eval_count[-1] - (func_eval_count[-1] % save_interval), func_eval_count[-1]):
                     f.write("\n# Iteration No.: " +str(i+1) + ", Cost Function value: " + str(current_cost_function_value[i]) + "\n")
                     f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
                     seed_data = np.array(seeds_array_all_iterations[i])

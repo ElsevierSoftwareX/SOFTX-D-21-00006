@@ -146,6 +146,13 @@ def hcp_2d_testcase(tessellation, dimension, size_of_simulation_box, \
         ## Junction length
         assert np.all([((np.around(length[2], decimals=2) == np.around(0.57735 * spacing_length, decimals=2)) or (length[2] == length_z)) for length in junction_lengths])
         
+        ## Type of junction
+        if spacing_length == 5.0:
+            types_of_junction_list = [length[1] for length in junction_lengths]
+            assert (types_of_junction_list.count(1) == 14)                        # Total 14 junctions belong to type 1 junction
+            assert (types_of_junction_list.count(2) == 8)                         # total 8 junctions belong to type 2 junction
+            assert (types_of_junction_list.count(3) == 6)                         # total 6 junctions belong to triple junctions
+
         ## Junction angles
         all_junction_angles = (np.concatenate(np.array([angles[2::2] for angles in junction_angles_degrees]))).flatten()
         assert np.all([np.isclose(angle, 120.0) for angle in np.around(all_junction_angles, decimals=3)])

@@ -137,7 +137,7 @@ def grain_size_distribution(dimension, tessellation_og, limit, log_level):
         grain_sizes[:, 1] = 2*(grain_sizes[:, 1] * 3 / (np.pi * 4))**(1/3)      # Multiplying by 2 in order to get diameter
 
     log.info('Completed computing grain sizes')    
-    return grain_sizes
+    return np.around(grain_sizes, decimals=12)
 
 def number_of_neighbors(dimension, tessellation_og, log_level):
     """
@@ -281,7 +281,7 @@ def grain_boundary_areas(dimension, limit, tessellation_og, parent_function_name
                         grain_boundary_area.append(single_pair_data)                # Appending the row to main array
                         row_counter += 1
 
-            grain_boundary_area = np.around(np.array(grain_boundary_area), decimals=4)
+            grain_boundary_area = np.around(np.array(grain_boundary_area), decimals=14)
             all_vertices_list = None
             
         else:
@@ -334,7 +334,7 @@ def grain_boundary_areas(dimension, limit, tessellation_og, parent_function_name
                         for grain_index_match, grain_match in enumerate(all_vertices_list):
                             for vertex_index_match, vertex_match in enumerate(grain_match):
                                 
-                                if np.array_equal(np.around(vertex_match, decimals=4), np.around(vertex, decimals=4)):
+                                if np.allclose(vertex_match, vertex):
                                     changed_vertices_grain_vertex_index.append((grain_index_match, vertex_index_match))
                                     all_vertices_list[grain_index_match][vertex_index_match] = list(vertex)
                                     all_vertices_list[grain_index_match][vertex_index_match][0] += quasi_variable_d[grain_index]
@@ -366,7 +366,7 @@ def grain_boundary_areas(dimension, limit, tessellation_og, parent_function_name
                     grain_boundary_area[row_counter, 3] = face_area
                     row_counter += 1
 
-            grain_boundary_area = np.around(np.array(grain_boundary_area), decimals=4)
+            grain_boundary_area = np.around(np.array(grain_boundary_area), decimals=14)
 
     elif dimension == 3:
         all_vertices_list = None
@@ -392,7 +392,7 @@ def grain_boundary_areas(dimension, limit, tessellation_og, parent_function_name
                 grain_boundary_area[row_counter, 3] = area
                 row_counter += 1
 
-        grain_boundary_area  = np.around(np.array(grain_boundary_area), decimals=4)
+        grain_boundary_area  = np.around(np.array(grain_boundary_area), decimals=14)
     
     log.info('Completed computing grain boundary areas')
     return grain_boundary_area, all_vertices_list
@@ -497,7 +497,7 @@ def junction_length(dimension, tessellation_og, log_level):
                 edge_vertices_array[row_counter, 6] = grain_index
                 row_counter += 1
 
-    edge_vertices_array = np.around(edge_vertices_array[~(edge_vertices_array==0).all(1)], decimals=14)
+    edge_vertices_array = np.around(edge_vertices_array[~(edge_vertices_array==0).all(1)], decimals=10)
 
     ## Counting the number of repetitions of particular edge
     """
@@ -612,7 +612,7 @@ def junction_angle(dimension, tessellation_og, log_level):
         for grain_index, grain in enumerate(np.array(grains_with_junction[row_index])):
             
             ## Extracting data regarding specific grains
-            vertices_individual_grain = np.around(np.array(tessellation['vertices_list'][int(grain)]), decimals=14) #tessellation[int(grain)].vertices()), decimals=4)
+            vertices_individual_grain = np.around(np.array(tessellation['vertices_list'][int(grain)]), decimals=10) #tessellation[int(grain)].vertices()), decimals=4)
             faces_individual_grain = tessellation['face_vertices_list'][int(grain)] #tessellation[int(grain)].face_vertices()
             
             ## Initializing an empty list where the normals of faces forming the required junction edges will be stored
@@ -634,7 +634,7 @@ def junction_angle(dimension, tessellation_og, log_level):
                         normal_of_face = (tessellation['normals_list'][int(grain)])[face_index] #(tessellation[int(grain)].normals())[face_index]
                         normals_of_junction_faces.append(normal_of_face)
             
-            ## Rounding off the normal vectors to 4 decimals
+            ## Rounding off the normal vectors to 14 decimals
             normals_of_junction_faces = np.around(np.array(normals_of_junction_faces), decimals=14)
             if len(normals_of_junction_faces) == 0: 
                 continue

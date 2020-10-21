@@ -137,7 +137,17 @@ def cubic_2d_testcase(tessellation, dimension, size_of_simulation_box, \
         assert np.all([np.isclose(area[3], grain_boundary_area_distribution[0][3]) for area in grain_boundary_area_distribution])
         assert np.all([np.isclose(area[3], length_z*spacing_length) for area in grain_boundary_area_distribution])
         #assert np.all([length[2] == junction_lengths[0][2] for length in junction_lengths])   # The junctions length should be the same
+        
+        ## Junction length
         assert np.all([(length[2] == length_z) for length in junction_lengths])
+        
+        ## Type of junction
+        if spacing_length == 5.0:
+            types_of_junction_list = [length[1] for length in junction_lengths]
+            assert (types_of_junction_list.count(1) == 4)                        # Total 4 junctions belong to type 1 junction
+            assert (types_of_junction_list.count(2) == 4)                         # total 4 junctions belong to type 2 junction
+            assert (types_of_junction_list.count(4) == 1)                         # total 1 junctions belong to quadruple junctions
+
         assert np.all(np.concatenate(np.array([np.equal(angles[2::2], 90.0) for angles in junction_angles_degrees])).flatten())           # All angles should be the same
     except AssertionError:
         log.exception('cubic_2d_testcase failed !!')

@@ -142,6 +142,7 @@ def cost_function_general(combined_user_data, combined_predicted_data, start_row
             14. orientation_data
             15. skewed_boundary_flag
             16. tessellation (DICTIONARY OF ALL TESSELLATION DATA)
+            17. limits_factor
 
     Returns
     -------
@@ -220,6 +221,8 @@ class optimize_class():
                 13. stress_direction
                 14. orientation_data
                 15. skewed_boundary_flag
+                16. tessellation_dummy_variable
+                17. limits_factor
 
         Returns 
         -------
@@ -230,7 +233,7 @@ class optimize_class():
         ## Extracting the data from input arguments
         ## Unique seed coordinates are not isolated as this would lead to inappropriate
         ## results as the number of seeds would be less compared to requirement.
-        seed_array = np.around(np.reshape(seed_p, (-1, 3)), decimals=14)
+        seed_array_wo_factors = np.around(np.reshape(seed_p, (-1, 3)), decimals=14)
 
         # new_array = [tuple(row) for row in seed_array]
         # seed_array_unique = np.unique(new_array, axis = 0)
@@ -251,8 +254,12 @@ class optimize_class():
         stress_direction = args[12]
         orientation_data = args[13]
         skewed_boundary_flag = args[14]
+        limits_factor = args[16]
 
         log.debug('Successfully extracted all information from args in the cost function')
+
+        ## Scaling seed coordinates with respective factors    
+        seed_array = seed_array_wo_factors*limits_factor
 
         ## Adjusting seed array based on dimension
         if dimension == 2:
@@ -454,7 +461,7 @@ class optimize_class():
         log.debug('Cost function was successfully evaluated at iteration no. ' + str(self.func_eval_count[-1]))
         return cost_function_value
 
-def constraints_func(dimension, limit, log_level):
+def constraints_func(dimension, limits_wo_factors, log_level):
     """
     Define a list of constraints for each element of the prediction array.
 
@@ -463,8 +470,8 @@ def constraints_func(dimension, limit, log_level):
     dimension: integer
         Dimension of study. (2 or 3)
 
-    limit: array
-        Size of simulation box along X, Y & Z direction.
+    limits_wo_factors: array
+        Size of simulation box along X, Y & Z direction without factors.
 
     log_level: string
         Logger level to be used
@@ -483,9 +490,9 @@ def constraints_func(dimension, limit, log_level):
     '''
     if dimension == 3:
         lower = 0
-        upper_x = limit[0]
-        upper_y = limit[1]
-        upper_z = limit[2]
+        upper_x = limits_wo_factors[0]
+        upper_y = limits_wo_factors[1]
+        upper_z = limits_wo_factors[2]
         lower_bound = {'type': 'ineq', 'fun': lambda x: np.array(x[:]) - lower}
         upper_bound_x = {'type': 'ineq', 'fun': lambda x: upper_x - np.array(x[0::3])}
         upper_bound_y = {'type': 'ineq', 'fun': lambda x: upper_y - np.array(x[1::3])}
@@ -504,9 +511,9 @@ def constraints_func(dimension, limit, log_level):
         '''
     elif dimension == 2:
         lower = 0
-        upper_x = limit[0]
-        upper_y = limit[1]
-        upper_z = limit[2]
+        upper_x = limits_wo_factors[0]
+        upper_y = limits_wo_factors[1]
+        upper_z = limits_wo_factors[2]
         lower_bound = {'type': 'ineq', 'fun': lambda x: np.array(x[:]) - lower}
         upper_bound_x = {'type': 'ineq', 'fun': lambda x: upper_x - np.array(x[0::3])}
         upper_bound_y = {'type': 'ineq', 'fun': lambda x: upper_y - np.array(x[1::3])}
@@ -828,7 +835,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     store_folder = "visualization_output"
        
     ## Defining the input parameters obtained from bash command line
-    limit = np.array(size)
+    limit = tuple(np.array(size))
     dimension = dimension
     number_of_seeds = number_seed
     target_distribution_file_name = target
@@ -1075,11 +1082,17 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
             log.info('Successfully imported user defined cost function')
         
-        log.debug('Defining constraints')    
-        ## Defining constraints for the seeds coordinates for optimizer        
-        constraints_list = constraints_func(dimension, limit, log_level)
+        log.debug('Defining constraints')
 
-        seed_array_unique_flatten = seed_array_unique.flatten()
+        ## Extracting order of magnitude from limits
+        limits_factors = 10**(np.floor(np.log10(limit)))
+        limits_wo_factors = limit/limits_factors
+        seed_array_unique_wo_factors = seed_array_unique/limits_factors
+
+        ## Defining constraints for the seeds coordinates for optimizer        
+        constraints_list = constraints_func(dimension, limits_wo_factors, log_level)
+
+        seed_array_unique_flatten = seed_array_unique_wo_factors.flatten()
         
         ## For Dynamic Plot of evolution of cost function
         font_size_value = 40
@@ -1098,20 +1111,20 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
         ## Defining args for cost function
         tessellation_dummy_variable = []                                        ## dummy variable that will be replaced in args with tessellations data during optimization
-        args_list = [parameter_list, dimension, user_data, start_row_of_parameter, limit, number_of_bins, fig_animate, [line, ax_animate], cost_function_names, func_name_key, required_texture, rand_quat_flag, stress_direction, orientation_data, skewed_boundary_flag, tessellation_dummy_variable]
+        args_list = [parameter_list, dimension, user_data, start_row_of_parameter, limit, number_of_bins, fig_animate, [line, ax_animate], cost_function_names, func_name_key, required_texture, rand_quat_flag, stress_direction, orientation_data, skewed_boundary_flag, tessellation_dummy_variable, limits_factors]
 
         log.info('Calling optimizer')
 
         ## Optimization Algorithms options dictionary
-        algo_options_dict = {'COBYLA': {'rhobeg': 5.0, 'maxiter': max_iterations, 'disp': True},
-                            'SLSQP': {'maxiter': max_iterations, 'ftol': 1e-6, 'disp': True, 'eps': 1.0},  ##### eps of 1e-2
+        algo_options_dict = {'COBYLA': {'rhobeg': 0.5, 'maxiter': max_iterations, 'disp': True},
+                            'SLSQP': {'maxiter': max_iterations, 'ftol': 1e-6, 'disp': True, 'eps': 0.1},  ##### eps of 1e-2
                             'POWELL':{'maxiter': max_iterations},
                             'NELDER-MEAD': {'maxiter': max_iterations},
-                            'BFGS': {'maxiter': max_iterations, 'eps': 1.0},
-                            'L-BFGS-B': {'maxiter': max_iterations, 'eps': 1.0},
+                            'BFGS': {'maxiter': max_iterations, 'eps': 0.1},
+                            'L-BFGS-B': {'maxiter': max_iterations, 'eps': 0.1},
                             'TRUST-CONSTR': {'maxiter': max_iterations},
-                            'CG': {'maxiter': max_iterations, 'eps': 1.0},
-                            'TNC': {'maxiter': max_iterations, 'eps': 1.0}}
+                            'CG': {'maxiter': max_iterations, 'eps': 0.1},
+                            'TNC': {'maxiter': max_iterations, 'eps': 0.1}}
 
         ## Calling Optimizer
         optimize_class_instance = optimize_class(store_folder, now, material, save_interval, log_level)
@@ -1150,7 +1163,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
         print(optimization_result.message)
         optimized_seed_array_flatten = optimization_result.x
-        optimized_seed_array = np.reshape(optimized_seed_array_flatten, (-1, 3))
+        optimized_seed_array = np.reshape(optimized_seed_array_flatten, (-1, 3)) * limits_factors
         
         ## Adjusting seed array based on dimension
         if dimension == 2:

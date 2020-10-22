@@ -134,7 +134,7 @@ def fcc_3d_testcase(tessellation, dimension, size_of_simulation_box, \
         assert np.all([np.isclose(area[3], 0.1768*(spacing_length**2), atol=1e-2) for area in grain_boundary_area_distribution])   # The GB areas should be the same
         assert np.all([np.isclose(length[2], junction_lengths[0][2]) for length in junction_lengths])   # The junctions length should be the same
         assert np.all([np.isclose(length[2], 0.4330*spacing_length, atol=1e-2) for length in junction_lengths])   # The junctions length should be the same
-        assert np.all(np.concatenate(np.array([np.equal(angles[2::2], 120.0) for angles in junction_angles_degrees])).flatten())           # All angles should be the same
+        assert np.all(np.array([np.allclose(angles[2::2], 120.0) for angles in junction_angles_degrees]))           # All angles should be the same
     except AssertionError:
         log.exception('fcc_3d_testcase failed !!')
 

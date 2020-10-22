@@ -72,7 +72,7 @@ def cubic_lattice_2D(limit, a, log_level):
         for y in np.arange(0, limit[1], a):
                 if x >= limit[0] or y >= limit[1]:
                     continue
-                seed_array.append([x, y, limit[2]])
+                seed_array.append([x, y, limit[2]/2.0])
 
     seed_array = np.array(seed_array)
     new_array = [tuple(row) for row in seed_array]                          # generating tuple of each row of the seeds array

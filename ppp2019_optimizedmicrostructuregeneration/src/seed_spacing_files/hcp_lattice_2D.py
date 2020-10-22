@@ -68,7 +68,7 @@ def hcp_lattice_2D(limit, spacing_length, log_level):
 
     x_limit, y_limit, z_limit = limit 
     seed_array = np.zeros([int(np.ceil(x_limit/spacing_length) * (2*np.ceil(y_limit/(np.sqrt(3)*spacing_length)))), 3]) # sqrt(3) is due to spacing of seeds in HCP
-    seed_array[:, 2] = z_limit
+    seed_array[:, 2] = z_limit/2.0
 
     counter = 0
     for x in np.arange(0, x_limit, spacing_length):
@@ -78,7 +78,6 @@ def hcp_lattice_2D(limit, spacing_length, log_level):
                 continue
 
             seed_array[counter, :2] = x, y
-            #seed_array[counter, 1] = y
             counter += 1
 
             seed_array[counter, 0] = x + (spacing_length/2)

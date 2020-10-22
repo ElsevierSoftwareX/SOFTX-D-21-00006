@@ -75,10 +75,10 @@ def fcc_lattice_2D(limit, a, log_level):
         for y in np.arange(0, limit[1], a):
                 if x >= limit[0] or y >= limit[0]:
                     continue
-                seed_array.append([x, y, limit[2]])
+                seed_array.append([x, y, limit[2]/2.0])
 
                 if x < limit[0] and y < limit[1]:
-                    seed_array.append([x + a/2, y + a/2, limit[2]])
+                    seed_array.append([x + a/2, y + a/2, limit[2]/2.0])
 
     seed_array = np.array(seed_array)
     ## Checking for uniqueness of all seeds

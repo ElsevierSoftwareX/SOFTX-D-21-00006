@@ -49,7 +49,7 @@ def random_generator(number_of_seeds, dimension, limits, log_level):
     dimension: integer 
         Dimension of study. (2 or 3)
 
-    limit: array
+    limits: array
         Size of simulation box (array of length along X, Y, Z directions)
     
     log_level: string
@@ -70,7 +70,7 @@ def random_generator(number_of_seeds, dimension, limits, log_level):
         if dimension == 2:
             rand_x = np.around(np.random.uniform(low = 0, high = length_x_axis), decimals=4)
             rand_y = np.around(np.random.uniform(low = 0, high = length_y_axis), decimals=4)
-            random_number_list = [rand_x, rand_y, limits[2]]
+            random_number_list = [rand_x, rand_y, limits[2]/2.0]
             seeds.append(random_number_list)
         
         elif dimension == 3:

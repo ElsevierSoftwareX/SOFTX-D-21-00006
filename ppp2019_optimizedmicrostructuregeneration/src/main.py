@@ -876,6 +876,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
     ## Adjusting size of simulation box as per the requirement
     assert (np.array(limit) > 0.0).all(), 'Size of simulation box cannot be negative or zero.'
+    limit = list(limit)
     if str(seed_spacing_type).lower() in ['cubic_3d', 'bcc_3d', 'fcc_3d']:
         
         assert (restart == 0), 'Restart option can only be used with user specified seed positions'
@@ -923,7 +924,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         if not np.isclose((limit[2] % spacing_length), 0):
             limit[2] = limit[2] + (spacing_length - (limit[2]%spacing_length))
             assert np.isclose(limit[2]%spacing_length, 0)
-
+    limit = tuple(limit)
     log.warning("Size of simulation box is set to " + str(limit))
 
     ## Creating list of all characteristics to be oprimized

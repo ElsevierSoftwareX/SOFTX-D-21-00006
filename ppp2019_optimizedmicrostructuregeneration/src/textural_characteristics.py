@@ -35,6 +35,7 @@ along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.or
 from ppp2019_optimizedmicrostructuregeneration.src.main_import_statements import *
 from scipy.spatial.transform import Rotation as R
 
+from ppp2019_optimizedmicrostructuregeneration.src.structural_characteristics import *
 from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
 name_str = __name__
    
@@ -493,7 +494,7 @@ def random_quaternions_generator(number_of_grains, log_level):
     log.info('Completed generating random orientation quaternions')
     return random_quats_reperesentation
 
-def disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level):
+def disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation_og, log_level):
     """
     Compute disorientation angles between grains.
 
@@ -517,7 +518,7 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
         Orientation data of each grain as rows. Orientations to be specified as
         Quaternions with Scalar-first format.
 
-    tessellation: dictionary
+    tessellation_og: dictionary
         Dictionary of tessellations data with following keys:
             1. number_of_grains
             2. number_of_faces_list
@@ -545,6 +546,8 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
     
     log = set_logger(name_str, 'log_data.log', log_level)
     log.debug('Started computing disorientation angles')
+    tessellation = copy.deepcopy(tessellation_og)
+
     number_of_grains = copy.deepcopy(tessellation['number_of_grains'])                                        # extracting the total number of grains    
     quaternions_of_grains = np.zeros([number_of_grains, 5])                     # Array with column names: Gr. no., quaternions
     quaternions_of_grains[:, 0] = range(number_of_grains)                       # assigning gr. no. to first column
@@ -631,7 +634,7 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
     log.info('Completed computing disorientation angles')
     return np.array(disorientation_data), np.array(quaternions_of_grains[:, 1:5])
 
-def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, log_level):
+def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation_og, log_level):
     """
     Compute type of grain boundaries between each pair of grains.
 
@@ -655,7 +658,7 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
         Orientation data of each grain as rows. Orientations to be specified as
         Quaternions with Scalar-first format.
 
-    tessellation: dictionary
+    tessellation_og: dictionary
         Dictionary of tessellations data with following keys:
             1. number_of_grains
             2. number_of_faces_list
@@ -683,6 +686,8 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
     
     log = set_logger(name_str, 'log_data.log', log_level)
     log.debug('Started computing type of grain boundaries')
+    tessellation = copy.deepcopy(tessellation_og)
+
     number_of_grains = copy.deepcopy(tessellation['number_of_grains'])                                          # extracting the total number of grains    
     quaternions_of_grains = np.zeros([number_of_grains, 5])                     # Array with column names: Gr. no., quaternions
     quaternions_of_grains[:, 0] = range(number_of_grains)                       # assigning gr. no. to first column 
@@ -835,7 +840,7 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
 # normalize each slip plane and direction or else it gives a huge difference in results
 #######################################################################################
 
-def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation, log_level):
+def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation_og, log_level):
     """
     Compute Schmid factors.
 
@@ -864,7 +869,7 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction,
         Orientation data of each grain as rows. Orientations to be specified as
         Quaternions with Scalar-first format.
 
-    tessellation: dictionary
+    tessellation_og: dictionary
         Dictionary of tessellations data with following keys:
             1. number_of_grains
             2. number_of_faces_list
@@ -892,6 +897,8 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction,
 
     log = set_logger(name_str, 'log_data.log', log_level)
     log.debug('Started computing Schmid factors')
+    tessellation = copy.deepcopy(tessellation_og)
+
     ## Checking the function input arguments
     if dimension == 2 and stress_direction[2] != 0:
         print("Stress cannot be along Z-direction for 2-D case")

@@ -122,17 +122,20 @@ def grain_size_distribution(dimension, tessellation_og, limit, log_level):
     log.debug('Started computing grain sizes')
 
     tessellation = copy.deepcopy(tessellation_og)
-    grain_sizes = np.zeros([tessellation['number_of_grains'], 2])               # 1st column for gr. number and 2nd column for gr. size
+    grain_sizes = np.zeros([tessellation['number_of_grains'], 3])               # Columns are: gr. number, gr. size, gr. volume/area
     grain_numbers = np.array([num for num in range(tessellation['number_of_grains'])])
     grain_volumes = np.array(tessellation['volume_list'])                # Extracting the volume of each grain from the cells data
     
     grain_sizes[:, 0] = grain_numbers[:]
     grain_sizes[:, 1] = grain_volumes[:]
-    
+    grain_sizes[:, 2] = grain_volumes[:]
+
     ## Calculating grain sizes  based on dimension 
     if dimension == 2:
         grain_sizes[:, 1] = grain_sizes[:, 1]/limit[2]                          # Grain size is considered to be based on XY plane, hence removing effect of length along Z axis
         grain_sizes[:, 1] = 2*(grain_sizes[:, 1]/np.pi)**0.5                    # Multiplying by 2 in order to get diameter
+        grain_sizes[:, 2] = grain_sizes[:, 2]/limit[2]                          # grain area in case of quasi-2D
+
     elif dimension == 3:
         grain_sizes[:, 1] = 2*(grain_sizes[:, 1] * 3 / (np.pi * 4))**(1/3)      # Multiplying by 2 in order to get diameter
 

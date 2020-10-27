@@ -440,7 +440,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write("\nDimension: " + str(dimension))
         f.write("\nMaterial Name: " + material)
         f.write("\n \n# Grain sizes \n")
-        f.write('# Grain Number, Grain Size \n')
+        f.write('# Grain Number, Grain Size, Grain volume/area \n')
         np.savetxt(f, grain_size_distributions, delimiter=',', fmt="%.14f")
         f.write("\n# Number of Neighbors \n")
         f.write("# Grain Number, Number of neighbors, List of indices of all neighboring grains \n")

@@ -176,7 +176,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Textural Characteristics
     disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
     schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation, log_level)
-    type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
     
     log.info('Successfully computed all textural characteristics')
 
@@ -488,8 +488,8 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write("\n# Grain 1, Grain 2, Disorientation angle, Disorientation axis \n")
         np.savetxt(f, disorientation_angle, delimiter=',', fmt="%.14f")
         f.write("\n \n# Type of Grain Boundaries \n")
-        f.write("\n# Grain 1, Grain 2, Misorientation angle, Misorientation axis, Type of Grain Boundary \n")
-        np.savetxt(f, type_of_grain_boundaries, delimiter=',', fmt='%.14f %.14f %.14f %.14f %.14f %.14f %s')
+        f.write("\n# Grain 1, Grain 2, Misorientation angle, Misorientation axis, Type of Grain Boundary, Grain Boundary area \n")
+        np.savetxt(f, type_of_grain_boundaries, delimiter=',', fmt='%.14f,%.14f,%.14f,%.14f,%.14f,%.14f,%s,%.14f')
         f.write("\n# Schmid Factors")
         f.write("\n# Grain number, Maximum schmid factor, Respective slip plane and slip direction (Slip System) \n")
         np.savetxt(f, schmid_factors, delimiter=',', fmt="%.14f")

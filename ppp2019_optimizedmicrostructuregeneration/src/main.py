@@ -337,7 +337,8 @@ class optimize_class():
                 data_dictionary['6'] = disorientation_angle                     # Key as integer refers to the integer representing the characteristic feature
 
             elif parameter is 'type_of_grain_boundary':
-                type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, self.log_level)
+                parent_function_name = inspect.stack()[1][3]
+                type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, self.log_level)
                 all_grain_boundaries = type_of_grain_boundaries[:, 6]
                 hist, bins = np.histogram(all_grain_boundaries, bins = number_of_bins, density= True)
                 data_dictionary['7'] = type_of_grain_boundaries                     # Key as integer refers to the integer representing the characteristic feature

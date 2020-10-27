@@ -634,7 +634,7 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
     log.info('Completed computing disorientation angles')
     return np.array(disorientation_data), np.array(quaternions_of_grains[:, 1:5])
 
-def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation_og, log_level):
+def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation_og, dimension, limit, skewed_boundary_flag, log_level):
     """
     Compute type of grain boundaries between each pair of grains.
 
@@ -671,13 +671,24 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
             9. face_area_list
             10. number_of_edges_list
 
+    dimension: integer    
+        Dimension of study (2 or 3)
+
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+
+    skewed_boundary_flag: boolean 
+        Flag to specify if skewed grain boundaries are required. Only functional
+        in quasi-2D case.
+
     log_level: string
         Logger level to be used.
 
     Returns
     -------
         1. An array with the column names as grain 1, grain 2, rotation angle, 
-            rotation axis, type of csl (0 indicates normal grain boundary).
+            rotation axis, type of csl (0 indicates normal grain boundary), GB
+            area.
         2. An array of generated or inherited orientations data. This is returned to
             ensure that when random or sharp texture orientations are generated, they 
             are generated only once and same are used in other functions such as 
@@ -686,6 +697,12 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
     
     log = set_logger(name_str, 'log_data.log', log_level)
     log.debug('Started computing type of grain boundaries')
+    tessellation = copy.deepcopy(tessellation_og)
+
+    parent_function_name = inspect.stack()[1][3]
+    grain_boundary_area, all_vertices_list = grain_boundary_areas(dimension, limit, tessellation, parent_function_name, skewed_boundary_flag, log_level)
+
+    ## Again creating a deepcopy to avoid call by reference issues
     tessellation = copy.deepcopy(tessellation_og)
 
     number_of_grains = copy.deepcopy(tessellation['number_of_grains'])                                          # extracting the total number of grains    
@@ -704,7 +721,7 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
     
     neighbors_each_grain = copy.deepcopy(tessellation['neighbors_list']) #[v.neighbors() for v in tessellation]                # extracting the neighbors of each grain
 
-    csl_data = []                                                    ## column names: grain 1, grain 2, rotation angle, rotation axis, type of csl
+    csl_data = []                                                    ## column names: grain 1, grain 2, rotation angle, rotation axis, type of csl, GB area
     for grain in range(number_of_grains):
         
         for neighbor in neighbors_each_grain[grain]:                            # iterating through each neighbor of respective grain
@@ -826,10 +843,19 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
                     smallest_rotation_axis = row
                     smallest_rotation_angle = corresponding_rotation_angle
 
+            ## Finding GB area for this current pair of grain and neighbor            
+            ## index of grain-neighbor pair in grain_boundary_area
+            ## It is to be noted that the sequence of GB area is exactly the same as 
+            ## that of Type of GB. Hence it can also be horizontally stacked instead
+            ## of finding matching pair. Matching is done to be on safer side.
+            index_pair_gb_area = np.where((grain_boundary_area[:, 1] == grain) & (grain_boundary_area[:, 2] == neighbor))[0]
+            current_pair_gb_area = grain_boundary_area[index_pair_gb_area, 3]   # 4th column is the area
+
             ## Updating the data to main array
             misorientation_data_single_neighbor.append(smallest_rotation_angle)
             misorientation_data_single_neighbor += list(smallest_rotation_axis)
             misorientation_data_single_neighbor.append(type_of_csl)
+            misorientation_data_single_neighbor.append(current_pair_gb_area)
             csl_data.append(misorientation_data_single_neighbor)
     
     log.info('Completed computing type of grain boundaries')

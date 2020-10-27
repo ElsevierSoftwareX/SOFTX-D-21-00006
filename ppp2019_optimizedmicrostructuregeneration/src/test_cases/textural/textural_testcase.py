@@ -272,7 +272,9 @@ def textural_testcase(store_folder, tessellation, dimension, \
 
     required_texture = np.array([2, 1, 0])
     rand_quat_flag = True
-    type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    parent_function_name = inspect.stack()[1][3]
+    skewed_boundary_flag = False
+    type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, size_of_simulation_box, skewed_boundary_flag, log_level)
 
     from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import available_required_texture
     from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import type_of_csl_data
@@ -304,8 +306,8 @@ def textural_testcase(store_folder, tessellation, dimension, \
         f.write("\n# Grain 1, Grain 2, Disorientation angle, Disorientation axis \n")
         np.savetxt(f, disorientation_angle, delimiter=',', fmt="%.4f")
         f.write("\n \n# Type of Grain Boundaries \n")
-        f.write("\n# Grain 1, Grain 2, Misorientation angle, Misorientation axis, Type of Grain Boundary \n")
-        np.savetxt(f, type_of_grain_boundaries, delimiter=',', fmt='%.4f %.4f %.4f %.4f %.4f %.4f %.4f')
+        f.write("\n# Grain 1, Grain 2, Misorientation angle, Misorientation axis, Type of Grain Boundary, Grain Boundary area \n")
+        np.savetxt(f, type_of_grain_boundaries, delimiter=',', fmt='%.14f,%.14f,%.14f,%.14f,%.14f,%.14f,%s,%.14f')
         f.write("\n# Schmid Factors")
         f.write("\n# Grain number, Maximum schmid factor, Respective slip plane and slip direction (Slip System) \n")
         np.savetxt(f, schmid_factors, delimiter=',', fmt="%.4f")

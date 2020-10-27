@@ -855,7 +855,7 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
             misorientation_data_single_neighbor.append(smallest_rotation_angle)
             misorientation_data_single_neighbor += list(smallest_rotation_axis)
             misorientation_data_single_neighbor.append(type_of_csl)
-            misorientation_data_single_neighbor.append(current_pair_gb_area)
+            misorientation_data_single_neighbor.append(current_pair_gb_area[0]) # slicing or else appended as 1 element array object
             csl_data.append(misorientation_data_single_neighbor)
     
     log.info('Completed computing type of grain boundaries')

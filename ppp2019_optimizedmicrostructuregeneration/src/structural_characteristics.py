@@ -142,7 +142,7 @@ def grain_size_distribution(dimension, tessellation_og, limit, log_level):
     log.info('Completed computing grain sizes')    
     return np.around(grain_sizes, decimals=12)
 
-def number_of_neighbors(dimension, tessellation_og, log_level):
+def number_of_neighbors(dimension, tessellation_og, limit, log_level):
     """
     Compute number of neighbors for all grains.
 
@@ -168,6 +168,9 @@ def number_of_neighbors(dimension, tessellation_og, log_level):
             9. face_area_list
             10. number_of_edges_list
 
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+
     log_level: string
         Logger level to be used.
 
@@ -183,11 +186,12 @@ def number_of_neighbors(dimension, tessellation_og, log_level):
     tessellation = copy.deepcopy(tessellation_og)
 
     ## Calculating the number of neighbors based on dimension
-    grain_neighbors = []                                                        # column names are: Grain number, number of neighbors, grain indexes of neighbors
+    grain_neighbors = []                                                        # column names are: Grain number, grain volume/area, number of neighbors, grain indexes of neighbors
     if dimension == 2:
         for grain_index in range(tessellation['number_of_grains']):
             individual_gr_neighbors = []                                        # Initializing an empty list where individual grain data would be stored
             individual_gr_neighbors.append(grain_index)
+            individual_gr_neighbors.append(tessellation['volume_list'][grain_index]/limit[2])   # Grain area in case of quasi-2D
             individual_gr_neighbors.append(len(tessellation['neighbors_list'][grain_index])- dimension)   # Ignoring self grain number from list of neighbors
             individual_gr_neighbors = individual_gr_neighbors + [val for val in tessellation['neighbors_list'][grain_index] if val != grain_index] # concatenating lists of grain indices of neighboring grains
             grain_neighbors.append(individual_gr_neighbors)                     # Appending individual grain data to main list
@@ -196,6 +200,7 @@ def number_of_neighbors(dimension, tessellation_og, log_level):
         for grain_index in range(tessellation['number_of_grains']):
             individual_gr_neighbors = []
             individual_gr_neighbors.append(grain_index)
+            individual_gr_neighbors.append(tessellation['volume_list'][grain_index])   # Grain volume
             individual_gr_neighbors.append(len(tessellation['neighbors_list'][grain_index]))
             individual_gr_neighbors = individual_gr_neighbors + [val for val in tessellation['neighbors_list'][grain_index]]
             grain_neighbors.append(individual_gr_neighbors)

@@ -134,8 +134,8 @@ def hcp_3d_testcase(tessellation, dimension, size_of_simulation_box, \
         assert np.all([np.around(grain_size_distributions[:, 1], decimals=2) == np.around(np.cbrt((size_of_simulation_box**3 * 6)/(np.pi * copy.deepcopy(tessellation['number_of_grains'])) ), decimals=2)])                               # The grain sizes should be the same
         
         ## Number of neighbors
-        assert np.all([np.isclose(num[1], number_of_neighbor[0][1]) for num in number_of_neighbor])    # The no. of neighbors should be the same
-        assert np.all([np.isclose(num[1], 10) for num in number_of_neighbor])                           # The no. of neighbors should be the same
+        assert np.all([np.isclose(num[2], number_of_neighbor[0][2]) for num in number_of_neighbor])    # The no. of neighbors should be the same
+        assert np.all([np.isclose(num[2], 10) for num in number_of_neighbor])                           # The no. of neighbors should be the same
     except AssertionError:
         log.exception('hcp_3d_testcase failed !!')
 

@@ -298,8 +298,8 @@ class optimize_class():
                 data_dictionary['0'] = grain_size_distributions                     # Key as integer refers to the integer representing the characteristic feature
 
             elif parameter is 'number_of_neighbors':
-                number_of_neighbor = number_of_neighbors(dimension, tessellation, self.log_level)
-                neighbors_array = np.array([v[1] for v in number_of_neighbor])
+                number_of_neighbor = number_of_neighbors(dimension, tessellation, limit, self.log_level)
+                neighbors_array = np.array([v[2] for v in number_of_neighbor])
                 hist, bins = np.histogram(neighbors_array, bins= number_of_bins, density= True)
                 data_dictionary['1'] = number_of_neighbor                     # Key as integer refers to the integer representing the characteristic feature
 

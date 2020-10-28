@@ -163,7 +163,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
 
     ## Structural Characteristics
     grain_size_distributions = np.around(grain_size_distribution(dimension, tessellation, limit, log_level), decimals=14)
-    number_of_neighbor = number_of_neighbors(dimension, tessellation, log_level)
+    number_of_neighbor = number_of_neighbors(dimension, tessellation, limit, log_level)
     grain_boundary_area_distribution, all_vertices_list = grain_boundary_areas(dimension, limit, tessellation, parent_function_name, skewed_boundary_flag, log_level)
     junction_lengths = junction_length(dimension, tessellation, log_level)
     junction_angles_degrees = junction_angle(dimension, tessellation, log_level)
@@ -443,7 +443,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write('# Grain Number, Grain Size, Grain volume/area \n')
         np.savetxt(f, grain_size_distributions, delimiter=',', fmt="%.14f")
         f.write("\n# Number of Neighbors \n")
-        f.write("# Grain Number, Number of neighbors, List of indices of all neighboring grains \n")
+        f.write("# Grain Number, Grain volume, Number of neighbors, List of indices of all neighboring grains \n")
         for line in number_of_neighbor:
             np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.14f")
             f.write("\n")
@@ -533,7 +533,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax[0][0].tick_params(labelsize=label_size)
     
     ## Plotting Number of Neighbors
-    neighbors_array = np.array([v[1] for v in number_of_neighbor])
+    neighbors_array = np.array([v[2] for v in number_of_neighbor])
     hist, bins = np.histogram(neighbors_array, bins= number_of_bins, density= True)
     #bins = 0.5 * (bins[1:] + bins[:-1])
     ax[0][1].plot(bins[:-1], hist)

@@ -272,7 +272,6 @@ def textural_testcase(store_folder, tessellation, dimension, \
 
     required_texture = np.array([2, 1, 0])
     rand_quat_flag = True
-    parent_function_name = inspect.stack()[1][3]
     skewed_boundary_flag = False
     type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, size_of_simulation_box, skewed_boundary_flag, log_level)
 

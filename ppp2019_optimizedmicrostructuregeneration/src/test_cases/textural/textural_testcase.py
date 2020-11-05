@@ -154,7 +154,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     log = set_logger(name_str, 'log_data.log', log_level)
     #size_of_simulation_box = 10.0
     #spacing_length = 1
-    #limit = np.array([size_of_simulation_box, size_of_simulation_box, size_of_simulation_box])
+    limit = np.array([size_of_simulation_box, size_of_simulation_box, size_of_simulation_box])
     #seed_array = np.zeros([(int(limit[0]) + 1) * (int(limit[1]) + 1) * (int(limit[2]) + 1), 3])
     #dimension = 2
     #material = "Textural_Test"
@@ -221,8 +221,8 @@ def textural_testcase(store_folder, tessellation, dimension, \
     ## With random orientations
     orientation_data = None
     stress_direction = np.array([1, 0, 0])
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation, log_level)
-    assert np.all([factors[1] <= 0.5 for factors in schmid_factors])
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    assert np.all([factors[2] <= 0.5 for factors in schmid_factors])
 
     with open(str(output_file_path), 'a+') as f:
         f.write("\n \n Verification matrix for schmid factor for stress direction (1, 0, 0) \n")
@@ -234,9 +234,9 @@ def textural_testcase(store_folder, tessellation, dimension, \
     orientation_data = np.broadcast_to(orientation_quaternion, (seed_array_unique.shape[0], 4))   # Assigning same orientation to each grain
 
     stress_direction = np.array([1, -1, 0])
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation, log_level)
-    assert np.all([factors[1] <= 0.5 for factors in schmid_factors])
-    assert np.all([np.isclose(factor[1], 0.408, atol=1e-3) for factor in schmid_factors])
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    assert np.all([factors[2] <= 0.5 for factors in schmid_factors])
+    assert np.all([np.isclose(factor[2], 0.408, atol=1e-3) for factor in schmid_factors])
 
     with open(str(output_file_path), 'a+') as f:
         f.write("\n \n Verification matrix for schmid factor for stress direction (1, -1, 0) \n")
@@ -245,9 +245,9 @@ def textural_testcase(store_folder, tessellation, dimension, \
 
 
     stress_direction = np.array([1, 0, 0])
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation, log_level)
-    assert np.all([factors[1] <= 0.5 for factors in schmid_factors])
-    assert np.all([np.isclose(factor[1], 0.408, atol=1e-3) for factor in schmid_factors])
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    assert np.all([factors[2] <= 0.5 for factors in schmid_factors])
+    assert np.all([np.isclose(factor[2], 0.408, atol=1e-3) for factor in schmid_factors])
 
     with open(str(output_file_path), 'a+') as f:
         f.write("\n \n Verification matrix for schmid factor for stress direction (1, 0, 0) \n")
@@ -256,9 +256,9 @@ def textural_testcase(store_folder, tessellation, dimension, \
 
 
     stress_direction = np.array([1, 1, 0])
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation, log_level)
-    assert np.all([factors[1] <= 0.5 for factors in schmid_factors])
-    assert np.all([np.isclose(factor[1], 0.408, atol=1e-3) for factor in schmid_factors])
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    assert np.all([factors[2] <= 0.5 for factors in schmid_factors])
+    assert np.all([np.isclose(factor[2], 0.408, atol=1e-3) for factor in schmid_factors])
 
     with open(str(output_file_path), 'a+') as f:
         f.write("\n \n Verification matrix for schmid factor for stress direction (1, 1, 0) \n")
@@ -273,7 +273,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     required_texture = np.array([2, 1, 0])
     rand_quat_flag = True
     skewed_boundary_flag = False
-    type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, size_of_simulation_box, skewed_boundary_flag, log_level)
+    type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
 
     from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import available_required_texture
     from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import type_of_csl_data
@@ -308,7 +308,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
         f.write("\n# Grain 1, Grain 2, Misorientation angle, Misorientation axis, Type of Grain Boundary, Grain Boundary area \n")
         np.savetxt(f, type_of_grain_boundaries, delimiter=',', fmt='%.14f,%.14f,%.14f,%.14f,%.14f,%.14f,%s,%.14f')
         f.write("\n# Schmid Factors")
-        f.write("\n# Grain number, Maximum schmid factor, Respective slip plane and slip direction (Slip System) \n")
+        f.write("\n# Grain number, Grain sizes, Maximum schmid factor, Respective slip plane and slip direction (Slip System), 2nd Maximum schmid factor, Respective Slip System, 3rd Maximum schmid factor, Respective Slip System \n")
         np.savetxt(f, schmid_factors, delimiter=',', fmt="%.4f")
 
     log.info('textural_testcase passed !!')

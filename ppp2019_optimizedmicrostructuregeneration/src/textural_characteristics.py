@@ -866,7 +866,7 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
 # normalize each slip plane and direction or else it gives a huge difference in results
 #######################################################################################
 
-def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation_og, log_level):
+def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation_og, log_level):
     """
     Compute Schmid factors.
 
@@ -887,6 +887,9 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction,
 
     dimension: integer    
         Dimension of study (2 or 3)
+
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
 
     stress_direction: array of length 3    
         Direction of loading
@@ -914,7 +917,9 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction,
     Returns
     -------
         1. An array consisting of Schmid Factor related data with column names as 
-            Grain no., Schmid factor, Slip plane and direction (Slip System).
+            Grain no., Schmid factor, Slip plane and direction (Slip System), 
+            2nd max Schmid factor, Slip system and 3rd max Schmid factor, Slip 
+            system.
         2. An array of generated or inherited orientations data. This is returned to
             ensure that when random or sharp texture orientations are generated, they 
             are generated only once and same are used in other functions such as 
@@ -923,6 +928,13 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction,
 
     log = set_logger(name_str, 'log_data.log', log_level)
     log.debug('Started computing Schmid factors')
+    tessellation = copy.deepcopy(tessellation_og)
+
+    ## Computing grain size distribution
+    grain_sizes_data = grain_size_distribution(dimension, tessellation, limit, log_level)
+    grain_sizes = grain_sizes_data[:, 1]
+
+    ## copying tessellation to avoid errors due to call by reference
     tessellation = copy.deepcopy(tessellation_og)
 
     ## Checking the function input arguments
@@ -961,7 +973,7 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction,
         inverse_quaternions_of_grains[i, 1:5] = quaternion.as_float_array(quaternion_to_be_inversed.inverse())
     
     ## Initializing a list where all data related to Schmid Factor would be stored
-    schmid_factors = []                                                         # Column names are: grain, max schmid factor, respective slip plane and slip direction
+    schmid_factors = []                                                         # Column names are: grain, grain size, 1st max schmid factor, respective slip plane and slip direction, 2nd max schmid factor, respective slip plane and slip direction, 3rd max schmid factor, respective slip plane and slip direction
 
     for grain in range(number_of_grains):
         
@@ -1003,10 +1015,21 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction,
         
 
         all_schmid_factors_grain = np.abs(np.array(all_schmid_factors_grain))   # Finding absolute values of each schmid factor
-        maximum_schmid_factor_index = np.argmax(all_schmid_factors_grain)       # Finding index of Maximum schid factor
+        # maximum_schmid_factor_index = np.argmax(all_schmid_factors_grain)       # Finding index of Maximum schid factor
+        # second_max_schmid_factor_index = 
+        ## based on answer "https://stackoverflow.com/questions/6910641/how-do-i-get-indices-of-n-maximum-values-in-a-numpy-array"
+        ## by Fred Foo
+
+        no_sorted_indices_max_schmid_factor = np.argpartition(all_schmid_factors_grain, -3)[-3:]       # Indices of max 3 schmid factors
+        sorted_indices_max_schmid_factor = no_sorted_indices_max_schmid_factor[np.argsort(all_schmid_factors_grain[no_sorted_indices_max_schmid_factor])]   # Indices are in ascending order of schmid factor values
+        indices_schmid_descending = sorted_indices_max_schmid_factor[::-1]      # Indices are in descending order of schmid factor values
+        
         
         ## Appending all the Schmid Factor related data to main list
-        schmid_factor_data_individual_grain = [grain] + [all_schmid_factors_grain[maximum_schmid_factor_index]] + list(slip_systems[maximum_schmid_factor_index])
+        schmid_factor_data_individual_grain = [grain] + [grain_sizes[grain]] \
+            + [all_schmid_factors_grain[indices_schmid_descending[0]]] + list(slip_systems[indices_schmid_descending[0]]) \
+            + [all_schmid_factors_grain[indices_schmid_descending[1]]] + list(slip_systems[indices_schmid_descending[1]]) \
+            + [all_schmid_factors_grain[indices_schmid_descending[2]]] + list(slip_systems[indices_schmid_descending[2]])
         schmid_factors.append(schmid_factor_data_individual_grain)
     
     log.info('Completed computing Schmid factors')

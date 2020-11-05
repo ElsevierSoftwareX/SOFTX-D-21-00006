@@ -344,7 +344,7 @@ class optimize_class():
                 data_dictionary['7'] = type_of_grain_boundaries                     # Key as integer refers to the integer representing the characteristic feature
 
             elif parameter is 'schmid_factor':
-                schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, stress_direction, orientation_data, tessellation, self.log_level)
+                schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, self.log_level)
                 all_schmid_factors = schmid_factors[:, 1]
                 hist, bins = np.histogram(all_schmid_factors, bins = number_of_bins, density= True)
                 data_dictionary['8'] = schmid_factors                     # Key as integer refers to the integer representing the characteristic feature

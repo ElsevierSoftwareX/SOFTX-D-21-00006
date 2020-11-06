@@ -77,7 +77,7 @@ def two_seed_testcase(store_folder, version, now, material, tessellation, \
     dimension: integer    
         Dimension of study (2 or 3)
 
-    size_of_simulation_box: array of length 3
+    size_of_simulation_box: float
         Size of simulation box (array of length along X, Y, Z directions)
 
     spacing_length: float
@@ -151,6 +151,8 @@ def two_seed_testcase(store_folder, version, now, material, tessellation, \
     storage_folder
     """
     log = set_logger(name_str, 'log_data.log', log_level)
+    limit = np.array([size_of_simulation_box, size_of_simulation_box, size_of_simulation_box])
+    
     total_volume = 0    
     assert np.isclose(copy.deepcopy(tessellation['volume_list'][0]) , (size_of_simulation_box*size_of_simulation_box*length_z)/2) ## Testing the volume of each cell
     assert np.isclose(copy.deepcopy(tessellation['volume_list'][1]) , (size_of_simulation_box*size_of_simulation_box*length_z)/2) ## Testing the volume of each cell
@@ -162,10 +164,10 @@ def two_seed_testcase(store_folder, version, now, material, tessellation, \
     #tessellation = create_tessellations(seed_array_unique, limit)
     
     # Σ = 15 grain boundary orientations
-    orientation_data = np.array([[1, 0, 0, 0], [0.7745967, 0.5163978, 0.2581989, 0.2581989]])                               
-    disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
-    skewed_boundary_flag = False
-    type_of_grain_boundaries_sigma_15, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, size_of_simulation_box, skewed_boundary_flag, log_level)
+    orientation_data = np.array([[1, 0, 0, 0], [0.7745967, 0.5163978, 0.2581989, 0.2581989]])
+    skewed_boundary_flag = False                               
+    disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    type_of_grain_boundaries_sigma_15, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
     assert (np.all(type_of_grain_boundaries_sigma_15[:, 6] == 15))
     assert (np.all(np.isclose(disorientation_angle[:, 2], 48.2, atol=1e-1)))
 
@@ -188,9 +190,9 @@ def two_seed_testcase(store_folder, version, now, material, tessellation, \
     
     # Σ = 5 grain boundary orientations
     orientation_data = np.array([[1, 0, 0, 0], [0.6710739, 0.6706129, 0.2235376, 0.2235376]])
-    disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
-    skewed_boundary_flag = False
-    type_of_grain_boundaries_sigma_5, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, size_of_simulation_box, skewed_boundary_flag, log_level)
+    skewed_boundary_flag = False 
+    disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    type_of_grain_boundaries_sigma_5, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
     assert (np.all(type_of_grain_boundaries_sigma_5[:, 6] == 5))
     assert (np.all(np.isclose(disorientation_angle[:, 2], 36.9, atol=1e-1)))
 
@@ -205,9 +207,9 @@ def two_seed_testcase(store_folder, version, now, material, tessellation, \
 
     # Σ = 3 grain boundary orientations
     orientation_data = np.array([[1, 0, 0, 0], [0.8166416, 0.4081033, 0.4081033, 0]])
-    disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
-    skewed_boundary_flag = False
-    type_of_grain_boundaries_sigma_3, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, size_of_simulation_box, skewed_boundary_flag, log_level)
+    skewed_boundary_flag = False 
+    disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    type_of_grain_boundaries_sigma_3, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
     assert (np.all(type_of_grain_boundaries_sigma_3[:, 6] == 3))
     assert (np.all(np.isclose(disorientation_angle[:, 2], 60.0, atol=1e-1)))
 
@@ -222,9 +224,9 @@ def two_seed_testcase(store_folder, version, now, material, tessellation, \
 
     # Σ = 7 grain boundary orientations
     orientation_data = np.array([[1, 0, 0, 0], [0.8017756, 0.5345322, 0.2672661, 0]])
-    disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
-    skewed_boundary_flag = False
-    type_of_grain_boundaries_sigma_7, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, size_of_simulation_box, skewed_boundary_flag, log_level)
+    skewed_boundary_flag = False 
+    disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    type_of_grain_boundaries_sigma_7, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
     assert (np.all(type_of_grain_boundaries_sigma_7[:, 6] == 7))
     assert (np.all(np.isclose(disorientation_angle[:, 2], 38.2, atol=1e-1)))
 

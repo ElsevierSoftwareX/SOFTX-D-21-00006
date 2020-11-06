@@ -74,7 +74,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     dimension: integer    
         Dimension of study (2 or 3)
 
-    size_of_simulation_box: array of length 3
+    size_of_simulation_box: float
         Size of simulation box (array of length along X, Y, Z directions)
 
     spacing_length: float
@@ -160,6 +160,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     #material = "Textural_Test"
     #required_texture = np.array([1, 1, 1])
     rand_quat_flag = True
+    skewed_boundary_flag = False
 
     #seed_array_unique = cubic_lattice_2D(limit, spacing_length)
     
@@ -181,7 +182,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     ## Due to cubic symmetry all disorientation angles should be less than 62.8 degrees
     
     orientation_data = None
-    disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
     assert np.all([angle[2] <= 62.8 for angle in disorientation_angle])
 
     ## Saving to array_verification_file.txt
@@ -195,7 +196,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     ## Testing with random orientation but same random orientation for each grain
     orientation_quaternion = sharp_texture_quaternions(1, required_texture, log_level)                       # Generating a random quaternion
     orientation_data = np.broadcast_to(orientation_quaternion, (seed_array_unique.shape[0], 4))   # Assigning same orientation to each grain
-    disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
     assert np.all([angle[2] <= 62.8 for angle in disorientation_angle])
     assert np.all([angle[2] == 0 for angle in disorientation_angle])
 
@@ -208,7 +209,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     ## Testing for all grains having same crystal orientation
     orientation_quaternion = np.array([1, 0, 0, 0])
     orientation_data = np.broadcast_to(orientation_quaternion, (seed_array_unique.shape[0], 4))   # Assigning same orientation to each grain
-    disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
+    disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
     assert np.all([angle[2] <= 62.8 for angle in disorientation_angle])
     assert np.all([angle[2] == 0 for angle in disorientation_angle])
     
@@ -272,7 +273,6 @@ def textural_testcase(store_folder, tessellation, dimension, \
 
     required_texture = np.array([2, 1, 0])
     rand_quat_flag = True
-    skewed_boundary_flag = False
     type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
 
     from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import available_required_texture
@@ -302,7 +302,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
         f.write("\nDimension: " + str(dimension))
         f.write("\nMaterial Name: " + material)
         f.write("\n \n# Disorientation Angles \n")
-        f.write("\n# Grain 1, Grain 2, Disorientation angle, Disorientation axis \n")
+        f.write("\n# Grain 1, Grain 2, Disorientation angle, Disorientation axis, GB area \n")
         np.savetxt(f, disorientation_angle, delimiter=',', fmt="%.4f")
         f.write("\n \n# Type of Grain Boundaries \n")
         f.write("\n# Grain 1, Grain 2, Misorientation angle, Misorientation axis, Type of Grain Boundary, Grain Boundary area \n")

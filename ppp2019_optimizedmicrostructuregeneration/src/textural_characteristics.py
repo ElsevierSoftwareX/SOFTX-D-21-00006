@@ -494,7 +494,7 @@ def random_quaternions_generator(number_of_grains, log_level):
     log.info('Completed generating random orientation quaternions')
     return random_quats_reperesentation
 
-def disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation_og, log_level):
+def disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation_og, log_level):
     """
     Compute disorientation angles between grains.
 
@@ -507,6 +507,16 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
 
     Parameters
     ----------
+    dimension: integer    
+        Dimension of study (2 or 3)
+
+    limit: array
+        Size of simulation box (array of length along X, Y, Z directions)
+
+    skewed_boundary_flag: boolean 
+        Flag to specify if skewed grain boundaries are required. Only functional
+        in quasi-2D case.
+    
     required_texture: 1D array of length 3
         Direction axis along which texture is to be generated.
 
@@ -548,6 +558,12 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
     log.debug('Started computing disorientation angles')
     tessellation = copy.deepcopy(tessellation_og)
 
+    parent_function_name = inspect.stack()[1][3]
+    grain_boundary_area, all_vertices_list = grain_boundary_areas(dimension, limit, tessellation, parent_function_name, skewed_boundary_flag, log_level)
+
+    ## Again creating a deepcopy to avoid call by reference issues
+    tessellation = copy.deepcopy(tessellation_og)
+
     number_of_grains = copy.deepcopy(tessellation['number_of_grains'])                                        # extracting the total number of grains    
     quaternions_of_grains = np.zeros([number_of_grains, 5])                     # Array with column names: Gr. no., quaternions
     quaternions_of_grains[:, 0] = range(number_of_grains)                       # assigning gr. no. to first column
@@ -562,7 +578,7 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
 
     neighbors_each_grain = copy.deepcopy(tessellation['neighbors_list']) #[v.neighbors() for v in tessellation]                # extracting the neighbors of each grain
 
-    disorientation_data = []                                                    ## column names: grain 1, grain 2, disorientation angle, disorientation axis
+    disorientation_data = []                                                    ## column names: grain 1, grain 2, disorientation angle, disorientation axis, GB area
     for grain in range(number_of_grains):
         
         for neighbor in neighbors_each_grain[grain]:                            # iterating through each neighbor of respective grain
@@ -626,9 +642,18 @@ def disorientation_angles(required_texture, rand_quat_flag, orientation_data, te
             if rand_quat_flag is False:
                 assert np.all(np.allclose(np.abs(required_texture_test), np.abs(disorientation_axis)))
             
+            ## Finding GB area for this current pair of grain and neighbor            
+            ## index of grain-neighbor pair in grain_boundary_area
+            ## It is to be noted that the sequence of GB area is exactly the same as 
+            ## that of Type of GB. Hence it can also be horizontally stacked instead
+            ## of finding matching pair. Matching is done to be on safer side.
+            index_pair_gb_area = np.where((grain_boundary_area[:, 1] == grain) & (grain_boundary_area[:, 2] == neighbor))[0]
+            current_pair_gb_area = grain_boundary_area[index_pair_gb_area, 3]   # 4th column is the area
+
             ## Storing the corresponding disorientation angle and axis to main array
             disorientation_data_single_neighbor.append(disorientation_angle)
             disorientation_data_single_neighbor = disorientation_data_single_neighbor + disorientation_axis
+            disorientation_data_single_neighbor.append(current_pair_gb_area[0])
             disorientation_data.append(disorientation_data_single_neighbor)
 
     log.info('Completed computing disorientation angles')

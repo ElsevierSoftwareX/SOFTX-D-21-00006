@@ -331,7 +331,7 @@ class optimize_class():
                 data_dictionary['5b'] = distance_btw_grain_array                     # Key as integer refers to the integer representing the characteristic feature
 
             elif parameter is 'disorientation_angles':
-                disorientation_angle, orientation_data = disorientation_angles(required_texture, rand_quat_flag, orientation_data, tessellation, self.log_level)
+                disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, self.log_level)
                 all_disorientation_angles = [v[2] for v in disorientation_angle]
                 hist, bins = np.histogram(all_disorientation_angles, bins= number_of_bins, density= True)
                 data_dictionary['6'] = disorientation_angle                     # Key as integer refers to the integer representing the characteristic feature

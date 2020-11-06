@@ -115,7 +115,8 @@ def grain_size_distribution(dimension, tessellation_og, limit, log_level):
     Returns
     -------
     The function returns an array of all the grain sizes in terms of radius. The
-    first column is the grain number and second column consists of grain sizes.
+    first column is the grain number, second column consists of grain sizes and
+    third column consists of grain volume/area.
     """
 
     log = set_logger(name_str, 'log_data.log', log_level)

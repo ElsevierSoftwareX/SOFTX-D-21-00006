@@ -547,7 +547,7 @@ def disorientation_angles(dimension, limit, skewed_boundary_flag, required_textu
     Returns
     -------
         1. An array consisting of columns grain 1, grain 2, disorientation 
-            angle, disorientation axis.
+            angle, disorientation axis, GB area.
         2. An array of generated or inherited orientations data. This is returned to
             ensure that when random or sharp texture orientations are generated, they 
             are generated only once and same are used in other functions such as 

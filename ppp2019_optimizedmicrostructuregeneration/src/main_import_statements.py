@@ -41,6 +41,7 @@ import quaternion
 import numba
 import click
 import copy
+import scipy
 from scipy.stats import lognorm
 from scipy.optimize import minimize
 import matplotlib.animation as animation

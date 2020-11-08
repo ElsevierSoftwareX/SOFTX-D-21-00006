@@ -28,7 +28,7 @@ def function_formula(combined_user_data, combined_predicted_data, start_row_comb
     very close and attracts them when they are very far away.
 
     Returns: Sum of cost value obtained by considering both distance between grains
-    and junction length.
+    and ridge length.
     """
     C = 0.6
     M = 0.6
@@ -51,7 +51,7 @@ def function_formula(combined_user_data, combined_predicted_data, start_row_comb
     cost_value_dist = mathematical_function(C, M, all_distances, CritDist_dist)
 
     CritDist_edge = 0.05*min(args[4][:args[1]])
-    all_junction_lengths = np.array([v[2] for v in data_dictionary['3'] if v[2] != limit[2]]) #######REMEMBER#######
-    cost_value_edge = mathematical_function(C, M, all_junction_lengths, CritDist_edge)
+    all_ridge_lengths = np.array([v[3]/limit[2] for v in data_dictionary['2']]) #######REMEMBER#######
+    cost_value_edge = mathematical_function(C, M, all_ridge_lengths, CritDist_edge)
 
     return (cost_value_dist + cost_value_edge)

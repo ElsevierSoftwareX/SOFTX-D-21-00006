@@ -277,7 +277,7 @@ class optimize_class():
             args[15] = tessellation                                             ## Dummy variable is replaced with actual tessellation data
         except ValueError:
             log.exception('tessellation creation failed in cost function and infinity would be returned as cost function value')
-            return np.inf
+            return 1e5
 
         ## Creating an empty array for storing the USER and PREDICTED data as an array
         combined_user_data = np.empty([0, 2])

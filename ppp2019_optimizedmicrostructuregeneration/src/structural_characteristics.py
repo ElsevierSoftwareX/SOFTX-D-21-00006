@@ -757,9 +757,14 @@ def distance_btw_grains(dimension, limit, tessellation_og, log_level):
 
         distance_array[row_index, :] = np.min(distance_array_all_periodic, axis=1)
     
-    ## Extracting upper triangular matrix from array (k represents offset from the diagonal)
-    distance_array_1d = distance_array[np.triu_indices(tessellation['number_of_grains'], k=1)]
+    ## Computing distance between neighbors
+    neighbors_list_data = tessellation['neighbors_list']
+    distance_btw_neighbors_1d = []                                                          # empty list where distance between neighbors would be stored
+    for index_grain, grain in enumerate(neighbors_list_data):
+        for index_neighbor, neighbor_number in enumerate(grain):
+            if (index_grain != neighbor_number):
+                distance_btw_neighbors_1d.append(distance_array[index_grain, neighbor_number])
 
     log.info('Completed computing distance between grains')
-    return distance_array, distance_array_1d
+    return distance_array, distance_btw_neighbors_1d
     

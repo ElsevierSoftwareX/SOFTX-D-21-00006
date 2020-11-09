@@ -159,7 +159,7 @@ def two_seed_testcase(store_folder, version, now, material, tessellation, \
     for v in range(copy.deepcopy(tessellation['number_of_grains'])):
         total_volume += copy.deepcopy(tessellation['volume_list'][v]) 
     assert np.isclose(total_volume, size_of_simulation_box*size_of_simulation_box*length_z)                                    ## Testing the total volume of the cells
-    assert np.isclose(distance_btw_grain_1d, size_of_simulation_box/2)
+    assert np.all(np.isclose(distance_btw_grain_1d, size_of_simulation_box/2))
 
     #tessellation = create_tessellations(seed_array_unique, limit)
     

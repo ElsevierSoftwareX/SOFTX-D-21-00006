@@ -469,7 +469,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write("\nDimension: " + str(dimension))
         f.write("\nMaterial Name: " + material)
         f.write("\n \n# Grain sizes \n")
-        f.write('# Grain Number, Grain Size, Grain volume/area \n')
+        f.write('# Grain Number, Grain Size, Grain Volume or Area (for 3D or 2D resp.) \n')
         np.savetxt(f, grain_size_distributions, delimiter=',', fmt="%.14f")
         f.write("\n# Number of Neighbors \n")
         f.write("# Grain Number, Grain volume, Number of neighbors, List of indices of all neighboring grains \n")
@@ -560,13 +560,13 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     grain_sizes = grain_size_distributions[:, 1]
     mean_grain_size = np.mean(grain_sizes)
     normalized_grain_sizes = grain_sizes/mean_grain_size
-    hist, bins = np.histogram(normalized_grain_sizes, bins= number_of_bins, density= True)
+    hist, bins = np.histogram(normalized_grain_sizes, bins= number_of_bins)
     #bins = 0.5 * (bins[1:] + bins[:-1])
     ax = fig.add_subplot(nrows, ncols, 1)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
-    ax.set_xlabel("<Grain Sizes>", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= True)", fontsize=font_size_value)
+    ax.set_xlabel("Grain sizes/<Grain Sizes>", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     ## Subplot 2
@@ -577,20 +577,20 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax = fig.add_subplot(nrows, ncols, 2)
     ax.plot(norm_grain_size_stat[:-1], vol_or_area_stat)
     ax.scatter(norm_grain_size_stat[:-1], vol_or_area_stat)
-    ax.set_xlabel("<Grain Sizes>", fontsize=font_size_value)
-    ax.set_ylabel("Volume/Area Fraction", fontsize=font_size_value)
+    ax.set_xlabel("Grain sizes/<Grain Sizes>", fontsize=font_size_value)
+    ax.set_ylabel("Volume or Area (for 3D or 2D resp.) Fraction", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     ## Plotting Number of Neighbors
     ## Subplot 1
     neighbors_array = np.array([v[2] for v in number_of_neighbor])
-    hist, bins = np.histogram(neighbors_array, bins= number_of_bins, density= True)
+    hist, bins = np.histogram(neighbors_array, bins= number_of_bins)
     #bins = 0.5 * (bins[1:] + bins[:-1])
     ax = fig.add_subplot(nrows, ncols, 3)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
     ax.set_xlabel("Number of Neighbors", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= True)", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     ## Subplot 2
@@ -603,7 +603,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax.plot(neighbor_stat[:-1], vol_or_area_stat)
     ax.scatter(neighbor_stat[:-1], vol_or_area_stat)
     ax.set_xlabel("Number of Neighbors", fontsize=font_size_value)
-    ax.set_ylabel("Volume/Area Fraction", fontsize=font_size_value)
+    ax.set_ylabel("Volume or Area (for 3D or 2D resp.) Fraction", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     
@@ -618,20 +618,20 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax = fig.add_subplot(nrows, ncols, 5)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
-    ax.set_xlabel("<Grain Boundary Areas>", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= False)", fontsize=font_size_value)
+    ax.set_xlabel("Grain Boundary Areas/<Grain Boundary Areas>", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     ## Subplot 2
-    fraction_gb_count = np.ones(len(normalized_gb_areas))/len(normalized_gb_areas)
+    fraction_gb_areas = all_areas/np.sum(all_areas)
 
-    gb_count_stat, gb_area_stat = stats_binned_statistics(normalized_gb_areas, fraction_gb_count, number_of_bins, 'sum')
+    gb_count_stat, gb_area_stat = stats_binned_statistics(normalized_gb_areas, fraction_gb_areas, number_of_bins, 'sum')
 
     ax = fig.add_subplot(nrows, ncols, 6)
     ax.plot(gb_area_stat[:-1], gb_count_stat)
     ax.scatter(gb_area_stat[:-1], gb_count_stat)
-    ax.set_xlabel("<Grain Boundary Areas>", fontsize=font_size_value)
-    ax.set_ylabel("No. of such GB ÷ Total count of GB", fontsize=font_size_value)
+    ax.set_xlabel("Grain Boundary Areas/<Grain Boundary Areas>", fontsize=font_size_value)
+    ax.set_ylabel("Fraction of GB area", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
     
     ## Plotting Junction Lengths
@@ -646,8 +646,8 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax = fig.add_subplot(nrows, ncols, 7)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
-    ax.set_xlabel("<Junction Lengths>", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= False)", fontsize=font_size_value)
+    ax.set_xlabel("Junction Lengths/<Junction Lengths>", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     ## Subplot 2
@@ -658,8 +658,8 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax = fig.add_subplot(nrows, ncols, 8)
     ax.plot(junction_stat[:-1], junction_count_stat)
     ax.scatter(junction_stat[:-1], junction_count_stat)
-    ax.set_xlabel("<Junction Lengths>", fontsize=font_size_value)
-    ax.set_ylabel("No. of such junctions ÷ Total count of junctions", fontsize=font_size_value)
+    ax.set_xlabel("Junction Lengths/<Junction Lengths>", fontsize=font_size_value)
+    ax.set_ylabel("Fraction of junctions count", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
 
@@ -667,26 +667,27 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Subplot 1
     all_angles = [v[2::2] for v in junction_angles_degrees]
     all_angles_flatten = np.array([w for v in all_angles for w in v])
-    hist, bins = np.histogram(all_angles_flatten, bins= number_of_bins, density= True)
+    hist, bins = np.histogram(all_angles_flatten, bins= number_of_bins)
     #bins = 0.5 * (bins[1:] + bins[:-1])
 
     ax = fig.add_subplot(nrows, ncols, 9)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
     ax.set_xlabel("Junction angles", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= True)", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     ## Subplot 2
     subtract_ideal_tj_angle = all_angles_flatten - 120.0                          # 120° is considered as ideal TJ angle
-    hist, bins = np.histogram(subtract_ideal_tj_angle, bins= number_of_bins, density= True)
+    hist, bins = np.histogram(subtract_ideal_tj_angle, bins= number_of_bins)
     #bins = 0.5 * (bins[1:] + bins[:-1])
 
     ax = fig.add_subplot(nrows, ncols, 10)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
     ax.set_xlabel("Junction angles - ideal TJ angle", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= True)", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
+    ax.text(0.5, 0.5, 'Note: ideal TJ angle = 120°', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=font_size_value/2)
     ax.tick_params(labelsize=label_size)
 
     ## Plotting Distance between grains
@@ -694,13 +695,13 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     mean_distance = np.mean(all_distances)
     normalized_distances = all_distances/mean_distance
 
-    hist, bins = np.histogram(normalized_distances, bins= number_of_bins, density= True)
+    hist, bins = np.histogram(normalized_distances, bins= number_of_bins)
 
     ax = fig.add_subplot(nrows, ncols, 11)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
-    ax.set_xlabel("<Distance between grains>", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= True)", fontsize=font_size_value)
+    ax.set_xlabel("Distance between grains/<Distance between grains>", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     plt.suptitle("Structural Characteristics", fontsize=60)
@@ -727,14 +728,14 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Plotting Disorientation angles
     ## Subplot 1
     all_disorientation_angles = [v[2] for v in disorientation_angle]
-    hist, bins = np.histogram(all_disorientation_angles, bins= number_of_bins, density= True)
+    hist, bins = np.histogram(all_disorientation_angles, bins= number_of_bins)
     #bins = 0.5 * (bins[1:] + bins[:-1])
     
     ax = fig.add_subplot(nrows, ncols, 1)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
     ax.set_xlabel("Disorientation angles", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= True)", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
     ## Subplot 2
@@ -753,13 +754,14 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Plotting Type of Grain Boundaries
     ## Subplot 1
     all_grain_boundaries = type_of_grain_boundaries[:, 6]
-    hist, bins = np.histogram(all_grain_boundaries, bins = number_of_bins, density= True)
+    hist, bins = np.histogram(all_grain_boundaries, bins = number_of_bins)
     #bins = 0.5 * (bins[1:] + bins[:-1])
     ax = fig.add_subplot(nrows, ncols, 3)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
     ax.set_xlabel("Type of Grain Boundary (CSL type)", fontsize=font_size_value)
-    ax.set_ylabel("Frequency of occurrences (density= True)", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
+    ax.text(0.5, 0.5, 'Note: CSL type 0 refers to general Grain Boundary', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=font_size_value/2)
     ax.tick_params(labelsize=label_size)
 
     ## Subplot 2
@@ -773,6 +775,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax.scatter(gb_type_stat[:-1], gb_area_stat)
     ax.set_xlabel("Type of Grain Boundary (CSL type)", fontsize=font_size_value)
     ax.set_ylabel("Fraction of GB area", fontsize=font_size_value)
+    ax.text(0.5, 0.5, 'Note: CSL type 0 refers to general Grain Boundary', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=font_size_value/2)
     ax.tick_params(labelsize=label_size)
 
     ## Plotting Schmid Factors
@@ -790,7 +793,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax = fig.add_subplot(nrows, ncols, 5)
     ax.plot(grain_sizes_stat[:-1], max_schmid_factor_stat)
     ax.scatter(grain_sizes_stat[:-1], max_schmid_factor_stat)
-    ax.set_xlabel("<Grain sizes>", fontsize=font_size_value)
+    ax.set_xlabel("Grain sizes/<Grain sizes>", fontsize=font_size_value)
     ax.set_ylabel("Mean Maximum Schmid Factors", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
@@ -801,7 +804,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax = fig.add_subplot(nrows, ncols, 6)
     ax.plot(grain_sizes_stat[:-1], second_max_schmid_factor_stat)
     ax.scatter(grain_sizes_stat[:-1], second_max_schmid_factor_stat)
-    ax.set_xlabel("<Grain sizes>", fontsize=font_size_value)
+    ax.set_xlabel("Grain sizes/<Grain sizes>", fontsize=font_size_value)
     ax.set_ylabel("Mean second maximum Schmid Factors", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
     
@@ -812,7 +815,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax = fig.add_subplot(nrows, ncols, 7)
     ax.plot(grain_sizes_stat[:-1], third_max_schmid_factor_stat)
     ax.scatter(grain_sizes_stat[:-1], third_max_schmid_factor_stat)
-    ax.set_xlabel("<Grain sizes>", fontsize=font_size_value)
+    ax.set_xlabel("Grain sizes/<Grain sizes>", fontsize=font_size_value)
     ax.set_ylabel("Mean third maximum Schmid Factors", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 

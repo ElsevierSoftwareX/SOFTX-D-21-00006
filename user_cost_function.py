@@ -1,6 +1,6 @@
 import numpy as np
 
-def function_formula(combined_user_data, combined_predicted_data, start_row_combined_data):
+def function_formula(combined_user_data, combined_predicted_data, start_row_combined_data, data_dictionary, args):
     """
     Calculating cost value using Sum of Squared Error (SSE) between the 
     predicted data and the user data.

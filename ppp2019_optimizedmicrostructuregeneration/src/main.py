@@ -404,7 +404,7 @@ class optimize_class():
             self.final_start_row_combined_data = start_row_combined_data
             self.smallest_cost_function_value = cost_function_value
         
-        if len(self.func_eval_count) == 1:
+        if len(self.func_eval_count) == 2:                                      # set to 2 since the bins are of same values when equally spaced seeds are used at func_eval_count=1
             self.initial_distribution = combined_predicted_data
             print("Iteration number, Cost function value: \n")
 
@@ -1118,7 +1118,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         log.info('Calling optimizer')
 
         ## Optimization Algorithms options dictionary
-        algo_options_dict = {'COBYLA': {'rhobeg': 0.5, 'maxiter': max_iterations, 'disp': True},
+        ## np.random.uniform is important in rhobeg argument to ensure that initial translations of seeds do not lead to overlapping seeds
+        algo_options_dict = {'COBYLA': {'rhobeg': np.random.uniform(low=0.4, high=0.6), 'maxiter': max_iterations, 'disp': True},
                             'SLSQP': {'maxiter': max_iterations, 'ftol': 1e-6, 'disp': True, 'eps': 0.1},  ##### eps of 1e-2
                             'POWELL':{'maxiter': max_iterations},
                             'NELDER-MEAD': {'maxiter': max_iterations},

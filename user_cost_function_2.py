@@ -38,15 +38,7 @@ def function_formula(combined_user_data, combined_predicted_data, start_row_comb
     tessellation = copy.deepcopy(args[15])
 
     CritDist_dist = 0.1*min(args[4][:args[1]])
-    all_distances_array = np.array(data_dictionary['5b'])
-    neighbors_list_data = tessellation['neighbors_list']
-
-    ## Computing distance between neighbors
-    all_distances = []                                                          # empty list where distance between neighbors would be stored
-    for index_grain, grain in enumerate(neighbors_list_data):
-        for index_neighbor, neighbor_number in enumerate(grain):
-            if (index_grain != neighbor_number):
-                all_distances.append(all_distances_array[index_grain, neighbor_number])
+    all_distances_array = np.array(data_dictionary['5a'])
 
     cost_value_dist = mathematical_function(C, M, all_distances, CritDist_dist)
 

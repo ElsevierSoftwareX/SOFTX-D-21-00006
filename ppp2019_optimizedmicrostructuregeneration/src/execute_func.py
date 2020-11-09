@@ -786,6 +786,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Subplot 1
     max_schmid_factor_stat, grain_sizes_stat = stats_binned_statistics(normalized_grain_sizes, max_schmid_factors, number_of_bins, 'mean')
 
+    max_schmid_factor_stat = np.nan_to_num(max_schmid_factor_stat)
     ax = fig.add_subplot(nrows, ncols, 5)
     ax.plot(grain_sizes_stat[:-1], max_schmid_factor_stat)
     ax.scatter(grain_sizes_stat[:-1], max_schmid_factor_stat)
@@ -796,6 +797,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Subplot 2
     second_max_schmid_factor_stat, grain_sizes_stat = stats_binned_statistics(normalized_grain_sizes, second_max_schmid_factors, number_of_bins, 'mean')
     
+    second_max_schmid_factor_stat = np.nan_to_num(second_max_schmid_factor_stat)
     ax = fig.add_subplot(nrows, ncols, 6)
     ax.plot(grain_sizes_stat[:-1], second_max_schmid_factor_stat)
     ax.scatter(grain_sizes_stat[:-1], second_max_schmid_factor_stat)
@@ -806,6 +808,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Subplot 3
     third_max_schmid_factor_stat, grain_sizes_stat = stats_binned_statistics(normalized_grain_sizes, third_max_schmid_factors, number_of_bins, 'mean')
 
+    third_max_schmid_factor_stat = np.nan_to_num(third_max_schmid_factor_stat)
     ax = fig.add_subplot(nrows, ncols, 7)
     ax.plot(grain_sizes_stat[:-1], third_max_schmid_factor_stat)
     ax.scatter(grain_sizes_stat[:-1], third_max_schmid_factor_stat)

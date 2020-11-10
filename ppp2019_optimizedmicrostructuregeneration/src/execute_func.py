@@ -754,11 +754,13 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Plotting Type of Grain Boundaries
     ## Subplot 1
     all_grain_boundaries = type_of_grain_boundaries[:, 6]
-    hist, bins = np.histogram(all_grain_boundaries, bins = number_of_bins)
+    bin_list_CSL_type = [0] + [i for i in range(1,34,2)]
+    hist, bins = np.histogram(all_grain_boundaries, bins = bin_list_CSL_type)
     #bins = 0.5 * (bins[1:] + bins[:-1])
     ax = fig.add_subplot(nrows, ncols, 3)
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
+    ax.bar(bins[:-1], hist)
     ax.set_xlabel("Type of Grain Boundary (CSL type)", fontsize=font_size_value)
     ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.text(0.5, 0.5, 'Note: CSL type 0 refers to general Grain Boundary', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=font_size_value/2)
@@ -767,12 +769,14 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ## Subplot 2
     gb_area = type_of_grain_boundaries[:, 7]
     fraction_gb_area = gb_area/np.sum(gb_area)
+    bin_list_CSL_type = [0] + [i for i in range(1,34,2)]
 
-    gb_area_stat, gb_type_stat = stats_binned_statistics(all_grain_boundaries, fraction_gb_area, number_of_bins, 'sum')
+    gb_area_stat, gb_type_stat = stats_binned_statistics(all_grain_boundaries, fraction_gb_area, bin_list_CSL_type, 'sum')
 
     ax = fig.add_subplot(nrows, ncols, 4)
     ax.plot(gb_type_stat[:-1], gb_area_stat)
     ax.scatter(gb_type_stat[:-1], gb_area_stat)
+    ax.bar(gb_type_stat[:-1], gb_area_stat)
     ax.set_xlabel("Type of Grain Boundary (CSL type)", fontsize=font_size_value)
     ax.set_ylabel("Fraction of GB area", fontsize=font_size_value)
     ax.text(0.5, 0.5, 'Note: CSL type 0 refers to general Grain Boundary', horizontalalignment='center', verticalalignment='center', transform=ax.transAxes, fontsize=font_size_value/2)

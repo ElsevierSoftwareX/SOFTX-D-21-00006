@@ -40,7 +40,7 @@ def function_formula(combined_user_data, combined_predicted_data, start_row_comb
     CritDist_dist = 0.1*min(args[4][:args[1]])
     all_distances_array = np.array(data_dictionary['5a'])
 
-    cost_value_dist = mathematical_function(C, M, all_distances, CritDist_dist)
+    cost_value_dist = mathematical_function(C, M, all_distances_array, CritDist_dist)
 
     CritDist_edge = 0.05*min(args[4][:args[1]])
     all_ridge_lengths = np.array([v[3]/limit[2] for v in data_dictionary['2']]) #######REMEMBER#######

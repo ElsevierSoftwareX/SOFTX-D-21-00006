@@ -324,7 +324,7 @@ class optimize_class():
                 data_dictionary['4'] = junction_angles_degrees                     # Key as integer refers to the integer representing the characteristic feature
 
             elif parameter is 'distance_btw_grains':
-                distance_btw_grain_array, distance_btw_grain_1d = distance_btw_grains(dimension, limit, tessellation, self.log_level)
+                distance_btw_grain_array, distance_btw_grain_1d, smallest_distance_btw_neighbors_1d = distance_btw_grains(dimension, limit, tessellation, self.log_level)
                 all_distances = distance_btw_grain_1d
                 hist, bins = np.histogram(all_distances, bins= number_of_bins, density= True)
                 data_dictionary['5a'] = distance_btw_grain_1d                     # Key as integer refers to the integer representing the characteristic feature

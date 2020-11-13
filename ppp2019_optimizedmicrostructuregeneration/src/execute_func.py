@@ -196,7 +196,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     grain_boundary_area_distribution, all_vertices_list = grain_boundary_areas(dimension, limit, tessellation, parent_function_name, skewed_boundary_flag, log_level)
     junction_lengths = junction_length(dimension, tessellation, log_level)
     junction_angles_degrees = junction_angle(dimension, tessellation, log_level)
-    distance_btw_grain_array, distance_btw_grain_1d = distance_btw_grains(dimension, limit, tessellation, log_level)
+    distance_btw_grain_array, distance_btw_grain_1d, smallest_distance_btw_neighbors_1d = distance_btw_grains(dimension, limit, tessellation, log_level)
     
     log.info('Successfully computed all structural characteristics')
 
@@ -691,6 +691,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax.tick_params(labelsize=label_size)
 
     ## Plotting Distance between grains
+    ## Subplot 1
     all_distances = distance_btw_grain_1d
     mean_distance = np.mean(all_distances)
     normalized_distances = all_distances/mean_distance
@@ -701,6 +702,20 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax.plot(bins[:-1], hist)
     ax.scatter(bins[:-1], hist)
     ax.set_xlabel("Distance between grains/<Distance between grains>", fontsize=font_size_value)
+    ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
+    ax.tick_params(labelsize=label_size)
+
+    ## Subplot 2
+    smallest_distances = smallest_distance_btw_neighbors_1d
+    mean_distance = np.mean(smallest_distances)
+    normalized_distances = smallest_distances/mean_distance
+
+    hist, bins = np.histogram(normalized_distances, bins= number_of_bins)
+
+    ax = fig.add_subplot(nrows, ncols, 12)
+    ax.plot(bins[:-1], hist)
+    ax.scatter(bins[:-1], hist)
+    ax.set_xlabel("Smallest distances neighbors/<Smallest distances neighbors>", fontsize=font_size_value)
     ax.set_ylabel("Frequency of occurrences", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 

@@ -700,7 +700,9 @@ def distance_btw_grains(dimension, limit, tessellation_og, log_level):
     1. Symmetric array with rows and columns represented by grain numbers in 
     ascending order and each element of the array representing distance between 
     respective grain numbers.
-    2. 1D array of distances between grains
+    2. 1D array of distances between neighbors
+    3. 1D array of smallest distances of all distances between neighbors for all
+    grains. 
     """
     
     log = set_logger(name_str, 'log_data.log', log_level)
@@ -760,11 +762,18 @@ def distance_btw_grains(dimension, limit, tessellation_og, log_level):
     ## Computing distance between neighbors
     neighbors_list_data = tessellation['neighbors_list']
     distance_btw_neighbors_1d = []                                                          # empty list where distance between neighbors would be stored
+    smallest_distance_btw_neighbors_1d = []
     for index_grain, grain in enumerate(neighbors_list_data):
+        current_smallest_distance = np.inf
         for index_neighbor, neighbor_number in enumerate(grain):
             if (index_grain != neighbor_number):
                 distance_btw_neighbors_1d.append(distance_array[index_grain, neighbor_number])
 
+                ## checking if this distance of current neighbor is the smallest
+                if distance_array[index_grain, neighbor_number] < current_smallest_distance:
+                    current_smallest_distance = distance_array[index_grain, neighbor_number]
+        smallest_distance_btw_neighbors_1d.append(current_smallest_distance)
+
     log.info('Completed computing distance between grains')
-    return distance_array, distance_btw_neighbors_1d
+    return distance_array, distance_btw_neighbors_1d, smallest_distance_btw_neighbors_1d
     

@@ -651,15 +651,15 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     ax.tick_params(labelsize=label_size)
 
     ## Subplot 2
-    fraction_junction_count = np.ones(len(normalized_junction_lengths))/len(normalized_junction_lengths)
+    fraction_junction_lengths = all_lengths/np.sum(all_lengths) #np.ones(len(normalized_junction_lengths))/len(normalized_junction_lengths)
 
-    junction_count_stat, junction_stat = stats_binned_statistics(normalized_junction_lengths, fraction_junction_count, number_of_bins, 'sum')
+    junction_count_stat, junction_stat = stats_binned_statistics(normalized_junction_lengths, fraction_junction_lengths, number_of_bins, 'sum')
 
     ax = fig.add_subplot(nrows, ncols, 8)
     ax.plot(junction_stat[:-1], junction_count_stat)
     ax.scatter(junction_stat[:-1], junction_count_stat)
     ax.set_xlabel("Junction Lengths/<Junction Lengths>", fontsize=font_size_value)
-    ax.set_ylabel("Fraction of junctions count", fontsize=font_size_value)
+    ax.set_ylabel("Fraction of junction lengths", fontsize=font_size_value)
     ax.tick_params(labelsize=label_size)
 
 

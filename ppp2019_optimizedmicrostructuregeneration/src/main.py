@@ -319,7 +319,7 @@ class optimize_class():
             elif parameter is 'junction_angle':
                 junction_angles_degrees = junction_angle(dimension, tessellation, self.log_level)
                 all_angles = [v[2::2] for v in junction_angles_degrees]
-                all_angles_flatten = [w for v in all_angles for w in v]
+                all_angles_flatten = np.around(np.array([w for v in all_angles for w in v]), decimals=8)
                 hist, bins = np.histogram(all_angles_flatten, bins= number_of_bins, density= True)
                 data_dictionary['4'] = junction_angles_degrees                     # Key as integer refers to the integer representing the characteristic feature
 
@@ -404,7 +404,7 @@ class optimize_class():
             self.final_start_row_combined_data = start_row_combined_data
             self.smallest_cost_function_value = cost_function_value
         
-        if len(self.func_eval_count) == 2:                                      # set to 2 since the bins are of same values when equally spaced seeds are used at func_eval_count=1
+        if len(self.func_eval_count) == 1:                                      # again changed to 1 as with 2 results are not appropriate # set to 2 since the bins are of same values when equally spaced seeds are used at func_eval_count=1
             self.initial_distribution = combined_predicted_data
             print("Iteration number, Cost function value: \n")
 

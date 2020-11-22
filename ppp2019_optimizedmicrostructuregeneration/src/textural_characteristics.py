@@ -582,6 +582,13 @@ def disorientation_angles(dimension, limit, skewed_boundary_flag, required_textu
     for grain in range(number_of_grains):
         
         for neighbor in neighbors_each_grain[grain]:                            # iterating through each neighbor of respective grain
+            ## Checking if CSL type data already exists for current grain-neighbor pair
+            if len(disorientation_data) != 0:
+                match_index = np.where((np.array(disorientation_data)[:, 1] == grain) & (np.array(disorientation_data)[:, 0] == neighbor))[0]
+                if len(match_index) != 0:
+                    #print(grain, neighbor, np.array(csl_data)[match_index])
+                    continue
+            
             ####### Second condition to accomodate for one seed test ###########
             if (grain == neighbor) and (np.count_nonzero(neighbors_each_grain) != 0):  # Due to periodicity in 2D case, self is also considered as neighbor 
                 continue
@@ -750,6 +757,13 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
     for grain in range(number_of_grains):
         
         for neighbor in neighbors_each_grain[grain]:                            # iterating through each neighbor of respective grain
+            ## Checking if CSL type data already exists for current grain-neighbor pair
+            if len(csl_data) != 0:
+                match_index = np.where((np.array(csl_data)[:, 1] == grain) & (np.array(csl_data)[:, 0] == neighbor))[0]
+                if len(match_index) != 0:
+                    #print(grain, neighbor, np.array(csl_data)[match_index])
+                    continue
+
             ####### Second condition to accomodate for one seed test ###########
             if (grain == neighbor) and (np.count_nonzero(neighbors_each_grain) != 0):  # Due to periodicity in 2D case, self is also considered as neighbor 
                 continue

@@ -709,6 +709,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
     smallest_distances = smallest_distance_btw_neighbors_1d
     mean_smallest_distance = np.mean(smallest_distances)
     normalized_distances = smallest_distances/mean_smallest_distance
+    normalized_distances = np.nan_to_num(normalized_distances)                  # required for one_seed testcase to work
 
     hist, bins = np.histogram(normalized_distances, bins= number_of_bins)
 

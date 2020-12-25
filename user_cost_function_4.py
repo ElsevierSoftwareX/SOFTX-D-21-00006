@@ -9,7 +9,7 @@ def function_formula(combined_user_data, combined_predicted_data, start_row_comb
     under section user-defined cost function.
 
     Processing: Computes cost function by penalizing prediction with area fraction 
-    higher than 50% and varies linearly for area fraction between 50% to 100%.
+    lower than 50% and varies linearly for area fraction between 50% to 100%.
 
     Returns: Sum of cost value based on linear function.
     """
@@ -25,10 +25,8 @@ def function_formula(combined_user_data, combined_predicted_data, start_row_comb
     total_gb_area = np.sum(CSL_gb_area_array)
 
     ## Computing volume fraction of Special Grain Boundaries
-    #number_sgb = np.count_nonzero(CSL_type_array)
     indices_sgb = np.nonzero(CSL_type_array)
     sgb_gb_area = np.sum(CSL_gb_area_array[indices_sgb])
-    #volume_fraction = (number_sgb/len(CSL_type_array))*100
     area_fraction = (sgb_gb_area/total_gb_area)*100
 
     ## Computing cost function based on exponential function

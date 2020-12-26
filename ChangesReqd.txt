@@ -1,0 +1,59 @@
+Required changes to code:
+@auth: A. Prakash and Prince Henry Serrao
+@date: 25.05.2020
+@updated on: 18.07.2020
+
+* main.py
+------------------
+* line 32ff
+- change to new command options 
+## Updated with new command options[completed on 06/07/2020] 
+
+* import statements
+- why not import as --> from abc import * 
+## Updated with reason for such importing style as a comment block in main.py [completed on 07/07/2020]
+
+* Function header
+- clearly mention each variable (both input and output), and its function
+
+* Global variables --> do you really need them? Can you not avoid them?
+## Updated using Class to avoid use of Global variables [completed on 09/07/2020]
+
+- function cost_function, line 108ff --> can this be changed to numpy arrays/vectorization?
+## Updated [completed on 07/07/2020]
+
+- why does the interpolation need to be done every time?
+## Interpolation is needed to ensure same size of data set for comparison.
+
+line 413 --> what does the comment refer to?
+## Array of all the available texture information from the research paper
+## Updated. It was a redundant line and i is now removed. [completed on 06/07/2020]
+
+line 622ff - if else block can be easily avoided
+## Updated [completed on 07/07/2020]
+
+TODO:
+- command line options could be better/informative
+- output formatting needs to be improved
+- profiler must only be activated in the debug mode			## Updated. Profiler is now only activated in debug mode [completed on 18/07/2020]
+- checking of libraries only to be done in the debug mode	## [completed on 09/07/2020]
+- Speed is currently a significant concern!
+
+
+* Unable to import functions from main.py directly from python
+## Updated. The function 'main_run' and 'test_run' can now be imported and executed in any other python script. [completed on 17/07/2020] 
+## Replaced relative imports with absolute imports. [completed on 18/07/2020]
+## Individual functions can now be imported in any external script or interactive python provided that
+	the interactive instance is initiated from directory outside the package directory. This is due to 
+	fact that there are absolute import statements within modules and when instance is initiated from within
+	the package directory, then python won't have information of the path above the top level script. [completed on 18/07/2020]
+
+## Debug mode has been added. By default INFO log level is set for Logger. [completed on 09/07/2020]
+
+## Add left and right padding with zeros during optimization. [completed on 11/07/2020]
+
+## Verified that Scipy Voronoi and Tess library creates same tessellations for same seed coordinates as input. [completed on 11/07/2020]
+
+## Using Scipy Voronoi function to create tessellations to ensure that code is modular. [completed on 11/07/2020]
+
+## check_libraries.py can now be executed independently as well. [completed on 18/07/2020]

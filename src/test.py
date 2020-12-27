@@ -66,17 +66,17 @@ from src.seed_spacing_files.fcc_lattice_3D import fcc_lattice_3D as fcc_lattice_
 from src.seed_spacing_files.hcp_lattice_2D import hcp_lattice_2D as hcp_lattice_2D
 from src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D as hcp_lattice_3D
 
-from src.test_cases.cubic_2d.cubic_2d_testcase import cubic_2d_testcase as cubic_2d_testcase
-from src.test_cases.cubic_3d.cubic_3d_testcase import cubic_3d_testcase as cubic_3d_testcase
-from src.test_cases.bcc_3d.bcc_3d_testcase import bcc_3d_testcase as bcc_3d_testcase
-from src.test_cases.fcc_2d.fcc_2d_testcase import fcc_2d_testcase as fcc_2d_testcase
-from src.test_cases.fcc_3d.fcc_3d_testcase import fcc_3d_testcase as fcc_3d_testcase
-from src.test_cases.hcp_2d.hcp_2d_testcase import hcp_2d_testcase as hcp_2d_testcase
-from src.test_cases.hcp_3d.hcp_3d_testcase import hcp_3d_testcase as hcp_3d_testcase
-from src.test_cases.random_3d.random_3d_testcase import random_3d_testcase as random_3d_testcase
-from src.test_cases.one_seed.one_seed_testcase import one_seed_testcase as one_seed_testcase
-from src.test_cases.two_seed.two_seed_testcase import two_seed_testcase as two_seed_testcase
-from src.test_cases.textural.textural_testcase import textural_testcase as textural_testcase
+from test_cases.cubic_2d.cubic_2d_testcase import cubic_2d_testcase as cubic_2d_testcase
+from test_cases.cubic_3d.cubic_3d_testcase import cubic_3d_testcase as cubic_3d_testcase
+from test_cases.bcc_3d.bcc_3d_testcase import bcc_3d_testcase as bcc_3d_testcase
+from test_cases.fcc_2d.fcc_2d_testcase import fcc_2d_testcase as fcc_2d_testcase
+from test_cases.fcc_3d.fcc_3d_testcase import fcc_3d_testcase as fcc_3d_testcase
+from test_cases.hcp_2d.hcp_2d_testcase import hcp_2d_testcase as hcp_2d_testcase
+from test_cases.hcp_3d.hcp_3d_testcase import hcp_3d_testcase as hcp_3d_testcase
+from test_cases.random_3d.random_3d_testcase import random_3d_testcase as random_3d_testcase
+from test_cases.one_seed.one_seed_testcase import one_seed_testcase as one_seed_testcase
+from test_cases.two_seed.two_seed_testcase import two_seed_testcase as two_seed_testcase
+from test_cases.textural.textural_testcase import textural_testcase as textural_testcase
 
 from src.execute_func import execute_func as execute_func
 
@@ -179,7 +179,7 @@ def test_func(name, f, log_level):
                 
         if case_name in ('cubic_2d', 'cubic_3d', 'bcc_3d', 'fcc_2d', 'fcc_3d', 'hcp_2d', 'hcp_3d'):
             size_of_simulation_box = 10.0
-            spacing_lengths = [1, 2, 2.5, 5]
+            spacing_lengths = [2, 2.5, 5]                                       #1, 2, 2.5, 5]
         else:
             size_of_simulation_box = 10.0
             spacing_lengths = [1]

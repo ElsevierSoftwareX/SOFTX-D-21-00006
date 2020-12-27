@@ -369,7 +369,7 @@ def test_func(name, f, log_level):
         ## Saving profiler output
         stats = yappi.get_func_stats()
 
-        output_file_path = Path(store_folder, now, "profiler_output", "callgrind.yappi_profiler_output.prof")
+        output_file_path = Path(store_folder, material, now, "profiler_output", "callgrind.yappi_profiler_output.prof")
         output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.parent.mkdir(exist_ok=True)
         output_file_path.parent.parent.mkdir(exist_ok=True)
@@ -381,7 +381,7 @@ def test_func(name, f, log_level):
         yappi.get_thread_stats().print_all()
 
     ## Moving log file to appropriate directory in visualization_files
-    output_file_path = Path(store_folder, now, "log_directory", "log_data.log")
+    output_file_path = Path(store_folder, material, now, "log_directory", "log_data.log")
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.mkdir(exist_ok=True)                                # checks if folder exists, if not then creates one

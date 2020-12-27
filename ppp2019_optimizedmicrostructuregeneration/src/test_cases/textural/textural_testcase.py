@@ -186,7 +186,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     assert np.all([angle[2] <= 62.8 for angle in disorientation_angle])
 
     ## Saving to array_verification_file.txt
-    output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "array_verification_file.txt")
+    output_file_path = Path(store_folder, material, now, "Text_output", "array_verification_file.txt")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)
@@ -286,7 +286,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
 
     ####################################################################################################################
     ## Saving Textural Characteristics
-    output_file_path = Path("visualization_files", store_folder, now, material, "Text_output", "textural_characteristics.txt")
+    output_file_path = Path(store_folder, material, now, "Text_output", "textural_characteristics.txt")
     output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
     output_file_path.parent.parent.parent.mkdir(exist_ok=True)

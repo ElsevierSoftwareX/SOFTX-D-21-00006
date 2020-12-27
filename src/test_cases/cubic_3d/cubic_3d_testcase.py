@@ -30,9 +30,9 @@ along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.or
 
 """
 
-from ppp2019_optimizedmicrostructuregeneration.src.main_import_statements import *
+from src.main_import_statements import *
 
-from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger as set_logger
 name_str = __name__
 
 def cubic_3d_testcase(tessellation, dimension, size_of_simulation_box, \

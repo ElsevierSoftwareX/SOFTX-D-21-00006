@@ -35,7 +35,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from tess import Container
 import inspect
-from ppp2019_optimizedmicrostructuregeneration.src.__version__ import __version__ as version
+from src.__version__ import __version__ as version
 from datetime import datetime
 import quaternion
 import numba

@@ -30,9 +30,9 @@ along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.or
 
 """
 
-from ppp2019_optimizedmicrostructuregeneration.src.main_import_statements import *
+from src.main_import_statements import *
 
-from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger as set_logger
 name_str = __name__
 
 def create_obj_file_all_grains(material_name, tessellation, store_folder, face_flag, now, skewed_boundary_flag, all_vertices_list, log_level):

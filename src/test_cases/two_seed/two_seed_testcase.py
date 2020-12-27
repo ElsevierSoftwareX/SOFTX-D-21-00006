@@ -30,12 +30,12 @@ along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.or
 
 """
 
-from ppp2019_optimizedmicrostructuregeneration.src.main_import_statements import *
+from src.main_import_statements import *
 
-from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import disorientation_angles as disorientation_angles
-from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import type_of_grain_boundary as type_of_grain_boundary
+from src.textural_characteristics import disorientation_angles as disorientation_angles
+from src.textural_characteristics import type_of_grain_boundary as type_of_grain_boundary
 
-from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger as set_logger
 name_str = __name__
 
 def two_seed_testcase(store_folder, version, now, material, tessellation, \

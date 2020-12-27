@@ -30,19 +30,19 @@ along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.or
 
 """
 
-from ppp2019_optimizedmicrostructuregeneration.src.main_import_statements import *
+from src.main_import_statements import *
 
-from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.cubic_lattice_2D import cubic_lattice_2D as cubic_lattice_2D
+from src.seed_spacing_files.cubic_lattice_2D import cubic_lattice_2D as cubic_lattice_2D
 
-from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger as set_logger
 name_str = __name__
 
-from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import sharp_texture_quaternions as sharp_texture_quaternions
-from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import random_quaternions_generator as random_quaternions_generator
-from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import disorientation_angles as disorientation_angles
-from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import type_of_grain_boundary as type_of_grain_boundary
-from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import schmid_factor as schmid_factor
-from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import available_required_texture as available_required_texture
+from src.textural_characteristics import sharp_texture_quaternions as sharp_texture_quaternions
+from src.textural_characteristics import random_quaternions_generator as random_quaternions_generator
+from src.textural_characteristics import disorientation_angles as disorientation_angles
+from src.textural_characteristics import type_of_grain_boundary as type_of_grain_boundary
+from src.textural_characteristics import schmid_factor as schmid_factor
+from src.textural_characteristics import available_required_texture as available_required_texture
 
 def textural_testcase(store_folder, tessellation, dimension, \
     size_of_simulation_box, spacing_length, seed_array_unique, \
@@ -275,8 +275,8 @@ def textural_testcase(store_folder, tessellation, dimension, \
     rand_quat_flag = True
     type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
 
-    from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import available_required_texture
-    from ppp2019_optimizedmicrostructuregeneration.src.textural_characteristics import type_of_csl_data
+    from src.textural_characteristics import available_required_texture
+    from src.textural_characteristics import type_of_csl_data
     available_required_texture_info = copy.deepcopy(available_required_texture)
     type_of_csl_dict = copy.deepcopy(type_of_csl_data)
     for row in available_required_texture_info:

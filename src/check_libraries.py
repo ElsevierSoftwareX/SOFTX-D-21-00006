@@ -30,7 +30,7 @@ along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.or
 """
 
 import os
-from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger as set_logger
 name_str = __name__
 
 def check_import(name, install_command):

@@ -1,2 +1,2 @@
 #!/bin/bash
-python -m ppp2019_optimizedmicrostructuregeneration.src.main $@
+python -m src.main $@

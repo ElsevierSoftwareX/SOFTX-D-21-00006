@@ -30,9 +30,9 @@ along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.or
 
 """
 
-from ppp2019_optimizedmicrostructuregeneration.src.seed_spacing_files.import_statements import *
+from src.seed_spacing_files.import_statements import *
 
-from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger as set_logger
 name_str = __name__
 
 def fcc_lattice_2D(limit, a, log_level):

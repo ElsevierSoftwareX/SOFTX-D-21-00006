@@ -29,9 +29,9 @@ You should have received a copy of the GNU General Public License
 along with Optimized Micro-structure Generator.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-from ppp2019_optimizedmicrostructuregeneration.src.main_import_statements import *
+from src.main_import_statements import *
 
-from ppp2019_optimizedmicrostructuregeneration.src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger as set_logger
 
 name_str = __name__
 

@@ -39,28 +39,87 @@ import copy
 
 def mathematical_function(C, M, distArr, CritDist):
     """
-    Input: Constants C & M, Array of lengths or distances, Critical length or 
-    distance.
+    Compute cost based on mathematical formula dependent on exponential and 
+    linear functions
 
-    Processing: Computes cost value based on exponential and linear functions. 
-    Basically penalizes seeds or vertices too close to each other and rewards 
-    seeds or vertices too far away from each other.
+    Parameters
+    ----------
+    C: float
+        Model constant term (used for scaling data).
 
-    Returns: Sum of both exponential and linear terms
+    M: float
+        Model constant term (used for scaling data).
+
+    distArr: array
+        Array of distances or lengths.
+
+    CritDist: float
+        Critical threshold value.
+
+    Returns
+    -------
+    Cost as sum of both exponential and linear terms.
+
     """
     distCost=np.exp(-C * (distArr-CritDist)) + M * (distArr-CritDist)
     return np.sum(distCost)
 
 def function_formula(combined_user_data, combined_predicted_data, start_row_combined_data, data_dictionary, args):
     """
-    Input: As specified in the documentation of Optimized Microstructure Generator
-    under section user-defined cost function.
-
-    Processing: Computes cost function by penalizing seeds & vertices that are 
+    Computing cost function by penalizing seeds & vertices that are 
     very close and attracts them when they are very far away.
 
-    Returns: Sum of cost value obtained by considering both distance between grains
-    and junction length.
+    Parameters
+    ----------
+    combined_user_data: array
+        Distribution of user defined data for all characteristics.
+
+    combined_predicted_data: array
+        Distribution of predicted data for all characteristics.
+
+    start_row_combined_data: list
+        List comprising of row indexes of user and predicted data associated 
+        with each characteristic to be optimized.
+
+    data_dictionary: dictionary
+        Dictionary consisting of complete data pertaining to characteristic to 
+        be optimized. Keys used in the dictionary are integers used for 
+        identifying appropriate characteristics as below:
+        '0': Grain sizes
+        '1': Number of neighbors
+        '2': Grain boundary areas
+        '3': Junction lengths
+        '4': Junction angles in degrees
+        '5a': Distance between grains as 1D array
+        '5b': Distance between grains as matrix array
+        '6': Disorientation angles
+        '7': Type of grain boundaries
+        '8': Schmid factors
+
+    args: list
+        Common arguments consisting of following:
+            1. parameter_list
+            2. dimension
+            3. user_data
+            4. start_row_of_parameter
+            5. limit
+            6. number_of_bins
+            7. fig_animate
+            8. ax_animate
+            9. cost_function_names
+            10. func_name_key
+            11. required_texture
+            12. rand_quat_flag
+            13. stress_direction
+            14. orientation_data
+            15. skewed_boundary_flag
+            16. tessellation (DICTIONARY OF ALL TESSELLATION DATA)
+
+    Returns
+    -------
+    Sum of cost value obtained by considering both distance between grains
+    and edge length.
+
     """
     C = 0.6
     M = 0.6

@@ -37,7 +37,7 @@ import numpy as np
 def function_formula(combined_user_data, combined_predicted_data, start_row_combined_data, data_dictionary, args):
     """
     Calculating cost value using Sum of Squared Error (SSE) between the 
-    predicted data and the user data.
+    predicted data and the user data and scaling it with a factor of 100.
 
     Parameters
     ----------
@@ -87,7 +87,7 @@ def function_formula(combined_user_data, combined_predicted_data, start_row_comb
 
     Returns
     -------
-    Scalar SSE cost value.
+    Scalar scaled SSE cost value.
     """
     user_y = combined_user_data[:, 1]
     predicted_y = combined_predicted_data[:, 1]

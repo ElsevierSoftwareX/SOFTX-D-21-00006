@@ -265,7 +265,7 @@ class optimize_class():
 
         ## Adjusting seed array based on dimension
         if dimension == 2:
-            seed_array[:, 2] = limit[2]
+            seed_array[:, 2] = limit[2]/2.0
 
         ## Setting log_level to critical while evaluating charateristic functions
         original_log_level = copy.deepcopy(self.log_level)
@@ -1173,7 +1173,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         
         ## Adjusting seed array based on dimension
         if dimension == 2:
-            optimized_seed_array[:, 2] = limit[2]
+            optimized_seed_array[:, 2] = limit[2]/2.0
 
         execute_func(limit, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, optimized_seed_array, stress_direction, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level)
 

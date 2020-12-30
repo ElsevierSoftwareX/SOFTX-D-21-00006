@@ -654,7 +654,8 @@ def junction_angle(dimension, tessellation_og, log_level):
             cosine_theta = np.dot(normals_of_junction_faces[0],normals_of_junction_faces[1])/np.linalg.norm(normals_of_junction_faces[0])/np.linalg.norm(normals_of_junction_faces[1])
             
             ## Storing angles in the storage array
-            angle_inscribed_by_grain_at_junction = 180 - np.degrees(np.arccos(cosine_theta))    # Subtracting to get angles between the faces
+            arccos_angle=np.arccos(np.around(cosine_theta, decimals=4))         # around is important to avoid floating-point errors resulting in arccos giving nan
+            angle_inscribed_by_grain_at_junction = 180 - np.degrees(arccos_angle)    # Subtracting to get angles between the faces
             single_junction_related_data.append(angle_inscribed_by_grain_at_junction)
             single_junction_related_data.append(grain)
         junction_angles.append(single_junction_related_data)                    ## Appending the junction information to the main list    

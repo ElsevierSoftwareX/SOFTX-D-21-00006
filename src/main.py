@@ -10,7 +10,7 @@ Germany.
 
 For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
 
-@authors: Serrao Prince Henry, Arun Prakash
+@authors: Serrao Prince Henry, Arun Prakash, Stefan Sandfeld
 @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
 created: 22 December 2019
 Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash

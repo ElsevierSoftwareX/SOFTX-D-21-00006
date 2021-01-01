@@ -34,7 +34,7 @@ First ensure that you are in the correct directory. `pwd` command can be used to
 $ pwd
 /..some_directories../optimic
 ```
-Once you are in the correct directory, we need to change the permissions of the file 'execute' and this can be achieved by
+Once you are in the correct directory, we need to change the permissions of the file 'optimic' and this can be achieved by
 
 ```bash
 $ chmod 777 optimic
@@ -44,7 +44,7 @@ In order to check that proper permissions are granted, use the following:
 ```bash
 $ ls -al
 ```
-The above command lists all the files in the current directory with its repective permission details in the first column. The first column of the file 'execute' should look like `-rwxrwxrwx`. This means that all the three blocks ie; user, group and others has been granted with read, write and execute permissions for this file.
+The above command lists all the files in the current directory with its repective permission details in the first column. The first column of the file 'optimic' should look like `-rwxrwxrwx`. This means that all the three blocks ie; user, group and others has been granted with read, write and execute permissions for this file.
 
 In order to execute the program, you can now use:
 

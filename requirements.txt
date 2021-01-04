@@ -1,0 +1,46 @@
+# requirements.txt
+#
+# List of required python packages.
+# 
+# This was created as part of "Personal Programming Project (PPP)" coursework in 
+# "Computation Materials Science (CMS)" M. Sc program at TU Bergakademie Freiberg,
+# Germany.
+# 
+# @authors: Serrao Prince Henry, Arun Prakash
+# @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
+# created: 04 January 2021
+# Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash
+# 
+# For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
+# 
+# This file is part of OptiMic.
+# 
+# OptiMic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OptiMic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
+
+
+
+################## Please use the following command ############################
+# $ pip install -r requirements.txt                                            #
+################################################################################
+
+numpy==1.17.4
+scipy==1.4.1
+matplotlib==3.0.3
+numba==0.46.0
+pytest==4.4.1
+numpy-quaternion==2019.12.11.22.25.52
+tess
+click==7.0
+gmsh-sdk==4.5.0-1
+yappi==1.2.3

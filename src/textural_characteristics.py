@@ -38,7 +38,7 @@ from src.main_import_statements import *
 from scipy.spatial.transform import Rotation as R
 
 from src.structural_characteristics import *
-from src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger 
 name_str = __name__
    
 ## Array of all the available texture information from the research paper

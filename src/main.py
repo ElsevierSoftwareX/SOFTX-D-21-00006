@@ -33,15 +33,15 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 ## Below commented lines are command line input for specified output
 
-## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running main for no optimization: $ ./execute main -s 18 12 15 -sl 1 -d 2 -n 122 -m steel -st 0 1 0 -ss cubic_2d -rs 1 -noopti
-## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running main for optimization: $ ./execute main -s 180 120 15 -sl 1 -d 2 -n 122 -t user_grain_size_distribution.txt -c 0 -m steel -st 0 1 0 -ss random_3d -rs 10 -om COBYLA -mf 2000
-## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running main for optimization using USER defined COST Function: $ ./execute main -s 180 120 15 -sl 1 -d 2 -n 122 -t user_grain_size_distribution.txt -c 3 -c 5 -m steel -st 0 1 0 -ss random_3d -rs 10 -om COBYLA -mf 2000 -ucf user_cost_function_2.py
-## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running tests: $ ./execute test --name cubic_2d
-## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running all tests: $ ./execute test --name all
-## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for optimizing grain size, disorientation angles and distance between grains: $ ./execute main -s 180 120 15 -sl 1 -d 2 -n 122 -t user_grain_size_distribution.txt -c 0 -c 6 -c 5 -m steel -st 0 1 0 -ss random_3d -rs 10 -om COBYLA -mf 2000
-## For help: $ ./execute --help
-## For help: $ ./execute test --help
-## For help: $ ./execute main --help
+## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running main for no optimization: $ ./optimic main -s 18 12 15 -sl 1 -d 2 -n 122 -m steel -st 0 1 0 -ss cubic_2d -rs 1 -noopti
+## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running main for optimization: $ ./optimic main -s 180 120 15 -sl 1 -d 2 -n 122 -t user_grain_size_distribution.txt -c 0 -m steel -st 0 1 0 -ss random_3d -rs 10 -om COBYLA -mf 2000
+## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running main for optimization using USER defined COST Function: $ ./optimic main -s 180 120 15 -sl 1 -d 2 -n 122 -t user_grain_size_distribution.txt -c 3 -c 5 -m steel -st 0 1 0 -ss random_3d -rs 10 -om COBYLA -mf 2000 -ucf user_cost_function_2.py
+## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running tests: $ ./optimic test --name cubic_2d
+## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for running all tests: $ ./optimic test --name all
+## INPUT FROM BASH COMMAND IS TO BE PROVIDED AS for optimizing grain size, disorientation angles and distance between grains: $ ./optimic main -s 180 120 15 -sl 1 -d 2 -n 122 -t user_grain_size_distribution.txt -c 0 -c 6 -c 5 -m steel -st 0 1 0 -ss random_3d -rs 10 -om COBYLA -mf 2000
+## For help: $ ./optimic --help
+## For help: $ ./optimic test --help
+## For help: $ ./optimic main --help
 
 ## Using faulthandler incase segmentation fault occurs
 
@@ -50,47 +50,46 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 from src.main_import_statements import *
 from src.__version__ import __version__ as version
 
-from src.create_tessellations import create_tessellations as create_tessellations
+from src.create_tessellations import create_tessellations
 
 """
 Import statements are written in this fashion due to philosophical reason. 
 Importing functions in this way helps me to quickly identify the module 
 containing a specific function. All modules in this package use this style for
-relatively importing functions from another modules.
+absolute import of functions from another modules.
 """
-from src.create_obj_files import create_obj_file_all_grains as create_obj_file_all_grains
-from src.create_obj_files import create_obj_file_individual_grains as create_obj_file_individual_grains
-from src.create_vtk_files import create_vtk_file_all_grains as create_vtk_file_all_grains
-from src.create_vtk_files import create_vtk_file_individual_grains as create_vtk_file_individual_grains
+from src.create_obj_files import create_obj_file_all_grains
+from src.create_obj_files import create_obj_file_individual_grains
+from src.create_vtk_files import create_vtk_file_all_grains 
+from src.create_vtk_files import create_vtk_file_individual_grains 
 
-from src.random_generator import random_generator as random_generator
-from src.structural_characteristics import grain_size_distribution as grain_size_distribution
-from src.structural_characteristics import number_of_neighbors as number_of_neighbors
-from src.structural_characteristics import grain_boundary_areas as grain_boundary_areas
-from src.structural_characteristics import junction_length as junction_length
-from src.structural_characteristics import junction_angle as junction_angle
-from src.structural_characteristics import distance_btw_grains as distance_btw_grains
-from src.textural_characteristics import sharp_texture_quaternions as sharp_texture_quaternions
-from src.textural_characteristics import random_quaternions_generator as random_quaternions_generator
-from src.textural_characteristics import disorientation_angles as disorientation_angles
-from src.textural_characteristics import type_of_grain_boundary as type_of_grain_boundary
-from src.textural_characteristics import schmid_factor as schmid_factor
-#from .textural_characteristics import available_required_texture as available_required_texture
+from src.random_generator import random_generator 
+from src.structural_characteristics import grain_size_distribution 
+from src.structural_characteristics import number_of_neighbors 
+from src.structural_characteristics import grain_boundary_areas 
+from src.structural_characteristics import junction_length 
+from src.structural_characteristics import junction_angle 
+from src.structural_characteristics import distance_btw_grains 
+from src.textural_characteristics import sharp_texture_quaternions 
+from src.textural_characteristics import random_quaternions_generator 
+from src.textural_characteristics import disorientation_angles 
+from src.textural_characteristics import type_of_grain_boundary 
+from src.textural_characteristics import schmid_factor 
 
-from src.seed_spacing_files.bcc_lattice_3D import bcc_lattice_3D as bcc_lattice_3D
-from src.seed_spacing_files.cubic_lattice_2D import cubic_lattice_2D as cubic_lattice_2D
-from src.seed_spacing_files.cubic_lattice_3D import cubic_lattice_3D as cubic_lattice_3D
-from src.seed_spacing_files.fcc_lattice_2D import fcc_lattice_2D as fcc_lattice_2D
-from src.seed_spacing_files.fcc_lattice_3D import fcc_lattice_3D as fcc_lattice_3D
-from src.seed_spacing_files.hcp_lattice_2D import hcp_lattice_2D as hcp_lattice_2D
-from src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D as hcp_lattice_3D
+from src.seed_spacing_files.bcc_lattice_3D import bcc_lattice_3D 
+from src.seed_spacing_files.cubic_lattice_2D import cubic_lattice_2D 
+from src.seed_spacing_files.cubic_lattice_3D import cubic_lattice_3D 
+from src.seed_spacing_files.fcc_lattice_2D import fcc_lattice_2D 
+from src.seed_spacing_files.fcc_lattice_3D import fcc_lattice_3D 
+from src.seed_spacing_files.hcp_lattice_2D import hcp_lattice_2D 
+from src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D 
 
-from src.test import test_func as test_func
-from src.execute_func import execute_func as execute_func
+from src.test import test_func 
+from src.execute_func import execute_func 
 
-from src.check_libraries import check_libraries as check_libraries
+from src.check_libraries import check_libraries 
 
-from src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger 
 
 name_str = __name__
 
@@ -1134,7 +1133,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
         ## Calling Optimizer
         optimize_class_instance = optimize_class(store_folder, now, material, save_interval, log_level)
-        #print(optimize_class_instance.cost_function(seed_array_unique_flatten, args_list)); exit()                    # command: time ./execute main -s 10. 10. 10. -sl 1 -dim 3 -n 100 -t user_grain_size_distribution.txt -c 0 -m steel -sdir 0 1 0 -ss seed_data.txt -rs 1 -om cobyla -mi 10 -nb 10
+        #print(optimize_class_instance.cost_function(seed_array_unique_flatten, args_list)); exit()                    # command: time ./optimic main -s 10. 10. 10. -sl 1 -dim 3 -n 100 -t user_grain_size_distribution.txt -c 0 -m steel -sdir 0 1 0 -ss seed_data.txt -rs 1 -om cobyla -mi 10 -nb 10
         optimization_result = minimize(optimize_class_instance.cost_function, seed_array_unique_flatten, args=(args_list), callback=optimize_class_instance.callback_f, method=optimization_method, constraints=constraints_list, options=algo_options_dict[optimization_method])
         
         log.info('Finished with optimization')

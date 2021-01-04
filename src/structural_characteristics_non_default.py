@@ -41,7 +41,7 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 from src.main_import_statements import *
 from scipy.spatial import distance
 
-from src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger 
 name_str = __name__
 
 #from memory_profiler import profile

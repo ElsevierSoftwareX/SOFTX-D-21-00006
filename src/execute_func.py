@@ -34,35 +34,35 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 from src.main_import_statements import *
 
-from src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger 
 name_str = __name__
 
 from src.__version__ import __version__ as version
 
-from src.create_tessellations import create_tessellations as create_tessellations
+from src.create_tessellations import create_tessellations 
 
-from src.create_obj_files import create_obj_file_all_grains as create_obj_file_all_grains
-from src.create_obj_files import create_obj_file_individual_grains as create_obj_file_individual_grains
-from src.create_vtk_files import create_vtk_file_all_grains as create_vtk_file_all_grains
-from src.create_vtk_files import create_vtk_file_individual_grains as create_vtk_file_individual_grains
+from src.create_obj_files import create_obj_file_all_grains 
+from src.create_obj_files import create_obj_file_individual_grains 
+from src.create_vtk_files import create_vtk_file_all_grains 
+from src.create_vtk_files import create_vtk_file_individual_grains 
 
-from src.random_generator import random_generator as random_generator
-from src.structural_characteristics import grain_size_distribution as grain_size_distribution
-from src.structural_characteristics import number_of_neighbors as number_of_neighbors
-from src.structural_characteristics import grain_boundary_areas as grain_boundary_areas
-from src.structural_characteristics import junction_length as junction_length
-from src.structural_characteristics import junction_angle as junction_angle
-from src.structural_characteristics import distance_btw_grains as distance_btw_grains
-from src.textural_characteristics import sharp_texture_quaternions as sharp_texture_quaternions
-from src.textural_characteristics import random_quaternions_generator as random_quaternions_generator
-from src.textural_characteristics import disorientation_angles as disorientation_angles
-from src.textural_characteristics import type_of_grain_boundary as type_of_grain_boundary
-from src.textural_characteristics import schmid_factor as schmid_factor
-from src.textural_characteristics import available_required_texture as available_required_texture
+from src.random_generator import random_generator 
+from src.structural_characteristics import grain_size_distribution 
+from src.structural_characteristics import number_of_neighbors 
+from src.structural_characteristics import grain_boundary_areas 
+from src.structural_characteristics import junction_length 
+from src.structural_characteristics import junction_angle 
+from src.structural_characteristics import distance_btw_grains 
+from src.textural_characteristics import sharp_texture_quaternions 
+from src.textural_characteristics import random_quaternions_generator 
+from src.textural_characteristics import disorientation_angles 
+from src.textural_characteristics import type_of_grain_boundary 
+from src.textural_characteristics import schmid_factor 
+from src.textural_characteristics import available_required_texture 
 
-from src.mesh import mesh_hex as mesh_hex
-from src.mesh import mesh_tetra as mesh_tetra
-from src.mesh import mesh_visualization as mesh_visualization
+from src.mesh import mesh_hex 
+from src.mesh import mesh_tetra 
+from src.mesh import mesh_visualization 
 
 def stats_binned_statistics(x, values, number_of_bins, statistic_type):
     """

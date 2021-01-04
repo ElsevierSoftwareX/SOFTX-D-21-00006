@@ -35,7 +35,7 @@ from scipy.spatial import Voronoi
 import copy
 
 from src.main_import_statements import *
-from src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger 
 
 name_str = __name__
 

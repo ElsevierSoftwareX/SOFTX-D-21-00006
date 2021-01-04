@@ -34,10 +34,10 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 from src.main_import_statements import *
 
-from src.textural_characteristics import disorientation_angles as disorientation_angles
-from src.textural_characteristics import type_of_grain_boundary as type_of_grain_boundary
+from src.textural_characteristics import disorientation_angles 
+from src.textural_characteristics import type_of_grain_boundary 
 
-from src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger 
 name_str = __name__
 
 def two_seed_testcase(store_folder, version, now, material, tessellation, \

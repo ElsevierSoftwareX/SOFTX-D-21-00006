@@ -34,7 +34,7 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 from src.seed_spacing_files.import_statements import *
 
-from src.set_logger import set_logger as set_logger
+from src.set_logger import set_logger 
 name_str = __name__
 
 def hcp_lattice_2D(limit, spacing_length, log_level):

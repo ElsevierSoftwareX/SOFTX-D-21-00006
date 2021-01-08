@@ -264,7 +264,7 @@ class optimize_class():
 
         ## Adjusting seed array based on dimension
         if dimension == 2:
-            seed_array[:, 2] = limit[2]/2.0
+            seed_array[:, 2] = limit[2]
 
         ## Setting log_level to critical while evaluating charateristic functions
         original_log_level = copy.deepcopy(self.log_level)
@@ -278,7 +278,7 @@ class optimize_class():
             args[15] = tessellation                                             ## Dummy variable is replaced with actual tessellation data
         except ValueError:
             log.exception('tessellation creation failed in cost function and infinity would be returned as cost function value')
-            return 1e5
+            return 1e8
 
         ## Creating an empty array for storing the USER and PREDICTED data as an array
         combined_user_data = np.empty([0, 2])

@@ -539,9 +539,20 @@ def constraints_func(dimension, limits_wo_factors, log_level):
 ## This function is just to guide the execution of required function based on input argument
 @click.group()
 def guide():
-    
+    print("==================================")
+    print("  ___        _   _ __  __ _   \n\
+ / _ \ _ __ | |_(_)  \/  (_) ___  \n\
+| | | | '_ \| __| | |\/| | |/ __| \n\
+| |_| | |_) | |_| | |  | | | (__  \n\
+ \___/| .__/ \__|_|_|  |_|_|\___| \n\
+      |_|                        ")
+    print("==================================")
+    print("Optimized Microstructure Generator")
+    print("Copyright © 2020-2021")
+    print("Authors: P. H. Serrao, S. Sandfeld, A. Prakash")
+    print("Version: "+ str(version)+"\n\n")
     log = set_logger(name_str, 'log_data.log', 'INFO')
-    log.info('\n\n\n\n\n')
+    #log.info('\n')
     log.info("Welcome to Optimized Microstructure Generator !!")
     log.info("Version: " + str(version))
     pass
@@ -555,7 +566,7 @@ def guide():
 @click.option('-t', '--target', help='Target distribution file name as a string stored in the same directory where the package is executed from', type= str, nargs= 1)
 @click.option('-c', '--characteristic', help='The characteristic that has to be optimized in the format n where n corresponds to the integer number corresponding to the characteristic', type= int, multiple = True)#nargs= 1)
 @click.option('-m', '--material', help='The name of the material as a string', type=str, nargs=1)
-@click.option('-sdir', '--stress_direction', help='The direction of stress for computing the Schmid Factors', type=int, nargs=3)
+@click.option('-sdir', '--stress_direction', help='The direction of stress for computing the Schmid Factors', default= [1, 0, 0], type=int, nargs=3)
 @click.option('-so', '--sharp_orientation', help='Required texture common to each grain in the format n n n as provided in the documentation', type=float, nargs=3)
 # @click.option('-r', help='Flag to indicate if Random orientations is to be generated', is_flag=True)
 @click.option('-noopti', '--no_optimization', help='Flag to indicate if optimization is not to be performed', is_flag=True)
@@ -563,7 +574,7 @@ def guide():
 @click.option('-ss', '--seed_spacing', help='Option to indicate if randomly placed seeds are required or regularly spaced seeds ie; cubic_2d, cubic_3d, etc', type=str, nargs=1, show_default=True, default= 'random_3d')
 @click.option('-sl', '--spacing_length', help='Option to specify the spacing length such that it is exactly a multiple of size of simulation box along all three directions', show_default=True, default= 1.0, type=float, nargs=1)
 @click.option('-om', '--optimization_method', help='Method to be used for optimization', show_default=True, default='COBYLA', type=str, nargs=1)
-@click.option('-sk', '--skew_boundary', help='Flag to indicate skewed boundary requirement', is_flag=True)
+@click.option('-skw', '--skew_boundary', help='Flag to indicate skewed boundary requirement', is_flag=True)
 @click.option('-ucf', '--user_cost_func', help='Specify the user defined cost function file name. Refer documentation for file specifications', type=str, nargs=1)
 @click.option('-msh', '--mesh', help='Flag to indicate type of meshing required of the simulation box. Eg. hex (for Hexahedral), tet (for Tetrahedral), vis (for Visualization)', type=str, nargs=1)
 @click.option('-gms', '--mesh_size', help='Provide global mesh size', type=float, nargs=1, show_default=True, default= 0.5)
@@ -571,10 +582,11 @@ def guide():
 @click.option('-rs', '--rand_seed', help='Enter the seed value for Numpy random function', show_default=True, default=None, type=int)
 @click.option('-nb', '--number_bins', help='Specify the number of bins', show_default=True, default=10, type=int)
 @click.option('-si', '--save_interval', help='Intervals of iterations in which the seeds data is to be saved and live plot is to be extended', show_default=True, default=100, type=int)
-@click.option('-rest', '--restart', help='Restart optimization using seed positions of specified function evaluation count number. Specify -1 to use optimized seed positions.', show_default=True, default=0, type=int)
+@click.option('-r', '--restart', help='Restart optimization using seed positions of specified function evaluation count number. Specify -1 to use optimized seed positions.', show_default=True, default=0, type=int)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
 def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
     """
+    \f
     Function to parse command-line inputs of Click.
 
     Parameter \n
@@ -1276,6 +1288,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
 def test(name, face_flag, rand_seed, debug):
     """
+    \f
     Function to parse command-line input arguments of Click.
 
     Parameters \n

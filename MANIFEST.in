@@ -1,0 +1,8 @@
+include LICENSE
+include requirements.txt
+include optimic
+include README.md
+include run_examples.sh
+
+graft images
+graft optimic/util

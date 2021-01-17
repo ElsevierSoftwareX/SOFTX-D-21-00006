@@ -31,9 +31,9 @@ You should have received a copy of the GNU General Public License
 along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 """
-from src.main_import_statements import *
+from optimic.src.main_import_statements import *
 
-from src.set_logger import set_logger 
+from optimic.src.set_logger import set_logger 
 
 name_str = __name__
 

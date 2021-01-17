@@ -32,9 +32,9 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 """
 
-from src.main_import_statements import *
+from optimic.src.main_import_statements import *
 
-from src.set_logger import set_logger 
+from optimic.src.set_logger import set_logger 
 name_str = __name__
 
 def one_seed_testcase(tessellation, cell_number, size_of_simulation_box, length_z, log_level):

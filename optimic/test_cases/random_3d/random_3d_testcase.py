@@ -32,17 +32,17 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 """
 
-from src.main_import_statements import *
+from optimic.src.main_import_statements import *
 
-from src.set_logger import set_logger 
+from optimic.src.set_logger import set_logger 
 name_str = __name__
 
-from src.textural_characteristics import sharp_texture_quaternions 
-from src.textural_characteristics import random_quaternions_generator 
-from src.textural_characteristics import disorientation_angles 
-from src.textural_characteristics import type_of_grain_boundary 
-from src.textural_characteristics import schmid_factor 
-from src.textural_characteristics import available_required_texture 
+from optimic.src.textural_characteristics import sharp_texture_quaternions 
+from optimic.src.textural_characteristics import random_quaternions_generator 
+from optimic.src.textural_characteristics import disorientation_angles 
+from optimic.src.textural_characteristics import type_of_grain_boundary 
+from optimic.src.textural_characteristics import schmid_factor 
+from optimic.src.textural_characteristics import available_required_texture 
 
 def random_3d_testcase(store_folder, version, now, material, tessellation, \
     dimension, size_of_simulation_box, spacing_length, seed_array_unique, \

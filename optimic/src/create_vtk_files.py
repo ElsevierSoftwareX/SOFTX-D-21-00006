@@ -32,9 +32,9 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 """
 
-from src.main_import_statements import *
+from optimic.src.main_import_statements import *
 
-from src.set_logger import set_logger 
+from optimic.src.set_logger import set_logger 
 name_str = __name__
 
 def create_vtk_file_all_grains(material_name, tessellation, store_folder, face_flag, now, skewed_boundary_flag, all_vertices_list, log_level):

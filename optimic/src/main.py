@@ -47,10 +47,10 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 # import faulthandler
 # faulthandler.enable()
-from src.main_import_statements import *
-from src.__version__ import __version__ as version
+from optimic.src.main_import_statements import *
+from optimic.src.__version__ import __version__ as version
 
-from src.create_tessellations import create_tessellations
+from optimic.src.create_tessellations import create_tessellations
 
 """
 Import statements are written in this fashion due to philosophical reason. 
@@ -58,38 +58,38 @@ Importing functions in this way helps me to quickly identify the module
 containing a specific function. All modules in this package use this style for
 absolute import of functions from another modules.
 """
-from src.create_obj_files import create_obj_file_all_grains
-from src.create_obj_files import create_obj_file_individual_grains
-from src.create_vtk_files import create_vtk_file_all_grains 
-from src.create_vtk_files import create_vtk_file_individual_grains 
+from optimic.src.create_obj_files import create_obj_file_all_grains
+from optimic.src.create_obj_files import create_obj_file_individual_grains
+from optimic.src.create_vtk_files import create_vtk_file_all_grains 
+from optimic.src.create_vtk_files import create_vtk_file_individual_grains 
 
-from src.random_generator import random_generator 
-from src.structural_characteristics import grain_size_distribution 
-from src.structural_characteristics import number_of_neighbors 
-from src.structural_characteristics import grain_boundary_areas 
-from src.structural_characteristics import junction_length 
-from src.structural_characteristics import junction_angle 
-from src.structural_characteristics import distance_btw_grains 
-from src.textural_characteristics import sharp_texture_quaternions 
-from src.textural_characteristics import random_quaternions_generator 
-from src.textural_characteristics import disorientation_angles 
-from src.textural_characteristics import type_of_grain_boundary 
-from src.textural_characteristics import schmid_factor 
+from optimic.src.random_generator import random_generator 
+from optimic.src.structural_characteristics import grain_size_distribution 
+from optimic.src.structural_characteristics import number_of_neighbors 
+from optimic.src.structural_characteristics import grain_boundary_areas 
+from optimic.src.structural_characteristics import junction_length 
+from optimic.src.structural_characteristics import junction_angle 
+from optimic.src.structural_characteristics import distance_btw_grains 
+from optimic.src.textural_characteristics import sharp_texture_quaternions 
+from optimic.src.textural_characteristics import random_quaternions_generator 
+from optimic.src.textural_characteristics import disorientation_angles 
+from optimic.src.textural_characteristics import type_of_grain_boundary 
+from optimic.src.textural_characteristics import schmid_factor 
 
-from src.seed_spacing_files.bcc_lattice_3D import bcc_lattice_3D 
-from src.seed_spacing_files.cubic_lattice_2D import cubic_lattice_2D 
-from src.seed_spacing_files.cubic_lattice_3D import cubic_lattice_3D 
-from src.seed_spacing_files.fcc_lattice_2D import fcc_lattice_2D 
-from src.seed_spacing_files.fcc_lattice_3D import fcc_lattice_3D 
-from src.seed_spacing_files.hcp_lattice_2D import hcp_lattice_2D 
-from src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D 
+from optimic.src.seed_spacing_files.bcc_lattice_3D import bcc_lattice_3D 
+from optimic.src.seed_spacing_files.cubic_lattice_2D import cubic_lattice_2D 
+from optimic.src.seed_spacing_files.cubic_lattice_3D import cubic_lattice_3D 
+from optimic.src.seed_spacing_files.fcc_lattice_2D import fcc_lattice_2D 
+from optimic.src.seed_spacing_files.fcc_lattice_3D import fcc_lattice_3D 
+from optimic.src.seed_spacing_files.hcp_lattice_2D import hcp_lattice_2D 
+from optimic.src.seed_spacing_files.hcp_lattice_3D import hcp_lattice_3D 
 
-from src.test import test_func 
-from src.execute_func import execute_func 
+from optimic.src.test import test_func 
+from optimic.src.execute_func import execute_func 
 
-from src.check_libraries import check_libraries 
+from optimic.src.check_libraries import check_libraries 
 
-from src.set_logger import set_logger 
+from optimic.src.set_logger import set_logger 
 
 name_str = __name__
 

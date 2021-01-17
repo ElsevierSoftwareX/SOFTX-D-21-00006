@@ -34,8 +34,8 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 from scipy.spatial import Voronoi
 import copy
 
-from src.main_import_statements import *
-from src.set_logger import set_logger 
+from optimic.src.main_import_statements import *
+from optimic.src.set_logger import set_logger 
 
 name_str = __name__
 

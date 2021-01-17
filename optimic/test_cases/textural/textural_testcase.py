@@ -32,19 +32,19 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 
 """
 
-from src.main_import_statements import *
+from optimic.src.main_import_statements import *
 
-from src.seed_spacing_files.cubic_lattice_2D import cubic_lattice_2D 
+from optimic.src.seed_spacing_files.cubic_lattice_2D import cubic_lattice_2D 
 
-from src.set_logger import set_logger 
+from optimic.src.set_logger import set_logger 
 name_str = __name__
 
-from src.textural_characteristics import sharp_texture_quaternions 
-from src.textural_characteristics import random_quaternions_generator 
-from src.textural_characteristics import disorientation_angles 
-from src.textural_characteristics import type_of_grain_boundary 
-from src.textural_characteristics import schmid_factor 
-from src.textural_characteristics import available_required_texture 
+from optimic.src.textural_characteristics import sharp_texture_quaternions 
+from optimic.src.textural_characteristics import random_quaternions_generator 
+from optimic.src.textural_characteristics import disorientation_angles 
+from optimic.src.textural_characteristics import type_of_grain_boundary 
+from optimic.src.textural_characteristics import schmid_factor 
+from optimic.src.textural_characteristics import available_required_texture 
 
 def textural_testcase(store_folder, tessellation, dimension, \
     size_of_simulation_box, spacing_length, seed_array_unique, \
@@ -277,8 +277,8 @@ def textural_testcase(store_folder, tessellation, dimension, \
     rand_quat_flag = True
     type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
 
-    from src.textural_characteristics import available_required_texture
-    from src.textural_characteristics import type_of_csl_data
+    from optimic.src.textural_characteristics import available_required_texture
+    from optimic.src.textural_characteristics import type_of_csl_data
     available_required_texture_info = copy.deepcopy(available_required_texture)
     type_of_csl_dict = copy.deepcopy(type_of_csl_data)
     for row in available_required_texture_info:

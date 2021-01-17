@@ -32,7 +32,7 @@ along with OptiMic.  If not, see <https://www.gnu.org/licenses/>.
 """
 
 import os
-from src.set_logger import set_logger 
+from optimic.src.set_logger import set_logger 
 name_str = __name__
 
 def check_import(name, install_command):

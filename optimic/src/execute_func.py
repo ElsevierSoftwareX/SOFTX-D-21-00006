@@ -93,7 +93,7 @@ def stats_binned_statistics(x, values, number_of_bins, statistic_type):
     return statistic_hist, bin_edges
 
 
-def execute_func(size_of_simulation_box, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, seed_array_unique, stress_direction, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level):
+def execute_func(size_of_simulation_box, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, seed_array_unique, stress_direction, slip_system_family, crystal_symmetry_type, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level):
     """
     The execute_func is a function which computes data based on the input parameters.
     The function then stores the computed data in the form of text files and plots.
@@ -129,6 +129,13 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         
     stress_direction: array of length 3    
         Direction of loading
+
+    slip_system_family: 1D array of shape (6,)
+        First three components denote family of slip plane normal and remaining
+        three components denote family of slip direction.
+
+    crystal_symmetry_type: string
+        Crystal symmetry to be used.(CUBIC, ORTHORHOMBIC, HEXAGONAL, TETRAGONAL)
 
     store_folder: string
         Name of directory where output files are to be stored.
@@ -206,7 +213,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
 
     ## Textural Characteristics
     disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation, log_level)
     type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
     
     log.info('Successfully computed all textural characteristics')

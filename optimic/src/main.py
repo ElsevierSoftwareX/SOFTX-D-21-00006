@@ -144,6 +144,8 @@ def cost_function_general(combined_user_data, combined_predicted_data, start_row
             15. skewed_boundary_flag
             16. tessellation (DICTIONARY OF ALL TESSELLATION DATA)
             17. limits_factor
+            18. slip_system_family
+            19. crystal_symmetry_type
 
     Returns
     -------
@@ -224,6 +226,8 @@ class optimize_class():
                 15. skewed_boundary_flag
                 16. tessellation_dummy_variable
                 17. limits_factor
+                18. slip_system_family
+                19. crystal_symmetry_type
 
         Returns 
         -------
@@ -256,6 +260,8 @@ class optimize_class():
         orientation_data = args[13]
         skewed_boundary_flag = args[14]
         limits_factor = args[16]
+        slip_system_family = args[17]
+        crystal_symmetry_type = args[18]
 
         log.debug('Successfully extracted all information from args in the cost function')
 
@@ -346,7 +352,7 @@ class optimize_class():
                 data_dictionary['7'] = type_of_grain_boundaries                     # Key as integer refers to the integer representing the characteristic feature
 
             elif parameter is 'schmid_factor':
-                schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, self.log_level)
+                schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation, self.log_level)
                 all_schmid_factors = schmid_factors[:, 1]
                 hist, bins = np.histogram(all_schmid_factors, bins = number_of_bins, density= True)
                 data_dictionary['8'] = schmid_factors                     # Key as integer refers to the integer representing the characteristic feature
@@ -566,7 +572,9 @@ def guide():
 @click.option('-t', '--target', help='Target distribution file name as a string stored in the same directory where the package is executed from', type= str, nargs= 1)
 @click.option('-c', '--characteristic', help='The characteristic that has to be optimized in the format n where n corresponds to the integer number corresponding to the characteristic', type= int, multiple = True)#nargs= 1)
 @click.option('-m', '--material', help='The name of the material as a string', type=str, nargs=1)
-@click.option('-sdir', '--stress_direction', help='The direction of stress for computing the Schmid Factors', default= [1, 0, 0], type=int, nargs=3)
+@click.option('-sdir', '--stress_direction', help='The direction of stress for computing the Schmid Factors', default= [1, 0, 0], show_default=True, type=int, nargs=3)
+@click.option('-slip', '--slip_family', help='The slip system family having first 3 components denoting family of slip plane normal and remaining 3 components denoting family of slip direction', default= [1, 1, 1, 1, 1, 0], show_default=True, type=int, nargs=6)
+@click.option('-ctype', '--crystal_type', help='The crystal symmetry type to be used for Schmid factor calculations. Either Cubic, Orthorhombic, Hexagonal or Tetragonal', default='CUBIC', show_default=True, type=str, nargs=1)
 @click.option('-so', '--sharp_orientation', help='Required texture common to each grain in the format n n n as provided in the documentation', type=float, nargs=3)
 # @click.option('-r', help='Flag to indicate if Random orientations is to be generated', is_flag=True)
 @click.option('-noopti', '--no_optimization', help='Flag to indicate if optimization is not to be performed', is_flag=True)
@@ -584,7 +592,7 @@ def guide():
 @click.option('-si', '--save_interval', help='Intervals of iterations in which the seeds data is to be saved and live plot is to be extended', show_default=True, default=100, type=int)
 @click.option('-r', '--restart', help='Restart optimization using seed positions of specified function evaluation count number. Specify -1 to use optimized seed positions.', show_default=True, default=0, type=int)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
-def main(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
+def main(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crystal_type, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
     """
     \f
     Function to parse command-line inputs of Click.
@@ -621,6 +629,13 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
 
     stress_direction: list of 3 elements \n
     \t Direction of loading \n
+
+    slip_family: list of shape (6,) \n
+    \t First three components denote family of slip plane normal and remaining
+    \t three components denote family of slip direction. \n
+
+    crystal_type: string \n
+    \t Crystal symmetry to be used.(CUBIC, ORTHORHOMBIC, HEXAGONAL, TETRAGONAL) \n
 
     sharp_orientation: list of 3 elements \n
     \t Specific texture to be used for all grains \n
@@ -693,9 +708,9 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     """
 
     ## This is done so that the function 'main_run()' can be imported in some another python script
-    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug)
+    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crystal_type, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug)
 
-def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
+def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crystal_type, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
     """
     Function to execute main tasks.
 
@@ -731,6 +746,13 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
     stress_direction: list of 3 elements \n
     \t Direction of loading \n
+
+    slip_family: list of shape (6,) \n
+    \t First three components denote family of slip plane normal and remaining
+    \t three components denote family of slip direction. \n
+
+    crystal_type: string \n
+    \t Crystal symmetry to be used.(CUBIC, ORTHORHOMBIC, HEXAGONAL, TETRAGONAL) \n
 
     sharp_orientation: list of 3 elements \n
     \t Specific texture to be used for all grains \n
@@ -826,6 +848,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             + 'Characteristic to be optimized: ' +str(characteristic) + '\n' \
             + 'Name of the material: ' +str(material) + '\n' \
             + 'Direction vector for stress applied: ' +str(stress_direction) + '\n' \
+            + 'Slip system family (Slip plane normal + Slip direction): ' +str(slip_family) + '\n' \
+            + 'Crystal symmetry type: ' +str(crystal_type) + '\n' \
             + 'Required sharp texture direction: ' +str(sharp_orientation) + '\n' \
             + 'Flag for NO optimization: ' + str(no_optimization) + '\n' \
             + 'Flag for opaque surface: ' + str(face_flag) + '\n' \
@@ -857,6 +881,8 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     characteristic_to_be_optimized = np.array(characteristic)
     material = material
     stress_direction = np.array(stress_direction)
+    slip_system_family = np.array(slip_family)
+    crystal_symmetry_type = crystal_type.upper()
 
     required_texture = np.array(sharp_orientation)
 #   rand_quat_flag = r
@@ -1026,7 +1052,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     ############ Optimization Flag ###############
     if no_optimization_flag:
         log.info('Continuing without performing optimization')
-        execute_func(limit, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, seed_array_unique, stress_direction, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level)
+        execute_func(limit, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, seed_array_unique, stress_direction, slip_system_family, crystal_symmetry_type, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level)
     else:
         log.info('Starting optimization process')
         ## Reading required user distribution
@@ -1127,7 +1153,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
 
         ## Defining args for cost function
         tessellation_dummy_variable = []                                        ## dummy variable that will be replaced in args with tessellations data during optimization
-        args_list = [parameter_list, dimension, user_data, start_row_of_parameter, limit, number_of_bins, fig_animate, [line, ax_animate], cost_function_names, func_name_key, required_texture, rand_quat_flag, stress_direction, orientation_data, skewed_boundary_flag, tessellation_dummy_variable, limits_factors]
+        args_list = [parameter_list, dimension, user_data, start_row_of_parameter, limit, number_of_bins, fig_animate, [line, ax_animate], cost_function_names, func_name_key, required_texture, rand_quat_flag, stress_direction, orientation_data, skewed_boundary_flag, tessellation_dummy_variable, limits_factors, slip_system_family, crystal_symmetry_type]
 
         log.info('Calling optimizer')
 
@@ -1186,7 +1212,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
         if dimension == 2:
             optimized_seed_array[:, 2] = limit[2]/2.0
 
-        execute_func(limit, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, optimized_seed_array, stress_direction, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level)
+        execute_func(limit, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, optimized_seed_array, stress_direction, slip_system_family, crystal_symmetry_type, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level)
 
         ## Plotting Expected and predicted data of each parameter on same plot
         

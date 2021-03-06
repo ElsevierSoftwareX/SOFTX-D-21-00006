@@ -44,7 +44,8 @@ from optimic.src.textural_characteristics import random_quaternions_generator
 from optimic.src.textural_characteristics import disorientation_angles 
 from optimic.src.textural_characteristics import type_of_grain_boundary 
 from optimic.src.textural_characteristics import schmid_factor 
-from optimic.src.textural_characteristics import available_required_texture 
+from optimic.src.textural_characteristics import available_required_texture
+from optimic.src.textural_characteristics import slip_system_generator 
 
 def textural_testcase(store_folder, tessellation, dimension, \
     size_of_simulation_box, spacing_length, seed_array_unique, \
@@ -214,17 +215,77 @@ def textural_testcase(store_folder, tessellation, dimension, \
     disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
     assert np.all([angle[2] <= 62.8 for angle in disorientation_angle])
     assert np.all([angle[2] == 0 for angle in disorientation_angle])
+
+    ####################################################################################################################
+    #Testing slip system generator function of number of slip systems generated
+    #and orthogonality check
+    ####################################################################################################################
     
+    ## FCC has 12 slip systems [111]<110>
+    slip_system_family = np.array([1,1,1,1,1,0])
+    crystal_symmetry_type = 'CUBIC'
+    slip_systems = slip_system_generator(slip_system_family, crystal_symmetry_type)
+    assert len(slip_systems)==12                                                ## FCC has 12 slip systems
+    all_normals = slip_systems[:, :3]
+    all_dir = slip_systems[:,3:]
+    all_dot_products = np.einsum('ij,ij->i', all_normals, all_dir)
+    assert np.all(np.isclose(all_dot_products,0.0))                                          ## for orthogonality, dot product must be zero
+
+    ## BCC has 12 slip systems [110]<-111>
+    slip_system_family = np.array([1,1,0,-1,1,1])
+    crystal_symmetry_type = 'CUBIC'
+    slip_systems = slip_system_generator(slip_system_family, crystal_symmetry_type)
+    assert len(slip_systems)==12                                                ## BCC has 12 slip systems
+    all_normals = slip_systems[:, :3]
+    all_dir = slip_systems[:,3:]
+    all_dot_products = np.einsum('ij,ij->i', all_normals, all_dir)
+    assert np.all(np.isclose(all_dot_products,0.0))                                          ## for orthogonality, dot product must be zero
+
+    ## BCC has 12 slip systems [211]<-111>
+    slip_system_family = np.array([2,1,1,-1,1,1])
+    crystal_symmetry_type = 'CUBIC'
+    slip_systems = slip_system_generator(slip_system_family, crystal_symmetry_type)
+    assert len(slip_systems)==12                                                ## BCC has 12 slip systems
+    all_normals = slip_systems[:, :3]
+    all_dir = slip_systems[:,3:]
+    all_dot_products = np.einsum('ij,ij->i', all_normals, all_dir)
+    assert np.all(np.isclose(all_dot_products,0.0))                                          ## for orthogonality, dot product must be zero
+
+    ## BCC has 24 slip systems [321]<-111>
+    slip_system_family = np.array([3,2,1,-1,1,1])
+    crystal_symmetry_type = 'CUBIC'
+    slip_systems = slip_system_generator(slip_system_family, crystal_symmetry_type)
+    assert len(slip_systems)==24                                                ## BCC has 24 slip systems
+    all_normals = slip_systems[:, :3]
+    all_dir = slip_systems[:,3:]
+    all_dot_products = np.einsum('ij,ij->i', all_normals, all_dir)
+    assert np.all(np.isclose(all_dot_products,0.0))                                          ## for orthogonality, dot product must be zero
+
+    ## Body centered orthorhombic crystal
+    slip_system_family = np.array([3,2,1,-1,1,1])
+    crystal_symmetry_type = ['ORTHORHOMBIC', 'TETRAGONAL', 'HEXAGONAL']
+    for sym_type in crystal_symmetry_type:
+        slip_systems = slip_system_generator(slip_system_family, sym_type)
+        #assert len(slip_systems)==12                                                ## FCC has 12 slip systems
+        all_normals = slip_systems[:, :3]
+        all_dir = slip_systems[:,3:]
+        all_dot_products = np.einsum('ij,ij->i', all_normals, all_dir)
+        assert np.all(np.isclose(all_dot_products,0.0))                                          ## for orthogonality, dot product must be zero
+
+
     ####################################################################################################################
     #Testing for known inputs of stress directions and known schmid factors
     ####################################################################################################################
     ## Schmid Factors can have a maximum value of 0.5
     ## Testing for various stress directions
 
+    slip_system_family = np.array([1,1,1,1,1,0])
+    crystal_symmetry_type = 'CUBIC'
+
     ## With random orientations
     orientation_data = None
     stress_direction = np.array([1, 0, 0])
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation, log_level)
     assert np.all([factors[2] <= 0.5 for factors in schmid_factors])
 
     with open(str(output_file_path), 'a+') as f:
@@ -237,7 +298,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
     orientation_data = np.broadcast_to(orientation_quaternion, (seed_array_unique.shape[0], 4))   # Assigning same orientation to each grain
 
     stress_direction = np.array([1, -1, 0])
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation, log_level)
     assert np.all([factors[2] <= 0.5 for factors in schmid_factors])
     assert np.all([np.isclose(factor[2], 0.408, atol=1e-3) for factor in schmid_factors])
 
@@ -248,7 +309,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
 
 
     stress_direction = np.array([1, 0, 0])
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation, log_level)
     assert np.all([factors[2] <= 0.5 for factors in schmid_factors])
     assert np.all([np.isclose(factor[2], 0.408, atol=1e-3) for factor in schmid_factors])
 
@@ -259,7 +320,7 @@ def textural_testcase(store_folder, tessellation, dimension, \
 
 
     stress_direction = np.array([1, 1, 0])
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation, log_level)
+    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation, log_level)
     assert np.all([factors[2] <= 0.5 for factors in schmid_factors])
     assert np.all([np.isclose(factor[2], 0.408, atol=1e-3) for factor in schmid_factors])
 

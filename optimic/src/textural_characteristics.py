@@ -213,26 +213,109 @@ symmetry_operator = np.array([[[1, 0, 0],
                                 [1, 0, 0], 
                                 [0, 0, 1]]])
 
+## Defining the orthorhombic symmetry operators
+orthorhombic_symmetry_operators = np.array([[[1, 0, 0],
+                                             [0, 1, 0],
+                                             [0, 0, 1]],
+
+                                            [[-1, 0, 0],
+                                             [0, 1, 0],
+                                             [0, 0, -1]],
+
+                                            [[-1, 0, 0],
+                                             [0, -1, 0],
+                                             [0, 0, 1]],
+
+                                            [[1, 0, 0],
+                                             [0, -1, 0],
+                                             [0, 0, -1]]])
+
+## Defining the hexagonal symmetry operators
+ha = np.sqrt(3)/2.0
+hexagonal_symmetry_operators = np.array([[[1, 0, 0],
+                                          [0, 1, 0],
+                                          [0, 0, 1]],
+                                         
+                                         [[-.5, ha, 0],
+                                          [-ha, -.5, 0],
+                                          [0, 0, 1]],
+
+                                         [[-.5, -ha, 0],
+                                          [ha, -.5, 0],
+                                          [0, 0, 1]],
+
+                                         [[.5, ha, 0],
+                                          [-ha, .5, 0],
+                                          [0, 0, 1]],
+
+                                         [[-1, 0, 0],
+                                          [0, -1, 0],
+                                          [0, 0, 1]],
+
+                                         [[.5, -ha, 0],
+                                          [ha, .5, 0],
+                                          [0, 0, 1]],
+
+                                         [[-.5, -ha, 0],
+                                          [-ha, .5, 0],
+                                          [0, 0, -1]],
+
+                                         [[1, 0, 0],
+                                          [0, -1, 0],
+                                          [0, 0, -1]],
+
+                                         [[-.5, ha, 0],
+                                          [ha, .5, 0],
+                                          [0, 0, -1]],
+
+                                         [[.5, ha, 0],
+                                          [ha, -.5, 0],
+                                          [0, 0, -1]],
+
+                                         [[-1, 0, 0],
+                                          [0, 1, 0],
+                                          [0, 0, -1]],
+
+                                         [[.5, -ha, 0],
+                                          [-ha, -.5, 0],
+                                          [0, 0, -1]]])
+
+## Defining tetragonal symmetry operators
+tetragonal_symmetry_operators = np.array([[[1, 0, 0],
+                                           [0, 1, 0],
+                                           [0, 0, 1]],
+
+                                          [[-1, 0, 0],
+                                           [0, 1, 0],
+                                           [0, 0, -1]],
+
+                                          [[1, 0, 0],
+                                           [0, -1, 0],
+                                           [0, 0, -1]],
+
+                                          [[-1, 0, 0],
+                                           [0, -1, 0],
+                                           [0, 0, 1]],
+
+                                          [[0, 1, 0],
+                                           [-1, 0, 0],
+                                           [0, 0, 1]],
+
+                                          [[0, -1, 0],
+                                           [1, 0, 0],
+                                           [0, 0, 1]],
+
+                                          [[0, 1, 0],
+                                           [1, 0, 0],
+                                           [0, 0, -1]],
+
+                                          [[0, -1, 0],
+                                           [-1, 0, 0],
+                                           [0, 0, -1]]])
+
+
 ## Transforming rotation matrices of each symmetry operator to quaternions
 symmetric_operators_quaternions = np.array([quaternion.from_rotation_matrix(r) for r in symmetry_operator])
-
-## 12 Slip systems for FCC (three columns are slip plane normals and remaining three columns are slip directions)
-slip_systems = np.array([[1, 1, 1, 0, -1, 1], 
-                        [1, 1, 1, 1, 0, -1],
-                        [1, 1, 1, -1, 1, 0],
-                        [-1, -1, 1, 0, 1, 1],
-                        [-1, -1, 1, 1, 0, 1],
-                        [-1, -1, 1, 1, -1, 0],
-                        [-1, 1, 1, 0, -1, 1],
-                        [-1, 1, 1, -1, 0, -1],
-                        [-1, 1, 1, 1, 1, 0],
-                        [1, -1, 1, 0, 1, 1],
-                        [1, -1, 1, 1, 0, -1],
-                        [1, -1, 1, -1, -1, 0]])
-
-## Testing for dot product of each slip plane and slip direction to  be zero
-dot_plane_direction = [np.dot(slip_systems[v, 0:3], slip_systems[v, 3:6]) for v in range(slip_systems.shape[0])]
-assert all([v == 0 for v in dot_plane_direction])
 
 type_of_csl_data = {'[1.0, 0.0, 0.0]': np.array([[5, 13, 17, 25, 29],
                                             [36.9, 22.6, 28.1, 16.3, 43.6]]),
@@ -906,8 +989,76 @@ def type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, t
 #######################################################################################
 # normalize each slip plane and direction or else it gives a huge difference in results
 #######################################################################################
+def slip_system_generator(slip_system_family, crystal_symmetry_type):
+    """
+    Generates all slip systems
 
-def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, orientation_data, tessellation_og, log_level):
+    Processing
+    ----------
+    The function checks all permutations of symmetries of slip systems for its
+    orthogonality. It also checks if the same parallel slip system exists in the
+    list.
+
+    Parameters
+    ----------
+    slip_system_family: 1D array of shape (6,)
+        First three components denote family of slip plane normal and remaining
+        three components denote family of slip direction.
+
+    crystal_symmetry_type: string
+        Crystal symmetry to be used.(CUBIC, ORTHORHOMBIC, HEXAGONAL, TETRAGONAL)
+
+    Returns
+    -------
+        An array of all slip systems. First three columns denote slip plane 
+        normal and remaining three columns denote slip direction.
+    """
+    slip_normal_family = slip_system_family[:3]
+    slip_direction_family = slip_system_family[3:]
+    
+    symmetry_operator_types = {'CUBIC': symmetry_operator, 
+                               'ORTHORHOMBIC': orthorhombic_symmetry_operators,
+                               'HEXAGONAL': hexagonal_symmetry_operators,
+                               'TETRAGONAL': tetragonal_symmetry_operators}
+    crystal_symmetry_operator = symmetry_operator_types[crystal_symmetry_type.upper()]
+
+    all_slip_system = [[0, 0, 0, 0, 0, 0]]                                      ## adding a row so that first time checking of rows is made possible. If this array is empty then checking is not possible.
+    ## Creating permutations of symmetries of slip plane normal and slip direction
+    for index, operator in enumerate(crystal_symmetry_operator):
+        rot_norm = operator@slip_normal_family
+        for index_dir, operator_dir in enumerate(crystal_symmetry_operator):
+            rot_dir = operator_dir@slip_direction_family
+            dot = np.dot(rot_norm, rot_dir)
+            
+            ## Slip system must be orthogonal in this case
+            if np.isclose(dot, 0.0):
+                check_list = []
+                
+                ## The permutations of negatives of symmetric normal and directions are checked if they already exist in the slip system list
+                for i, j in zip([1, 1, -1, -1], [1, -1, 1, -1]):
+                    
+                    ## Creating a row having slip plane normal and direction
+                    match = np.hstack([i * rot_norm, j * rot_dir])
+                    
+                    ## Checking if row exists
+                    check = any(np.equal(np.array(all_slip_system), match).all(1))
+                    
+                    ## variable 'Check' boolean result is added to a list
+                    check_list.append(check)
+                    
+                    ## If a match is found then the loop is broken immediately
+                    if check == True:
+                        break
+                
+                ## Adding the row to all slip system list only if no match is found for any permutation
+                if np.all(~(np.array(check_list, dtype=bool))):
+                    all_slip_system.append(np.hstack([rot_norm, rot_dir]))
+
+    ## deleting first dummy zeros row
+    all_slip_system = np.delete(np.array(all_slip_system), 0, 0)
+    return all_slip_system
+
+def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation_og, log_level):
     """
     Compute Schmid factors.
 
@@ -934,6 +1085,13 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_dir
 
     stress_direction: array of length 3    
         Direction of loading
+
+    slip_system_family: 1D array of shape (6,)
+        First three components denote family of slip plane normal and remaining
+        three components denote family of slip direction.
+
+    crystal_symmetry_type: string
+        Crystal symmetry to be used.(CUBIC, ORTHORHOMBIC, HEXAGONAL, TETRAGONAL)
 
     orientation_data: array of shape (number of grains, 4)
         Orientation data of each grain as rows. Orientations to be specified as
@@ -970,6 +1128,9 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_dir
     log = set_logger(name_str, 'log_data.log', log_level)
     log.debug('Started computing Schmid factors')
     tessellation = copy.deepcopy(tessellation_og)
+
+    ## Generating slip systems
+    slip_systems = slip_system_generator(slip_system_family, crystal_symmetry_type)
 
     ## Computing grain size distribution
     grain_sizes_data = grain_size_distribution(dimension, tessellation, limit, log_level)

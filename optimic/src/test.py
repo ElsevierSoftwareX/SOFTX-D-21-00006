@@ -154,6 +154,8 @@ def test_func(name, f, log_level):
     face_flag = f                                                               ## Flag to indicate if closed surface is to be used or line
     skewed_boundary_flag = False
     number_of_bins = 10
+    slip_system_family = np.array([1, 1, 1, 1, 1, 0])
+    crystal_symmetry_type = 'CUBIC'
 
     ## Dictionary with all test cases
     test_names = {'cubic_2d': ['cubic_2d'],
@@ -323,7 +325,7 @@ def test_func(name, f, log_level):
             grain_size_distributions, number_of_neighbor, grain_boundary_area_distribution, junction_lengths, \
                 junction_angles_degrees, distance_btw_grain_array, distance_btw_grain_1d, disorientation_angle, schmid_factors, type_of_grain_boundaries = \
                 execute_func(size_of_simulation_box, dimension, limit, material, orientation_data, required_texture, rand_quat_flag, \
-                seed_array_unique, stress_direction, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level)
+                seed_array_unique, stress_direction, slip_system_family, crystal_symmetry_type, store_folder, face_flag, now, number_of_bins, skewed_boundary_flag, mesh_flag, global_mesh_size, log_level)
 
             ## Executing various assert statements based on the name of the test case
             if str(case_name).lower() == 'cubic_2D'.lower():

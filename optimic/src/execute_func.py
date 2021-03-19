@@ -457,7 +457,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
             log.error("Please enter appropriate mesh type. Refer documentation for more details. \n")
 
 
-    ## Saving Structural and Txtural characteristics to a file
+    ## Saving Structural and Textural characteristics to a file
     
     log.debug('Saving structural characteristics into a text file')
 
@@ -471,33 +471,78 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
 
     with open(str(output_file_path), 'a+') as f:
         f.truncate(0)
-        f.write(now)
+        f.write("""# structural_characteristics.txt
+# 
+# This was created as part of "Personal Programming Project (PPP)" coursework in 
+# "Computation Materials Science (CMS)" M. Sc program at TU Bergakademie Freiberg,
+# Germany.
+# 
+# For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
+# 
+# @authors: Serrao Prince Henry, Arun Prakash
+# @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
+# Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash
+# 
+# This file is part of OptiMic.
+# 
+# OptiMic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OptiMic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with OptiMic.  If not, see <https://www.gnu.org/licenses/>. \n""")
         
-        f.write("\n\nSize of Simulation Box: " + str(size_of_simulation_box))
-        #f.write("\nNumber of Seeds: " + str(number_of_seeds))
-        f.write("\nDimension: " + str(dimension))
-        f.write("\nMaterial Name: " + material)
+        f.write("################################################################################\n\n")
+        
+        f.write('# Date and time [YYYYMMDD_HHMMSS]: ' + now)
+
+        f.write('\n\n# Command line input: ' + " ".join(sys.argv))
+        
+        f.write("\n\n# Size of Simulation Box: " + str(size_of_simulation_box))
+        #f.write("\n# Number of Seeds: " + str(number_of_seeds))
+        f.write("\n# Dimension: " + str(dimension))
+        f.write("\n# Material Name: " + material)
+
+        f.write("""\n\n# This file contains data related to:
+#        1. Grain sizes
+#        2. Number of neighbors
+#        3. Grain boundary areas
+#        4. Junction lengths
+#        5. Junction angles (in degrees)
+#        6. Distance between grains""")
+
         f.write("\n \n# Grain sizes \n")
         f.write('# Grain Number, Grain Size, Grain Volume or Area (for 3D or 2D resp.) \n')
         np.savetxt(f, grain_size_distributions, delimiter=',', fmt="%.14f")
+        
         f.write("\n# Number of Neighbors \n")
         f.write("# Grain Number, Grain volume, Number of neighbors, List of indices of all neighboring grains \n")
         for line in number_of_neighbor:
             np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.14f")
             f.write("\n")
+        
         f.write("\n# Grain Boundary Areas \n")
         f.write("# Sr. No., Grain Number 1, Grain Number 2, Area \n")
         np.savetxt(f, grain_boundary_area_distribution, delimiter=',', fmt="%.14f")
+        
         f.write("\n# Junction Lengths \n")
         f.write("# Sr. no., Junction type, Junction lengths, Grains with this junction \n")
         for line in junction_lengths:
             np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.14f")
             f.write("\n")
+        
         f.write("\n# Junction angles degrees \n")
         f.write('# Sr. No., Junction Type, 1st Junction angle, Grain containing the 1st junction angle, 2nd Junction angle, so on... \n')
         for line in junction_angles_degrees:
             np.savetxt(f, np.array(line), newline=' ', delimiter=',', fmt="%.14f")
             f.write("\n")
+        
         f.write('\n# Distance between grains \n')
         f.write('# Sr. No., Distance between grains in ascending orders \n')
         np.savetxt(f, distance_btw_grain_array, delimiter=',', fmt="%.14f")
@@ -516,18 +561,57 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
 
     with open(str(output_file_path), 'a+') as f:
         f.truncate(0)
-        f.write(now)
+        f.write("""# textural_characteristics.txt
+# 
+# This was created as part of "Personal Programming Project (PPP)" coursework in 
+# "Computation Materials Science (CMS)" M. Sc program at TU Bergakademie Freiberg,
+# Germany.
+# 
+# For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
+# 
+# @authors: Serrao Prince Henry, Arun Prakash
+# @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
+# Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash
+# 
+# This file is part of OptiMic.
+# 
+# OptiMic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OptiMic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with OptiMic.  If not, see <https://www.gnu.org/licenses/>. \n""")
         
-        f.write("\n\nSize of Simulation Box: " + str(size_of_simulation_box))
-        #f.write("\nNumber of Seeds: " + str(number_of_seeds))
-        f.write("\nDimension: " + str(dimension))
-        f.write("\nMaterial Name: " + material)
+        f.write("################################################################################\n\n")
+        
+        f.write('# Date and time [YYYYMMDD_HHMMSS]: ' + now)
+
+        f.write('\n\n# Command line input: ' + " ".join(sys.argv))
+        
+        f.write("\n\n# Size of Simulation Box: " + str(size_of_simulation_box))
+        #f.write("\n# Number of Seeds: " + str(number_of_seeds))
+        f.write("\n# Dimension: " + str(dimension))
+        f.write("\n# Material Name: " + material)
+        
+        f.write("""\n\n# This file contains data related to:
+#        1. Disorientation angles
+#        2. Type of grain boundaries
+#        3. Schmid factors""")
+        
         f.write("\n \n# Disorientation Angles \n")
         f.write("\n# Grain 1, Grain 2, Disorientation angle, Disorientation axis, GB area \n")
         np.savetxt(f, disorientation_angle, delimiter=',', fmt="%.14f")
+        
         f.write("\n \n# Type of Grain Boundaries \n")
         f.write("\n# Grain 1, Grain 2, Misorientation angle, Misorientation axis, Type of Grain Boundary, Grain Boundary area \n")
         np.savetxt(f, type_of_grain_boundaries, delimiter=',', fmt='%.14f,%.14f,%.14f,%.14f,%.14f,%.14f,%s,%.14f')
+        
         f.write("\n# Schmid Factors")
         f.write("\n# Grain number, Grain sizes, Maximum schmid factor, Respective slip plane and slip direction (Slip System), 2nd Maximum schmid factor, Respective Slip System, 3rd Maximum schmid factor, Respective Slip System \n")
         np.savetxt(f, schmid_factors, delimiter=',', fmt="%.14f")
@@ -546,8 +630,44 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
 
     with open(str(output_file_path), 'a+') as f:
         f.truncate(0)
-        f.write("# " + now + " \n")
-        f.write("# Seeds data (Seed coordinates + Orientation as Quaternions)\n")
+        f.write("""# seed_data.txt
+# 
+# This was created as part of "Personal Programming Project (PPP)" coursework in 
+# "Computation Materials Science (CMS)" M. Sc program at TU Bergakademie Freiberg,
+# Germany.
+# 
+# For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
+# 
+# @authors: Serrao Prince Henry, Arun Prakash
+# @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
+# Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash
+# 
+# This file is part of OptiMic.
+# 
+# OptiMic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OptiMic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with OptiMic.  If not, see <https://www.gnu.org/licenses/>. \n""")
+        
+        f.write("################################################################################\n\n")
+        
+        f.write('# Date and time [YYYYMMDD_HHMMSS]: ' + now)
+
+        f.write('\n\n# Command line input: ' + " ".join(sys.argv))
+
+        f.write("""\n\n# This file contains data related to:
+#        1. Optimised/final grain seeds coordinates and grain orientation Quaternions""")
+
+
+        f.write("\n\n# Seeds data (Seed coordinates + Orientation as Quaternions)\n")
         f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
         seed_data = np.around(np.concatenate((seed_array_unique, orientation_data), axis=1), decimals=14)
         np.savetxt(f, seed_data, delimiter=',', comments='#', fmt='%.14f')

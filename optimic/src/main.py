@@ -447,7 +447,44 @@ class optimize_class():
 
                 with open(str(output_file_path), 'a+') as f:
                     f.truncate(0)
-                    f.write("# " + self.now + " \n")
+
+                    f.write("""# seed_data_all_func_eval.txt
+# 
+# This was created as part of "Personal Programming Project (PPP)" coursework in 
+# "Computation Materials Science (CMS)" M. Sc program at TU Bergakademie Freiberg,
+# Germany.
+# 
+# For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
+# 
+# @authors: Serrao Prince Henry, Arun Prakash
+# @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
+# Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash
+# 
+# This file is part of OptiMic.
+# 
+# OptiMic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OptiMic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with OptiMic.  If not, see <https://www.gnu.org/licenses/>. \n""")
+        
+                    f.write("################################################################################\n\n")
+        
+                    f.write('# Date and time [YYYYMMDD_HHMMSS]: ' + self.now)
+
+                    f.write('\n\n# Command line input: ' + " ".join(sys.argv))
+
+                    f.write("""\n\n# This file contains data related to:
+#        1. Grain seeds coordinates and grain orientation Quaternions predicted 
+#           during each objective function calls\n\n""")
+                    
                     f.write("# Seeds data (Seed coordinates + Orientation as Quaternions)\n")
                     f.write("# X coordinate, Y coordinate, Z coordinate, W, q1, q2, q3 \n")
             else:
@@ -458,7 +495,6 @@ class optimize_class():
                         seed_data = np.array(self.seeds_array_all_iterations[i])
                         temp_write_data = np.around(np.concatenate((seed_data, orientation_data), axis=1), decimals=14)
                         np.savetxt(f, temp_write_data, delimiter=',', comments='#', fmt='%.14f')
-                        #self.seeds_array_all_iterations[i] = []
 
         line.set_ydata(self.current_cost_function_value)                        # Updating Y data
         line.set_xdata(self.func_eval_count[1:])                               # Updating X data

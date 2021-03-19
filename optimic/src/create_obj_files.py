@@ -108,6 +108,41 @@ def create_obj_file_all_grains(material_name, tessellation, store_folder, face_f
         f.truncate(0)                                                               # Deleting all contents of the file
         f.write("# All grains morphology \n")
         
+        f.write("# " + "{:s}.obj".format(material_name + "_morphology") + """# 
+# This was created as part of "Personal Programming Project (PPP)" coursework in 
+# "Computation Materials Science (CMS)" M. Sc program at TU Bergakademie Freiberg,
+# Germany.
+# 
+# For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
+# 
+# @authors: Serrao Prince Henry, Arun Prakash
+# @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
+# Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash
+# 
+# This file is part of OptiMic.
+# 
+# OptiMic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OptiMic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with OptiMic.  If not, see <https://www.gnu.org/licenses/>. \n""")
+        
+        f.write("################################################################################\n")
+        
+        f.write('# Date and time [YYYYMMDD_HHMMSS]: ' + now)
+
+        f.write('\n# Command line input: ' + " ".join(sys.argv))
+
+        f.write("""\n# This file contains data related to:
+#        1. Morphology of generated microstructure in Wavefront OBJ format\n""")
+
         ## Writing all vertices to the file
         vertices_indices = [0]
         for vertex in grain_vertices:
@@ -188,6 +223,42 @@ def create_obj_file_individual_grains(material_name, tessellation, store_folder,
         with open(str(output_file_path), 'a+') as f:
             f.truncate(0)
             f.write("# Individual grain morphology \n")
+
+            f.write("# " + "{:s}.obj".format("grain_" + str(i+1)) + """# 
+# This was created as part of "Personal Programming Project (PPP)" coursework in 
+# "Computation Materials Science (CMS)" M. Sc program at TU Bergakademie Freiberg,
+# Germany.
+# 
+# For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
+# 
+# @authors: Serrao Prince Henry, Arun Prakash
+# @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
+# Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash
+# 
+# This file is part of OptiMic.
+# 
+# OptiMic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OptiMic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with OptiMic.  If not, see <https://www.gnu.org/licenses/>. \n""")
+        
+            f.write("################################################################################\n")
+        
+            f.write('# Date and time [YYYYMMDD_HHMMSS]: ' + now)
+
+            f.write('\n# Command line input: ' + " ".join(sys.argv))
+
+            f.write("""\n# This file contains data related to:
+#        1. Morphology of generated microstructure in Wavefront OBJ format\n""")
+
 
             for vertex_list in grain_vertices[i]:
                 vertex = np.array(vertex_list)

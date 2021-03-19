@@ -111,7 +111,7 @@ def create_vtk_file_all_grains(material_name, tessellation, store_folder, face_f
         
         ## Writing the Header lines
         f.write("# vtk DataFile Version 3.0 \n")
-        f.write("Morphology of all grains \n")
+        f.write("Morphology of all grains. Created using 'OptiMic: A tool to generate optimized polycrystalline microstructures for materials simulations'. Authors: Serrao Prince Henry, Arun Prakash. Distributed under GNU General Public License. \n")
         f.write("ASCII \n")
         f.write("DATASET UNSTRUCTURED_GRID \n")
         f.write("POINTS " + str(number_of_grain_vertices) + " float \n")
@@ -215,7 +215,7 @@ def create_vtk_file_individual_grains(material_name, tessellation, store_folder,
             
             ## Writing the Header lines
             f.write("# vtk DataFile Version 3.0 \n")
-            f.write("Morphology of individual grains \n")
+            f.write("Morphology of all grains. Created using 'OptiMic: A tool to generate optimized polycrystalline microstructures for materials simulations'. Authors: Serrao Prince Henry, Arun Prakash. Distributed under GNU General Public License. \n")
             f.write("ASCII \n")
             f.write("DATASET UNSTRUCTURED_GRID \n")
             f.write("POINTS " + str(number_of_grain_vertices) + " float \n")

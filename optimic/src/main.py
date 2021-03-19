@@ -881,7 +881,13 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     characteristic_to_be_optimized = np.array(characteristic)
     material = material
     stress_direction = np.array(stress_direction)
+    
+    ## Checking if the slip system family provided is orthogonal or not 
     slip_system_family = np.array(slip_family)
+    dot_family = np.dot(slip_system_family[0:3], slip_system_family[3:])
+    assert np.isclose(dot_family, 0.0), 'Please provide a slip system such that \
+family of slip plane normal is orthogonal to family of slip direction. For example: --slip_family 1 -1 1 1 1 0'
+
     crystal_symmetry_type = crystal_type.upper()
 
     required_texture = np.array(sharp_orientation)

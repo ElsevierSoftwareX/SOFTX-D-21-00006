@@ -231,6 +231,16 @@ def textural_testcase(store_folder, tessellation, dimension, \
     all_dot_products = np.einsum('ij,ij->i', all_normals, all_dir)
     assert np.all(np.isclose(all_dot_products,0.0))                                          ## for orthogonality, dot product must be zero
 
+    ## FCC has 12 partial dislocation slip systems [111]<112>
+    slip_system_family = np.array([1,1,1,1,1,2])
+    crystal_symmetry_type = 'CUBIC'
+    slip_systems = slip_system_generator(slip_system_family, crystal_symmetry_type)
+    assert len(slip_systems)==12                                                ## FCC has 12 slip systems
+    all_normals = slip_systems[:, :3]
+    all_dir = slip_systems[:,3:]
+    all_dot_products = np.einsum('ij,ij->i', all_normals, all_dir)
+    assert np.all(np.isclose(all_dot_products,0.0))                                          ## for orthogonality, dot product must be zero
+
     ## BCC has 12 slip systems [110]<-111>
     slip_system_family = np.array([1,1,0,-1,1,1])
     crystal_symmetry_type = 'CUBIC'
@@ -272,6 +282,28 @@ def textural_testcase(store_folder, tessellation, dimension, \
         all_dot_products = np.einsum('ij,ij->i', all_normals, all_dir)
         assert np.all(np.isclose(all_dot_products,0.0))                                          ## for orthogonality, dot product must be zero
 
+    ####################################################################################################################
+    ## Testing symmetry operators for their determinants to be 1 (orthogonal)
+    ####################################################################################################################
+
+    from optimic.src.textural_characteristics import symmetry_operator, orthorhombic_symmetry_operators, \
+                                            hexagonal_symmetry_operators, tetragonal_symmetry_operators
+
+    for operator_matrix in symmetry_operator:
+        determinant_value = np.linalg.det(operator_matrix)
+        assert np.isclose(determinant_value, 1.0)
+
+    for operator_matrix in orthorhombic_symmetry_operators:
+        determinant_value = np.linalg.det(operator_matrix)
+        assert np.isclose(determinant_value, 1.0)
+
+    for operator_matrix in hexagonal_symmetry_operators:
+        determinant_value = np.linalg.det(operator_matrix)
+        assert np.isclose(determinant_value, 1.0)
+
+    for operator_matrix in tetragonal_symmetry_operators:
+        determinant_value = np.linalg.det(operator_matrix)
+        assert np.isclose(determinant_value, 1.0)
 
     ####################################################################################################################
     #Testing for known inputs of stress directions and known schmid factors

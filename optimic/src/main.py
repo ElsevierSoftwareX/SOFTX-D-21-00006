@@ -597,6 +597,7 @@ def guide():
     #log.info('\n')
     log.info("Welcome to Optimized Microstructure Generator !!")
     log.info("Version: " + str(version))
+    log.info("Command-line input: " + " ".join(sys.argv))
     pass
 
 ############# REMEMBER PROMPT HAS AN ISSUE WITH NARGS != 1################
@@ -609,7 +610,7 @@ def guide():
 @click.option('-c', '--characteristic', help='The characteristic that has to be optimized in the format n where n corresponds to the integer number corresponding to the characteristic', type= int, multiple = True)#nargs= 1)
 @click.option('-m', '--material', help='The name of the material as a string', type=str, nargs=1)
 @click.option('-sdir', '--stress_direction', help='The direction of stress for computing the Schmid Factors', default= [1, 0, 0], show_default=True, type=int, nargs=3)
-@click.option('-slip', '--slip_family', help='The slip system family having first 3 components denoting family of slip plane normal and remaining 3 components denoting family of slip direction', default= [1, 1, 1, 1, 1, 0], show_default=True, type=int, nargs=6)
+@click.option('-slip', '--slip_family', help='The slip system family having first 3 components denoting family of slip plane normal and remaining 3 components denoting family of slip direction', default= [1, -1, 1, 1, 1, 0], show_default=True, type=int, nargs=6)
 @click.option('-ctype', '--crystal_type', help='The crystal symmetry type to be used for Schmid factor calculations. Either Cubic, Orthorhombic, Hexagonal or Tetragonal', default='CUBIC', show_default=True, type=str, nargs=1)
 @click.option('-so', '--sharp_orientation', help='Required texture common to each grain in the format n n n as provided in the documentation', type=float, nargs=3)
 # @click.option('-r', help='Flag to indicate if Random orientations is to be generated', is_flag=True)

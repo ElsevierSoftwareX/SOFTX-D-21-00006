@@ -1176,6 +1176,7 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_dir
     
     ## Initializing a list where all data related to Schmid Factor would be stored
     schmid_factors = []                                                         # Column names are: grain, grain size, 1st max schmid factor, respective slip plane and slip direction, 2nd max schmid factor, respective slip plane and slip direction, 3rd max schmid factor, respective slip plane and slip direction
+    single_gr_single_sys_schmid_factor = []                                     # Column names are: grain, grain size, Schmid factor, slip system
 
     for grain in range(number_of_grains):
         
@@ -1213,7 +1214,9 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_dir
             
             schmid_factor_grain = cosine_theta * cosine_lambda
 
-            all_schmid_factors_grain.append(schmid_factor_grain)
+            all_schmid_factors_grain.append(schmid_factor_grain)                # used for main schmid factor array
+            single_gr_single_sys_schmid_factor.append([grain] + [grain_sizes[grain]] \
+                + [schmid_factor_grain] + list(slip_system))                    # for writing to a separate file other than textural_characteristics.txt
         
 
         all_schmid_factors_grain = np.abs(np.array(all_schmid_factors_grain))   # Finding absolute values of each schmid factor
@@ -1235,7 +1238,8 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_dir
         schmid_factors.append(schmid_factor_data_individual_grain)
     
     log.info('Completed computing Schmid factors')
-    return np.array(schmid_factors), np.array(quaternions_of_grains[:, 1:5])
+    print(np.array(single_gr_single_sys_schmid_factor))
+    return np.array(schmid_factors), np.array(single_gr_single_sys_schmid_factor), np.array(quaternions_of_grains[:, 1:5])
 
 
 

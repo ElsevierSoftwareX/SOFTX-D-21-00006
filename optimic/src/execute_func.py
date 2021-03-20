@@ -213,7 +213,7 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
 
     ## Textural Characteristics
     disorientation_angle, orientation_data = disorientation_angles(dimension, limit, skewed_boundary_flag, required_texture, rand_quat_flag, orientation_data, tessellation, log_level)
-    schmid_factors, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation, log_level)
+    schmid_factors, single_gr_single_sys_schmid_factor, orientation_data = schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_direction, slip_system_family, crystal_symmetry_type, orientation_data, tessellation, log_level)
     type_of_grain_boundaries, orientation_data = type_of_grain_boundary(required_texture, rand_quat_flag, orientation_data, tessellation, dimension, limit, skewed_boundary_flag, log_level)
     
     log.info('Successfully computed all textural characteristics')

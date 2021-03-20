@@ -615,6 +615,62 @@ def execute_func(size_of_simulation_box, dimension, limit, material, orientation
         f.write("\n# Schmid Factors")
         f.write("\n# Grain number, Grain sizes, Maximum schmid factor, Respective slip plane and slip direction (Slip System), 2nd Maximum schmid factor, Respective Slip System, 3rd Maximum schmid factor, Respective Slip System \n")
         np.savetxt(f, schmid_factors, delimiter=',', fmt="%.14f")
+    
+    ## Write all Schmid factor of all grains to comprehensive_schmid_factors.txt
+    output_file_path = Path(store_folder, material, now, "Text_output", "comprehensive_schmid_factors.txt")
+    output_file_path.parent.parent.parent.parent.parent.mkdir(exist_ok=True)
+    output_file_path.parent.parent.parent.parent.mkdir(exist_ok=True)
+    output_file_path.parent.parent.parent.mkdir(exist_ok=True)
+    output_file_path.parent.parent.mkdir(exist_ok=True)
+    output_file_path.parent.mkdir(exist_ok=True)                                # checks if folder exists, if not then creates one
+
+    with open(str(output_file_path), 'a+') as f:
+        f.truncate(0)
+        f.write("""# comprehensive_schmid_factors.txt
+# 
+# This was created as part of "Personal Programming Project (PPP)" coursework in 
+# "Computation Materials Science (CMS)" M. Sc program at TU Bergakademie Freiberg,
+# Germany.
+# 
+# For reporting bugs/issues: <https://gitlab.com/arun.prakash.mimm/optimic>
+# 
+# @authors: Serrao Prince Henry, Arun Prakash
+# @email: prince.serrao.code@gmail.com, arun.prakash@imfd.tu-freiberg.de
+# Copyright © 2020 by Serrao Prince Henry, Dr. Arun Prakash
+# 
+# This file is part of OptiMic.
+# 
+# OptiMic is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# OptiMic is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with OptiMic.  If not, see <https://www.gnu.org/licenses/>. \n""")
+        
+        f.write("################################################################################\n\n")
+        
+        f.write('# Date and time [YYYYMMDD_HHMMSS]: ' + now)
+
+        f.write('\n\n# Command line input: ' + " ".join(sys.argv))
+        
+        f.write("\n\n# Size of Simulation Box: " + str(size_of_simulation_box))
+        f.write("\n# Dimension: " + str(dimension))
+        f.write("\n# Material Name: " + material)
+        f.write("\n# Stress direction: " + str(stress_direction))
+        
+        f.write("""\n\n# This file contains data related to:
+#        1. Schmid factors of all grains and all suitable slip systems""")
+                
+        f.write("\n# Comprehensive Schmid Factors data")
+        f.write("\n# Grain number, Grain sizes, Schmid factor, Slip plane normal and slip direction (Slip System) \n")
+        np.savetxt(f, single_gr_single_sys_schmid_factor, delimiter=',', fmt=["%d", "%.14f", "%.14f", "%.4f", "%.4f", "%.4f", "%.4f", "%.4f", "%.4f"])
+
 
     log.info('Successfully saved all textural characteristics into a text file')
 

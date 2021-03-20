@@ -1238,7 +1238,7 @@ def schmid_factor(required_texture, rand_quat_flag, dimension, limit, stress_dir
         schmid_factors.append(schmid_factor_data_individual_grain)
     
     log.info('Completed computing Schmid factors')
-    print(np.array(single_gr_single_sys_schmid_factor))
+
     return np.array(schmid_factors), np.array(single_gr_single_sys_schmid_factor), np.array(quaternions_of_grains[:, 1:5])
 
 

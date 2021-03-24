@@ -611,7 +611,7 @@ def guide():
 @click.option('-m', '--material', help='The name of the material as a string', type=str, nargs=1)
 @click.option('-sdir', '--stress_direction', help='The direction of stress for computing the Schmid Factors', default= [1, 0, 0], show_default=True, type=int, nargs=3)
 @click.option('-slip', '--slip_family', help='The slip system family having first 3 components denoting family of slip plane normal and remaining 3 components denoting family of slip direction', default= [1, -1, 1, 1, 1, 0], show_default=True, type=int, nargs=6)
-@click.option('-ctype', '--crystal_type', help='The crystal symmetry type to be used for Schmid factor calculations. Either Cubic, Orthorhombic, Hexagonal or Tetragonal', default='CUBIC', show_default=True, type=str, nargs=1)
+@click.option('-csym', '--crys_sym', help='The crystal symmetry type to be used for Schmid factor calculations. Either Cubic, Orthorhombic, Hexagonal or Tetragonal', default='CUBIC', show_default=True, type=str, nargs=1)
 @click.option('-so', '--sharp_orientation', help='Required texture common to each grain in the format n n n as provided in the documentation', type=float, nargs=3)
 # @click.option('-r', help='Flag to indicate if Random orientations is to be generated', is_flag=True)
 @click.option('-noopti', '--no_optimization', help='Flag to indicate if optimization is not to be performed', is_flag=True)
@@ -629,7 +629,7 @@ def guide():
 @click.option('-si', '--save_interval', help='Intervals of iterations in which the seeds data is to be saved and live plot is to be extended', show_default=True, default=100, type=int)
 @click.option('-r', '--restart', help='Restart optimization using seed positions of specified function evaluation count number. Specify -1 to use optimized seed positions.', show_default=True, default=0, type=int)
 @click.option('-deb', '--debug', help='Flag to activate Debug mode', is_flag=True)
-def main(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crystal_type, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
+def main(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crys_sym, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
     """
     \f
     Function to parse command-line inputs of Click.
@@ -671,7 +671,7 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     \t First three components denote family of slip plane normal and remaining
     \t three components denote family of slip direction. \n
 
-    crystal_type: string \n
+    crys_sym: string \n
     \t Crystal symmetry to be used.(CUBIC, ORTHORHOMBIC, HEXAGONAL, TETRAGONAL) \n
 
     sharp_orientation: list of 3 elements \n
@@ -745,9 +745,9 @@ def main(size, dimension, number_seed, target, characteristic, material, stress_
     """
 
     ## This is done so that the function 'main_run()' can be imported in some another python script
-    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crystal_type, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug)
+    main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crys_sym, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug)
 
-def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crystal_type, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
+def main_run(size, dimension, number_seed, target, characteristic, material, stress_direction, slip_family, crys_sym, sharp_orientation, no_optimization, face_flag, seed_spacing, spacing_length, optimization_method, skew_boundary, user_cost_func, mesh, mesh_size, max_iter, rand_seed, number_bins, save_interval, restart, debug):
     """
     Function to execute main tasks.
 
@@ -788,7 +788,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     \t First three components denote family of slip plane normal and remaining
     \t three components denote family of slip direction. \n
 
-    crystal_type: string \n
+    crys_sym: string \n
     \t Crystal symmetry to be used.(CUBIC, ORTHORHOMBIC, HEXAGONAL, TETRAGONAL) \n
 
     sharp_orientation: list of 3 elements \n
@@ -886,7 +886,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
             + 'Name of the material: ' +str(material) + '\n' \
             + 'Direction vector for stress applied: ' +str(stress_direction) + '\n' \
             + 'Slip system family (Slip plane normal + Slip direction): ' +str(slip_family) + '\n' \
-            + 'Crystal symmetry type: ' +str(crystal_type) + '\n' \
+            + 'Crystal symmetry type: ' +str(crys_sym) + '\n' \
             + 'Required sharp texture direction: ' +str(sharp_orientation) + '\n' \
             + 'Flag for NO optimization: ' + str(no_optimization) + '\n' \
             + 'Flag for opaque surface: ' + str(face_flag) + '\n' \
@@ -925,7 +925,7 @@ def main_run(size, dimension, number_seed, target, characteristic, material, str
     assert np.isclose(dot_family, 0.0), 'Please provide a slip system such that \
 family of slip plane normal is orthogonal to family of slip direction. For example: --slip_family 1 -1 1 1 1 0'
 
-    crystal_symmetry_type = crystal_type.upper()
+    crystal_symmetry_type = crys_sym.upper()
 
     required_texture = np.array(sharp_orientation)
 #   rand_quat_flag = r
